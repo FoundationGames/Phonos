@@ -1,0 +1,21 @@
+{
+	"parent": "block/block",
+	"textures": {
+		"particle": "#potato"
+	},
+	"elements": [
+		{
+			"from": [6, 0, 6],
+			"to": [10, 6, 10],
+			"rotation": {"angle": 0, "axis": "y", "origin": [14, 8, 14]},
+			"faces": {
+				"north": {"uv": [0, 10, 4, 16], "texture": "#potato"},
+				"east": {"uv": [4, 10, 8, 16], "texture": "#potato"},
+				"south": {"uv": [8, 10, 12, 16], "texture": "#display"},
+				"west": {"uv": [4, 10, 8, 16], "texture": "#potato"},
+				"up": {"uv": [0, 6, 4, 10], "texture": "#potato"},
+				"down": {"uv": [0, 6, 4, 10], "texture": "#potato"}
+			}
+		}
+	]
+}

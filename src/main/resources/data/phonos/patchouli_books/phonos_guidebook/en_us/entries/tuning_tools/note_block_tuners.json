@@ -1,0 +1,29 @@
+{
+  "name": "Note Block Tuners",
+  "category": "tuning_tools",
+  "icon": "phonos:note_block_tuner{TunerData:{Mode:0,Note:5}}",
+  "sortnum": 1,
+  "pages": [
+    {
+      "type": "spotlight",
+      "item": "phonos:note_block_tuner{TunerData:{Mode:0,Note:5}}",
+      "title": "Note Block Tuners",
+	  "link_recipe": true,
+	  "text": "To make it easier to make large note block songs, you can use a note block tuner. Right clicking in air or while sneaking lets you change the mode. Apply mode lets you either listen to the tuner's note, or set a note block to it. Copy mode copies the note of a note block. Adjust mode lets you manually adjust the tuner's note."
+    },
+	{
+      "type": "image",
+	  "images": [
+		"phonos:textures/gui/gallery/note_block_tuner.png"
+	  ],
+	  "title": "Gallery",
+	  "border": true,
+	  "text": "All three tuner modes, plus a demonstration of using a tuner."
+    },
+	{
+      "type": "crafting",
+	  "recipe": "phonos:note_block_tuner_0",
+	  "recipe2": "phonos:note_block_tuner_1"
+    }
+  ]
+}

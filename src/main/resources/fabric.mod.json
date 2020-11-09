@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "id": "phonos",
+  "version": "${version}",
+
+  "name": "Phonos",
+  "description": "Fill your world with music!",
+  "authors": [
+    "FoundationGames"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net/",
+    "sources": "https://github.com/FabricMC/fabric-example-mod"
+  },
+
+  "license": "MIT",
+  "icon": "assets/phonos/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "io.github.foundationgames.phonos.Phonos"
+    ],
+	"client": [
+      "io.github.foundationgames.phonos.PhonosClient"
+    ]
+  },
+  "mixins": [
+    "phonos.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.7.4",
+    "fabric": "*",
+    "minecraft": "1.16.x"
+  },
+  "suggests": {
+    "flamingo": "*"
+  }
+}

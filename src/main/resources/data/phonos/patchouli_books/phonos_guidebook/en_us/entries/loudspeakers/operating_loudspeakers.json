@@ -1,0 +1,28 @@
+{
+  "name": "Using Loudspeakers",
+  "category": "loudspeakers",
+  "icon": "phonos:loudspeaker",
+  "sortnum": 0,
+  "pages": [
+    {
+      "type": "spotlight",
+      "item": "phonos:loudspeaker",
+      "title": "Using Loudspeakers",
+	  "link_recipe": true,
+	  "text": "Loudspeakers are means of playing sounds broadcasted over radio. You can place many in one location to fill the area with sound. To operate a loudspeaker, place it down. Interact with the display on top to change the channel. You can cover the top face if you don't want others changing the channel."
+    },
+	{
+      "type": "image",
+	  "images": [
+		"phonos:textures/gui/gallery/loudspeakers.png"
+	  ],
+	  "title": "Gallery",
+	  "border": true,
+	  "text": "Some loudspeakers, which are tuned to channel 7, playing music."
+    },
+	{
+      "type": "crafting",
+	  "recipe": "phonos:loudspeaker"
+    }
+  ]
+}

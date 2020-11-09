@@ -1,0 +1,42 @@
+{
+  "name": "Radio Jukeboxes",
+  "category": "playing_music",
+  "icon": "phonos:radio_jukebox",
+  "sortnum": 0,
+  "pages": [
+    {
+      "type": "spotlight",
+      "item": "phonos:radio_jukebox",
+      "title": "Radio Jukeboxes",
+	  "link_recipe": true,
+	  "text": "Ever dreamed of streaming Minecraft's many wonderful music discs over radio? Well you can, with a radio jukebox. When placed, you can configure the channel like normal, but the block works different to a normal jukebox - it has a GUI!"
+    },
+	{
+      "type": "image",
+	  "images": [
+		"phonos:textures/gui/gallery/jukebox.png"
+	  ],
+	  "title": "Gallery",
+	  "border": true,
+	  "text": "A radio jukebox playing music to its neighboring speaker."
+    },
+	{
+      "type": "text",
+      "title": "The Jukebox GUI",
+	  "text": "At first glance, the GUI looks quite complex. However, the features are very simple once you understand them. Place discs into the disc slots. Adjust each disc's duration by scrolling over the number fields below. Do the same to adjust the pitch field on the left. You can enable or disable shuffling with the check box on the right. The play and skip buttons work as expected."
+    },
+	{
+      "type": "image",
+	  "images": [
+		"phonos:textures/gui/gallery/jukebox_ui.png"
+	  ],
+	  "title": "Gallery",
+	  "border": true,
+	  "text": "The GUI of the Radio Jukebox, which has the disc \"C418 - cat\" in it"
+    },
+	{
+      "type": "crafting",
+	  "recipe": "phonos:radio_jukebox"
+    }
+  ]
+}

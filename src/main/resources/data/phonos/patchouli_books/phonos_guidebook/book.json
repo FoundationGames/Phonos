@@ -1,0 +1,11 @@
+{
+  "name": "item.phonos.phonos_guidebook.name",
+  "landing_text": "item.phonos.phonos_guidebook.landing",
+  "model": "phonos:guidebook",
+  "use_blocky_font": false,
+  "version": 1,
+  "book_texture": "patchouli:textures/gui/book_purple.png",
+  "subtitle": "The Guide to All Things Audio",
+  "creative_tab": "phonos.phonos",
+  "pause_game": false
+}
