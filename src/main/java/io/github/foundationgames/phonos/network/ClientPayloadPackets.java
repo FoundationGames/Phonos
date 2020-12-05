@@ -7,10 +7,13 @@ import io.github.foundationgames.phonos.mixin.WorldRendererAccess;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
+import net.minecraft.block.enums.Instrument;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.item.Item;
+import net.minecraft.item.MusicDiscItem;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
@@ -37,11 +40,26 @@ public final class ClientPayloadPackets {
 
         ClientSidePacketRegistry.INSTANCE.register(Phonos.id("radio_channel_sound_by_id"), ((ctx, buf) -> {
             BlockPos pos = buf.readBlockPos();
-            Identifier sound = buf.readIdentifier();
+            int itemID = buf.readInt();
             int channel = buf.readInt();
             float volume = buf.readFloat();
             float pitch = buf.readFloat();
             boolean stoppable = buf.readBoolean();
+            SoundEvent sound = ((MusicDiscItem)Item.byRawId(itemID)).getSound();
+            ctx.getTaskQueue().execute(() -> {
+                if(stoppable) ClientRecieverLocationStorage.playStoppableSound(pos, sound, channel, volume, pitch);
+                else ClientRecieverLocationStorage.playSound(sound, channel, volume, pitch);
+            });
+        }));
+
+        ClientSidePacketRegistry.INSTANCE.register(Phonos.id("radio_channel_sound_by_instrument"), ((ctx, buf) -> {
+            BlockPos pos = buf.readBlockPos();
+            Instrument instrument = Instrument.valueOf(buf.readString());
+            int channel = buf.readInt();
+            float volume = buf.readFloat();
+            float pitch = buf.readFloat();
+            boolean stoppable = buf.readBoolean();
+            SoundEvent sound = instrument.getSound();
             ctx.getTaskQueue().execute(() -> {
                 if(stoppable) ClientRecieverLocationStorage.playStoppableSound(pos, sound, channel, volume, pitch);
                 else ClientRecieverLocationStorage.playSound(sound, channel, volume, pitch);

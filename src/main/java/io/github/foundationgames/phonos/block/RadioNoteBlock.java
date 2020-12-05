@@ -59,7 +59,7 @@ public class RadioNoteBlock extends Block implements RadioChannelBlock {
     private void playNote(World world, BlockPos pos) {
         if(!world.isClient()) {
             RadioChannelState pstate = PhonosUtil.getRadioState((ServerWorld)world);
-            pstate.playSound(pos, Instrument.fromBlockState(world.getBlockState(pos.down())).getSound(), world.getBlockState(pos).get(CHANNEL), 1.8f, (float)Math.pow(2.0D, (double)(world.getBlockState(pos).get(NOTE) - 12) / 12.0D), false);
+            pstate.playSound(pos, Instrument.fromBlockState(world.getBlockState(pos.down())), world.getBlockState(pos).get(CHANNEL), 1.8f, (float)Math.pow(2.0D, (double)(world.getBlockState(pos).get(NOTE) - 12) / 12.0D), false);
         }
     }
 

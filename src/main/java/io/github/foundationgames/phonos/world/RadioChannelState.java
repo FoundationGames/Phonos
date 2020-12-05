@@ -6,11 +6,11 @@ import io.github.foundationgames.phonos.network.RecieverStorageOperation;
 import io.github.foundationgames.phonos.util.PhonosUtil;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import net.minecraft.block.enums.Instrument;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.PersistentState;
@@ -100,8 +100,12 @@ public class RadioChannelState extends PersistentState {
         //Phonos.LOG.info("---- FINISHED SENDING JOIN PACKETS ----");
     }
 
-    public void playSound(BlockPos origin, SoundEvent sound, int channel, float volume, float pitch, boolean stoppable) {
-        for(PlayerEntity player : world.getPlayers()) PayloadPackets.sendRadioChannelSound(player, origin, sound, channel, volume, pitch, stoppable);
+    public void playSound(BlockPos origin, Instrument instrument, int channel, float volume, float pitch, boolean stoppable) {
+        for(PlayerEntity player : world.getPlayers()) PayloadPackets.sendRadioChannelSound(player, origin, instrument, channel, volume, pitch, stoppable);
+    }
+
+    public void playSound(BlockPos origin, int itemID, int channel, float volume, float pitch, boolean stoppable) {
+        for(PlayerEntity player : world.getPlayers()) PayloadPackets.sendRadioChannelSound(player, origin, itemID, channel, volume, pitch, stoppable);
     }
 
     public void playSound(BlockPos origin, Identifier sound, int channel, float volume, float pitch, boolean stoppable) {

@@ -5,6 +5,7 @@ import io.github.foundationgames.phonos.block.entity.RadioJukeboxBlockEntity;
 import io.github.foundationgames.phonos.screen.CustomMusicDiscGuiDescription;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.minecraft.block.enums.Instrument;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.sound.SoundEvent;
@@ -25,10 +26,21 @@ public final class PayloadPackets {
         ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, Phonos.id("jukebox_song_by_id"), buf);
     }
 
-    public static void sendRadioChannelSound(PlayerEntity player, BlockPos origin, SoundEvent sound, int channel, float volume, float pitch, boolean stoppable) {
+    public static void sendRadioChannelSound(PlayerEntity player, BlockPos origin, Instrument instrument, int channel, float volume, float pitch, boolean stoppable) {
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
         buf.writeBlockPos(origin);
-        buf.writeIdentifier(sound.getId());
+        buf.writeString(instrument.toString());
+        buf.writeInt(channel);
+        buf.writeFloat(volume);
+        buf.writeFloat(pitch);
+        buf.writeBoolean(stoppable);
+        ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, Phonos.id("radio_channel_sound_by_instrument"), buf);
+    }
+
+    public static void sendRadioChannelSound(PlayerEntity player, BlockPos origin, int itemID, int channel, float volume, float pitch, boolean stoppable) {
+        PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+        buf.writeBlockPos(origin);
+        buf.writeInt(itemID);
         buf.writeInt(channel);
         buf.writeFloat(volume);
         buf.writeFloat(pitch);

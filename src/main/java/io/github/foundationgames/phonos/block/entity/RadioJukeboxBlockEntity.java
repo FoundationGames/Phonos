@@ -5,7 +5,6 @@ import io.github.foundationgames.phonos.Phonos;
 import io.github.foundationgames.phonos.block.PhonosBlocks;
 import io.github.foundationgames.phonos.block.RadioJukeboxBlock;
 import io.github.foundationgames.phonos.item.CustomMusicDiscItem;
-import io.github.foundationgames.phonos.mixin.MusicDiscItemAccess;
 import io.github.foundationgames.phonos.screen.RadioJukeboxGuiDescription;
 import io.github.foundationgames.phonos.util.PhonosUtil;
 import io.github.foundationgames.phonos.world.RadioChannelState;
@@ -113,7 +112,7 @@ public class RadioJukeboxBlockEntity extends BlockEntity implements ExtendedScre
             RadioChannelState pstate = PhonosUtil.getRadioState((ServerWorld)world);
             ItemStack disc = items.get(slot);
             if(disc.getItem() instanceof MusicDiscItem) {
-                pstate.playSound(pos, ((MusicDiscItemAccess)disc.getItem()).getSoundEvent(), getChannel(), 1.8f, pitch, true);
+                pstate.playSound(pos, Item.getRawId(disc.getItem()), getChannel(), 1.8f, pitch, true);
             }
             if(disc.getItem() instanceof CustomMusicDiscItem) {
                 Identifier id = Identifier.tryParse(disc.getOrCreateSubTag("MusicData").getString("SoundId"));
