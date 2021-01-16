@@ -28,7 +28,7 @@ public final class PayloadPackets {
     public static void sendRadioChannelSound(PlayerEntity player, BlockPos origin, SoundEvent sound, int channel, float volume, float pitch, boolean stoppable) {
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
         buf.writeBlockPos(origin);
-        buf.writeIdentifier(sound.getId());
+        buf.writeIdentifier(Registry.SOUND_EVENT.getId(sound));
         buf.writeInt(channel);
         buf.writeFloat(volume);
         buf.writeFloat(pitch);

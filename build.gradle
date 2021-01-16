@@ -37,7 +37,7 @@ dependencies {
 	include "io.github.cottonmc:LibGui:3.0.0+1.16.3"
 
 	//patchouli
-	modImplementation "vazkii.patchouli:Patchouli:1.16.2-44-FABRIC"
+	modImplementation "vazkii.patchouli:Patchouli:1.16.4-48-FABRIC"
 
 	// PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
 	// You may need to force-disable transitiveness on them.
