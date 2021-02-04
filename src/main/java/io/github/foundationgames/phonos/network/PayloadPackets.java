@@ -4,9 +4,9 @@ import io.github.foundationgames.phonos.Phonos;
 import io.github.foundationgames.phonos.block.entity.RadioJukeboxBlockEntity;
 import io.github.foundationgames.phonos.screen.CustomMusicDiscGuiDescription;
 import io.netty.buffer.Unpooled;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
-import net.minecraft.entity.player.PlayerEntity;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -18,14 +18,14 @@ public final class PayloadPackets {
         CustomMusicDiscGuiDescription.registerServerPackets();
     }
 
-    public static void sendJukeboxIdSound(PlayerEntity player, Identifier sound, BlockPos pos) {
+    public static void sendJukeboxIdSound(ServerPlayerEntity player, Identifier sound, BlockPos pos) {
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
         buf.writeIdentifier(sound);
         buf.writeBlockPos(pos);
-        ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, Phonos.id("jukebox_song_by_id"), buf);
+        ServerPlayNetworking.send(player, Phonos.id("jukebox_song_by_id"), buf);
     }
 
-    public static void sendRadioChannelSound(PlayerEntity player, BlockPos origin, SoundEvent sound, int channel, float volume, float pitch, boolean stoppable) {
+    public static void sendRadioChannelSound(ServerPlayerEntity player, BlockPos origin, SoundEvent sound, int channel, float volume, float pitch, boolean stoppable) {
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
         buf.writeBlockPos(origin);
         buf.writeIdentifier(Registry.SOUND_EVENT.getId(sound));
@@ -33,10 +33,10 @@ public final class PayloadPackets {
         buf.writeFloat(volume);
         buf.writeFloat(pitch);
         buf.writeBoolean(stoppable);
-        ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, Phonos.id("radio_channel_sound_by_id"), buf);
+        ServerPlayNetworking.send(player, Phonos.id("radio_channel_sound_by_id"), buf);
     }
 
-    public static void sendRadioChannelSound(PlayerEntity player, BlockPos origin, Identifier sound, int channel, float volume, float pitch, boolean stoppable) {
+    public static void sendRadioChannelSound(ServerPlayerEntity player, BlockPos origin, Identifier sound, int channel, float volume, float pitch, boolean stoppable) {
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
         buf.writeBlockPos(origin);
         buf.writeIdentifier(sound);
@@ -44,21 +44,21 @@ public final class PayloadPackets {
         buf.writeFloat(volume);
         buf.writeFloat(pitch);
         buf.writeBoolean(stoppable);
-        ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, Phonos.id("radio_channel_sound"), buf);
+        ServerPlayNetworking.send(player, Phonos.id("radio_channel_sound"), buf);
     }
 
-    public static void sendStopSound(PlayerEntity player, BlockPos pos, int channel) {
+    public static void sendStopSound(ServerPlayerEntity player, BlockPos pos, int channel) {
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
         buf.writeBlockPos(pos);
         buf.writeInt(channel);
-        ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, Phonos.id("radio_channel_stop"), buf);
+        ServerPlayNetworking.send(player, Phonos.id("radio_channel_stop"), buf);
     }
 
-    public static void sendRecieversUpdate(PlayerEntity player, RecieverStorageOperation operation, int channel, long[] positions) {
+    public static void sendRecieversUpdate(ServerPlayerEntity player, RecieverStorageOperation operation, int channel, long[] positions) {
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
         buf.writeByte(operation.asByte());
         buf.writeInt(channel);
         buf.writeLongArray(positions);
-        ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, Phonos.id("update_receivers"), buf);
+        ServerPlayNetworking.send(player, Phonos.id("update_receivers"), buf);
     }
 }

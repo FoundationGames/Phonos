@@ -15,7 +15,11 @@ import java.util.function.Supplier;
 
 public class PhonosUtil {
     public static RadioChannelState getRadioState(ServerWorld world) {
-        return world.getPersistentStateManager().getOrCreate(() -> new RadioChannelState(world), "radio_channel_state");
+        return world.getPersistentStateManager().getOrCreate(tag -> {
+            RadioChannelState state = new RadioChannelState(world);
+            state.fromNbt(tag);
+            return state;
+        }, () -> new RadioChannelState(world), "radio_channel_state");
     }
 
     public static <T> T create(Supplier<T> creator) {

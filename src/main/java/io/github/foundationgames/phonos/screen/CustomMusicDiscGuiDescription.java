@@ -4,13 +4,11 @@ import io.github.cottonmc.cotton.gui.SyncedGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.*;
 import io.github.cottonmc.cotton.gui.widget.data.Axis;
 import io.github.foundationgames.phonos.Phonos;
-import io.github.foundationgames.phonos.block.entity.RadioJukeboxBlockEntity;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
-import net.minecraft.block.entity.BlockEntity;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
@@ -18,9 +16,6 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-
-import java.util.function.IntConsumer;
 
 public class CustomMusicDiscGuiDescription extends SyncedGuiDescription {
     private final ItemStack stack;
@@ -77,19 +72,15 @@ public class CustomMusicDiscGuiDescription extends SyncedGuiDescription {
     }
 
     public static void registerServerPackets() {
-        ServerSidePacketRegistry.INSTANCE.register(Phonos.id("set_disc_sound_id"), (ctx, buf) -> {
-            ItemStack stack = ctx.getPlayer().inventory.getStack(buf.readInt());
+        ServerPlayNetworking.registerGlobalReceiver(Phonos.id("set_disc_sound_id"), (server, player, handler, buf, sender) -> {
+            ItemStack stack = player.getInventory().getStack(buf.readInt());
             String soundId = buf.readString(32767);
-            ctx.getTaskQueue().execute(() -> {
-                stack.getOrCreateSubTag("MusicData").putString("SoundId", soundId);
-            });
+            server.execute(() -> stack.getOrCreateSubTag("MusicData").putString("SoundId", soundId));
         });
-        ServerSidePacketRegistry.INSTANCE.register(Phonos.id("set_disc_comparator_signal"), (ctx, buf) -> {
-            ItemStack stack = ctx.getPlayer().inventory.getStack(buf.readInt());
+        ServerPlayNetworking.registerGlobalReceiver(Phonos.id("set_disc_comparator_signal"), (server, player, handler, buf, sender) -> {
+            ItemStack stack = player.getInventory().getStack(buf.readInt());
             int signal = buf.readInt();
-            ctx.getTaskQueue().execute(() -> {
-                stack.getOrCreateSubTag("MusicData").putInt("ComparatorSignal", signal);
-            });
+            server.execute(() -> stack.getOrCreateSubTag("MusicData").putInt("ComparatorSignal", signal));
         });
     }
 
@@ -99,7 +90,7 @@ public class CustomMusicDiscGuiDescription extends SyncedGuiDescription {
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
         buf.writeInt(stackSlot);
         buf.writeString(sid);
-        ClientSidePacketRegistry.INSTANCE.sendToServer(Phonos.id("set_disc_sound_id"), buf);
+        ClientPlayNetworking.send(Phonos.id("set_disc_sound_id"), buf);
     }
 
     @Environment(EnvType.CLIENT)
@@ -108,7 +99,7 @@ public class CustomMusicDiscGuiDescription extends SyncedGuiDescription {
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
         buf.writeInt(stackSlot);
         buf.writeInt(signal);
-        ClientSidePacketRegistry.INSTANCE.sendToServer(Phonos.id("set_disc_comparator_signal"), buf);
+        ClientPlayNetworking.send(Phonos.id("set_disc_comparator_signal"), buf);
     }
 
     private void setStackSoundId(String sid) {

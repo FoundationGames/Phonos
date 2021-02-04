@@ -3,7 +3,6 @@ package io.github.foundationgames.phonos.item;
 import io.github.foundationgames.phonos.network.PayloadPackets;
 import io.github.foundationgames.phonos.screen.CustomMusicDiscGuiDescription;
 import io.github.foundationgames.phonos.util.PhonosUtil;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -16,18 +15,15 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.packet.s2c.play.PlaySoundIdS2CPacket;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
 import net.minecraft.stat.Stats;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.*;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -46,7 +42,7 @@ public class CustomMusicDiscItem extends Item {
             ItemStack stack = context.getStack();
             if (!world.isClient) {
                 ((JukeboxBlock)Blocks.JUKEBOX).setRecord(world, pos, state, stack);
-                for(PlayerEntity player : ((ServerWorld)world).getPlayers()) {
+                for(ServerPlayerEntity player : ((ServerWorld)world).getPlayers()) {
                     Identifier soundId = Identifier.tryParse(stack.getOrCreateSubTag("MusicData").getString("SoundId"));
                     PayloadPackets.sendJukeboxIdSound(player, soundId, pos);
                     //ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, new PlaySoundIdS2CPacket(soundId, SoundCategory.BLOCKS, Vec3d.of(pos).add(0.5, 0.5, 0.5), 1.8f, 1.0f));
@@ -67,7 +63,7 @@ public class CustomMusicDiscItem extends Item {
     @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
         if(user.isCreative()) {
-            user.openHandledScreen(new DiscGuiFactory(PhonosUtil.slotOf(user.inventory, user.getStackInHand(hand))));
+            user.openHandledScreen(new DiscGuiFactory(PhonosUtil.slotOf(user.getInventory(), user.getStackInHand(hand))));
             return world.isClient() ? TypedActionResult.success(user.getStackInHand(hand)) : TypedActionResult.pass(user.getStackInHand(hand));
         }
         else return super.use(world, user, hand);

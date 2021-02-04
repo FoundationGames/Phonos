@@ -1,12 +1,10 @@
 package io.github.foundationgames.phonos.world;
 
-import io.github.foundationgames.phonos.Phonos;
 import io.github.foundationgames.phonos.network.PayloadPackets;
 import io.github.foundationgames.phonos.network.RecieverStorageOperation;
 import io.github.foundationgames.phonos.util.PhonosUtil;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -24,12 +22,11 @@ public class RadioChannelState extends PersistentState {
     private final ServerWorld world;
 
     public RadioChannelState(ServerWorld world) {
-        super("radio_channel_state");
+        super();
         this.world = world;
     }
 
-    @Override
-    public void fromTag(CompoundTag tag) {
+    public void fromNbt(CompoundTag tag) {
         channelStorage.clear();
         Set<String> channels = tag.getKeys();
         for(String c : channels) {
@@ -43,7 +40,7 @@ public class RadioChannelState extends PersistentState {
     }
 
     @Override
-    public CompoundTag toTag(CompoundTag tag) {
+    public CompoundTag toNbt(CompoundTag tag) {
         //Phonos.LOG.info("TO TAG: "+channelStorage);
         for(int k : channelStorage.keySet()) {
             long[] la = new long[channelStorage.get(k).size()];
@@ -60,7 +57,7 @@ public class RadioChannelState extends PersistentState {
         ArrayList<Long> l = channelStorage.get(channel);
         if(!l.contains(pos.asLong())) {
             l.add(pos.asLong());
-            for(PlayerEntity player : world.getPlayers()) PayloadPackets.sendRecieversUpdate(player, RecieverStorageOperation.ADD, channel, new long[] { pos.asLong() });
+            for(ServerPlayerEntity player : world.getPlayers()) PayloadPackets.sendRecieversUpdate(player, RecieverStorageOperation.ADD, channel, new long[] { pos.asLong() });
         }
         this.setDirty(true);
     }
@@ -68,7 +65,7 @@ public class RadioChannelState extends PersistentState {
     public void removeReciever(int channel, BlockPos pos) {
         channelStorage.putIfAbsent(channel, new ArrayList<>());
         channelStorage.get(channel).remove(pos.asLong());
-        for(PlayerEntity player : world.getPlayers()) PayloadPackets.sendRecieversUpdate(player, RecieverStorageOperation.REMOVE, channel, new long[] { pos.asLong() });
+        for(ServerPlayerEntity player : world.getPlayers()) PayloadPackets.sendRecieversUpdate(player, RecieverStorageOperation.REMOVE, channel, new long[] { pos.asLong() });
         this.setDirty(true);
     }
 
@@ -101,14 +98,14 @@ public class RadioChannelState extends PersistentState {
     }
 
     public void playSound(BlockPos origin, SoundEvent sound, int channel, float volume, float pitch, boolean stoppable) {
-        for(PlayerEntity player : world.getPlayers()) PayloadPackets.sendRadioChannelSound(player, origin, sound, channel, volume, pitch, stoppable);
+        for(ServerPlayerEntity player : world.getPlayers()) PayloadPackets.sendRadioChannelSound(player, origin, sound, channel, volume, pitch, stoppable);
     }
 
     public void playSound(BlockPos origin, Identifier sound, int channel, float volume, float pitch, boolean stoppable) {
-        for(PlayerEntity player : world.getPlayers()) PayloadPackets.sendRadioChannelSound(player, origin, sound, channel, volume, pitch, stoppable);
+        for(ServerPlayerEntity player : world.getPlayers()) PayloadPackets.sendRadioChannelSound(player, origin, sound, channel, volume, pitch, stoppable);
     }
 
     public void tryStopSound(BlockPos origin, int channel) {
-        for(PlayerEntity player : world.getPlayers()) PayloadPackets.sendStopSound(player, origin, channel);
+        for(ServerPlayerEntity player : world.getPlayers()) PayloadPackets.sendStopSound(player, origin, channel);
     }
 }

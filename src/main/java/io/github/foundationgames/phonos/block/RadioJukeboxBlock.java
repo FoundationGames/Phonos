@@ -95,8 +95,8 @@ public class RadioJukeboxBlock extends BlockWithEntity implements RadioChannelBl
     }
 
     @Override
-    public BlockEntity createBlockEntity(BlockView world) {
-        return new RadioJukeboxBlockEntity();
+    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+        return new RadioJukeboxBlockEntity(pos, state);
     }
 
     @Override

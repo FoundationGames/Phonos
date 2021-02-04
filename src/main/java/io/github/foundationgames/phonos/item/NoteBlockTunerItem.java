@@ -1,7 +1,7 @@
 package io.github.foundationgames.phonos.item;
 
 import io.github.foundationgames.phonos.block.PhonosBlocks;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.enums.Instrument;
@@ -11,6 +11,8 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.state.property.Properties;
@@ -66,7 +68,7 @@ public class NoteBlockTunerItem extends Item {
     }
 
     private static void playNote(SoundEvent sound, int note, World world, BlockPos pos) {
-        if(!world.isClient()) for(PlayerEntity player : world.getPlayers()) ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, new PlaySoundS2CPacket(sound, SoundCategory.BLOCKS, pos.getX()+0.5, pos.getY()+0.5, pos.getZ()+0.5,  1.5f, (float)Math.pow(2.0D, (double)(note - 12) / 12.0D)));
+        if(!world.isClient()) for(ServerPlayerEntity player : ((ServerWorld)world).getPlayers()) player.networkHandler.sendPacket(new PlaySoundS2CPacket(sound, SoundCategory.BLOCKS, pos.getX()+0.5, pos.getY()+0.5, pos.getZ()+0.5,  1.5f, (float)Math.pow(2.0D, (double)(note - 12) / 12.0D)));
     }
 
     @Override

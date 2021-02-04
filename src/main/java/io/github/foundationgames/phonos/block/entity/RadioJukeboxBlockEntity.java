@@ -15,8 +15,8 @@ import it.unimi.dsi.fastutil.ints.Int2ByteOpenHashMap;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
-import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -36,14 +36,16 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.Tickable;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.world.World;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-public class RadioJukeboxBlockEntity extends BlockEntity implements ExtendedScreenHandlerFactory, SidedInventory, Tickable, BlockEntityClientSerializable {
+public class RadioJukeboxBlockEntity extends BlockEntity implements ExtendedScreenHandlerFactory, SidedInventory, BlockEntityClientSerializable {
     private final DefaultedList<ItemStack> items = DefaultedList.ofSize(6, ItemStack.EMPTY);
     public float pitch = 1.0f;
     public boolean doShuffle = false;
@@ -59,8 +61,8 @@ public class RadioJukeboxBlockEntity extends BlockEntity implements ExtendedScre
     public int disc5Duration = 1;
     public int disc6Duration = 1;
 
-    public RadioJukeboxBlockEntity() {
-        super(PhonosBlocks.RADIO_JUKEBOX_ENTITY);
+    public RadioJukeboxBlockEntity(BlockPos pos, BlockState state) {
+        super(PhonosBlocks.RADIO_JUKEBOX_ENTITY, pos, state);
     }
 
     public void onDiscRemoved(int slot) {
@@ -136,18 +138,17 @@ public class RadioJukeboxBlockEntity extends BlockEntity implements ExtendedScre
         return 0;
     }
 
-    @Override
-    public void tick() {
-        if(isPlaying) {
-            if(songProgress <= 0) {
-                int nextSong = playingSong + 1;
-                if(nextSong <= 5 && !items.get(nextSong).isEmpty()) playSong(nextSong);
-                else playOrStop();
+    public static void tick(World world, BlockPos pos, BlockState state, RadioJukeboxBlockEntity self) {
+        if(self.isPlaying) {
+            if(self.songProgress <= 0) {
+                int nextSong = self.playingSong + 1;
+                if(nextSong <= 5 && !self.items.get(nextSong).isEmpty()) self.playSong(nextSong);
+                else self.playOrStop();
             }
-            songProgress--;
+            self.songProgress--;
         }
         boolean s = world.getBlockState(pos).getBlock() instanceof RadioJukeboxBlock && world.getBlockState(pos).get(RadioJukeboxBlock.PLAYING);
-        if(s != isPlaying && world.getBlockState(pos).getBlock() instanceof RadioJukeboxBlock) {
+        if(s != self.isPlaying && world.getBlockState(pos).getBlock() instanceof RadioJukeboxBlock) {
             world.setBlockState(pos, world.getBlockState(pos).with(RadioJukeboxBlock.PLAYING, !s));
         }
     }
@@ -175,8 +176,8 @@ public class RadioJukeboxBlockEntity extends BlockEntity implements ExtendedScre
     }
 
     @Override
-    public void fromTag(BlockState state, CompoundTag tag) {
-        super.fromTag(state, tag);
+    public void fromTag(CompoundTag tag) {
+        super.fromTag(tag);
         this.pitch = tag.getFloat("Pitch");
         this.doShuffle = tag.getBoolean("DoShuffle");
         items.clear();
@@ -302,17 +303,17 @@ public class RadioJukeboxBlockEntity extends BlockEntity implements ExtendedScre
         buf.writeBlockPos(pos);
         buf.writeByte(operation);
         buf.writeInt(data);
-        ClientSidePacketRegistry.INSTANCE.sendToServer(Phonos.id("update_radio_jukebox"), buf);
+        ClientPlayNetworking.send(Phonos.id("update_radio_jukebox"), buf);
     }
 
     public static void registerServerPackets() {
-        ServerSidePacketRegistry.INSTANCE.register(Phonos.id("update_radio_jukebox"), (ctx, buf) -> {
+        ServerPlayNetworking.registerGlobalReceiver(Phonos.id("update_radio_jukebox"), (server, player, handler, buf, sender) -> {
             BlockPos pos = buf.readBlockPos();
             byte operation = buf.readByte();
             int data = buf.readInt();
-            ctx.getTaskQueue().execute(() -> {
-                BlockEntity b = ctx.getPlayer().world.getBlockEntity(pos);
-                if(b instanceof RadioJukeboxBlockEntity && pos.isWithinDistance(ctx.getPlayer().getPos(), 90)) {
+            server.execute(() -> {
+                BlockEntity b = player.world.getBlockEntity(pos);
+                if(b instanceof RadioJukeboxBlockEntity && pos.isWithinDistance(player.getPos(), 90)) {
                     RadioJukeboxBlockEntity be = (RadioJukeboxBlockEntity)b;
                     doOperation(be, operation, data);
                 }
@@ -383,7 +384,7 @@ public class RadioJukeboxBlockEntity extends BlockEntity implements ExtendedScre
 
     @Override
     public void fromClientTag(CompoundTag compoundTag) {
-        this.fromTag(world.getBlockState(pos), compoundTag);
+        this.fromTag(compoundTag);
     }
 
     @Override

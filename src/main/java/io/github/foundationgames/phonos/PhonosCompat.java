@@ -6,14 +6,14 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.village.TradeOffer;
-import vazkii.patchouli.common.item.PatchouliItems;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 public class PhonosCompat {
     public static TechnicianVillagerProfession.BasicTradeFactory getPatchouliBookTrade() {
         if(FabricLoader.getInstance().isModLoaded("patchouli")) {
             return new TechnicianVillagerProfession.BasicTradeFactory(i(Items.EMERALD, 3), PhonosUtil.create(() -> {
-                ItemStack i = i(PatchouliItems.book);
+                ItemStack i = i(Registry.ITEM.get(new Identifier("patchouli:guide_book")));
                 i.getOrCreateTag().putString("patchouli:book", "phonos:phonos_guidebook");
                 return i;
             }), 1, 7, 0.2f);

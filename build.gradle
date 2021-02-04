@@ -33,11 +33,15 @@ dependencies {
 	include "com.lettuce.fudge:artifice:0.13.2+1.16.3"
 
 	// LibGui because yes
-	modImplementation "io.github.cottonmc:LibGui:3.0.0+1.16.3"
-	include "io.github.cottonmc:LibGui:3.0.0+1.16.3"
+	modImplementation "io.github.cottonmc:LibGui:3.2.2+1.16.3"
+	include "io.github.cottonmc:LibGui:3.2.2+1.16.3"
+
+	modImplementation "me.zeroeightsix:fiber:0.23.0-2"
+	include "me.zeroeightsix:fiber:0.23.0-2"
 
 	//patchouli
-	modImplementation "vazkii.patchouli:Patchouli:1.16.4-48-FABRIC"
+	//modImplementation "vazkii.patchouli:Patchouli:1.16.4-48-FABRIC"
+	//not 1.17 compatible
 
 	// PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
 	// You may need to force-disable transitiveness on them.
