@@ -118,6 +118,33 @@ public class PhonosData {
                     .ingredientTag(new Identifier("flowers"))
                     .result(Phonos.id("tiny_potato_speaker"), 1)
             );
+            pack.addShapedRecipe(Phonos.id("copper_speaker"), builder -> {
+                builder.pattern(
+                        "AAA",
+                        "ABA",
+                        "CDC"
+                );
+                builder.ingredientItem('A', new Identifier("copper_ingot"));
+                builder.ingredientItem('B', Phonos.id("redstone_chip"));
+                builder.ingredientTag('C', new Identifier("stone_crafting_materials"));
+                builder.ingredientItem('D', new Identifier("iron_ingot"));
+                builder.result(Phonos.id("copper_speaker"), 1);
+            });
+            pack.addShapelessRecipe(Phonos.id("waxed_copper_speaker"), builder -> builder
+                    .ingredientItem(Phonos.id("copper_speaker"))
+                    .ingredientItem(new Identifier("honeycomb"))
+                    .result(Phonos.id("waxed_copper_speaker"), 1)
+            );
+            pack.addShapelessRecipe(Phonos.id("waxed_exposed_copper_speaker"), builder -> builder
+                    .ingredientItem(Phonos.id("exposed_copper_speaker"))
+                    .ingredientItem(new Identifier("honeycomb"))
+                    .result(Phonos.id("waxed_exposed_copper_speaker"), 1)
+            );
+            pack.addShapelessRecipe(Phonos.id("waxed_weathered_copper_speaker"), builder -> builder
+                    .ingredientItem(Phonos.id("weathered_copper_speaker"))
+                    .ingredientItem(new Identifier("honeycomb"))
+                    .result(Phonos.id("waxed_weathered_copper_speaker"), 1)
+            );
 
             //-----------------------------------LOOT-TABLES---------------------------------------------
 
@@ -127,6 +154,13 @@ public class PhonosData {
             defaultLoot(pack, Phonos.id("gourd_speaker"));
             defaultLoot(pack, Phonos.id("speak_o_lantern"));
             defaultLoot(pack, Phonos.id("tiny_potato_speaker"));
+            defaultLoot(pack, Phonos.id("copper_speaker"));
+            defaultLoot(pack, Phonos.id("exposed_copper_speaker"));
+            defaultLoot(pack, Phonos.id("weathered_copper_speaker"));
+            defaultLoot(pack, Phonos.id("oxidized_copper_speaker"));
+            defaultLoot(pack, Phonos.id("waxed_copper_speaker"));
+            defaultLoot(pack, Phonos.id("waxed_exposed_copper_speaker"));
+            defaultLoot(pack, Phonos.id("waxed_weathered_copper_speaker"));
         });
     }
 

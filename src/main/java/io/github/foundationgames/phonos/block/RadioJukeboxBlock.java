@@ -7,7 +7,7 @@ import io.github.foundationgames.phonos.util.PhonosUtil;
 import io.github.foundationgames.phonos.world.RadioChannelState;
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
 import net.minecraft.block.*;
-import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.MusicDiscItem;
 import net.minecraft.server.world.ServerWorld;
@@ -97,6 +97,11 @@ public class RadioJukeboxBlock extends BlockWithEntity implements RadioChannelBl
     @Override
     public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
         return new RadioJukeboxBlockEntity(pos, state);
+    }
+
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
+        return world.isClient ? checkType(type, PhonosBlocks.RADIO_JUKEBOX_ENTITY, RadioJukeboxBlockEntity::tick) : null;
     }
 
     @Override

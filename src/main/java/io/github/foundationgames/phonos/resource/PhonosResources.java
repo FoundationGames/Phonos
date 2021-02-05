@@ -108,6 +108,46 @@ public class PhonosResources {
                         .texture("down", Phonos.id("block/speaker_bottom"))
                         .texture("up", Phonos.id("block/speaker_top_"+ii))
                 );
+                pack.addBlockModel(Phonos.id("copper_speaker_tuned_"+i), builder -> builder
+                        .parent(new Identifier("block/cube"))
+                        .texture("particle", Phonos.id("block/copper_speaker_side"))
+                        .texture("north", Phonos.id("block/copper_speaker_side"))
+                        .texture("south", Phonos.id("block/copper_speaker_side"))
+                        .texture("east", Phonos.id("block/copper_speaker_side"))
+                        .texture("west", Phonos.id("block/copper_speaker_side"))
+                        .texture("down", Phonos.id("block/speaker_bottom"))
+                        .texture("up", Phonos.id("block/copper_speaker_top_"+ii))
+                );
+                pack.addBlockModel(Phonos.id("exposed_copper_speaker_tuned_"+i), builder -> builder
+                        .parent(new Identifier("block/cube"))
+                        .texture("particle", Phonos.id("block/exposed_copper_speaker_side"))
+                        .texture("north", Phonos.id("block/exposed_copper_speaker_side"))
+                        .texture("south", Phonos.id("block/exposed_copper_speaker_side"))
+                        .texture("east", Phonos.id("block/exposed_copper_speaker_side"))
+                        .texture("west", Phonos.id("block/exposed_copper_speaker_side"))
+                        .texture("down", Phonos.id("block/speaker_bottom"))
+                        .texture("up", Phonos.id("block/copper_speaker_top_"+ii))
+                );
+                pack.addBlockModel(Phonos.id("weathered_copper_speaker_tuned_"+i), builder -> builder
+                        .parent(new Identifier("block/cube"))
+                        .texture("particle", Phonos.id("block/weathered_copper_speaker_side"))
+                        .texture("north", Phonos.id("block/weathered_copper_speaker_side"))
+                        .texture("south", Phonos.id("block/weathered_copper_speaker_side"))
+                        .texture("east", Phonos.id("block/weathered_copper_speaker_side"))
+                        .texture("west", Phonos.id("block/weathered_copper_speaker_side"))
+                        .texture("down", Phonos.id("block/speaker_bottom"))
+                        .texture("up", Phonos.id("block/copper_speaker_top_"+ii))
+                );
+                pack.addBlockModel(Phonos.id("oxidized_copper_speaker_tuned_"+i), builder -> builder
+                        .parent(new Identifier("block/cube"))
+                        .texture("particle", Phonos.id("block/oxidized_copper_speaker_side"))
+                        .texture("north", Phonos.id("block/oxidized_copper_speaker_side"))
+                        .texture("south", Phonos.id("block/oxidized_copper_speaker_side"))
+                        .texture("east", Phonos.id("block/oxidized_copper_speaker_side"))
+                        .texture("west", Phonos.id("block/oxidized_copper_speaker_side"))
+                        .texture("down", Phonos.id("block/speaker_bottom"))
+                        .texture("up", Phonos.id("block/copper_speaker_top_"+ii))
+                );
                 pack.addItemModel(Phonos.id("channel_tuner_"+i), builder -> builder
                         .parent(new Identifier("item/handheld"))
                         .texture("layer0", Phonos.id("item/channel_tuner_"+ii))
@@ -129,6 +169,48 @@ public class PhonosResources {
                 for (int i = 0; i < 20; i++) {
                     int ii = i;
                     builder.variant("channel="+i, variant -> variant.model(Phonos.id("block/speak_o_lantern_tuned_"+ii)));
+                }
+            });
+            pack.addBlockState(Phonos.id("copper_speaker"), builder -> {
+                for (int i = 0; i < 20; i++) {
+                    int ii = i;
+                    builder.variant("channel="+i, variant -> variant.model(Phonos.id("block/copper_speaker_tuned_"+ii)));
+                }
+            });
+            pack.addBlockState(Phonos.id("exposed_copper_speaker"), builder -> {
+                for (int i = 0; i < 20; i++) {
+                    int ii = i;
+                    builder.variant("channel="+i, variant -> variant.model(Phonos.id("block/exposed_copper_speaker_tuned_"+ii)));
+                }
+            });
+            pack.addBlockState(Phonos.id("weathered_copper_speaker"), builder -> {
+                for (int i = 0; i < 20; i++) {
+                    int ii = i;
+                    builder.variant("channel="+i, variant -> variant.model(Phonos.id("block/weathered_copper_speaker_tuned_"+ii)));
+                }
+            });
+            pack.addBlockState(Phonos.id("oxidized_copper_speaker"), builder -> {
+                for (int i = 0; i < 20; i++) {
+                    int ii = i;
+                    builder.variant("channel="+i, variant -> variant.model(Phonos.id("block/oxidized_copper_speaker_tuned_"+ii)));
+                }
+            });
+            pack.addBlockState(Phonos.id("waxed_copper_speaker"), builder -> {
+                for (int i = 0; i < 20; i++) {
+                    int ii = i;
+                    builder.variant("channel="+i, variant -> variant.model(Phonos.id("block/copper_speaker_tuned_"+ii)));
+                }
+            });
+            pack.addBlockState(Phonos.id("waxed_exposed_copper_speaker"), builder -> {
+                for (int i = 0; i < 20; i++) {
+                    int ii = i;
+                    builder.variant("channel="+i, variant -> variant.model(Phonos.id("block/exposed_copper_speaker_tuned_"+ii)));
+                }
+            });
+            pack.addBlockState(Phonos.id("waxed_weathered_copper_speaker"), builder -> {
+                for (int i = 0; i < 20; i++) {
+                    int ii = i;
+                    builder.variant("channel="+i, variant -> variant.model(Phonos.id("block/weathered_copper_speaker_tuned_"+ii)));
                 }
             });
             pack.addBlockState(Phonos.id("tiny_potato_speaker"), builder -> {
@@ -202,6 +284,76 @@ public class PhonosResources {
                     .texture("west", Phonos.id("block/speak_o_lantern_side"))
                     .texture("down", new Identifier("block/pumpkin_top"))
                     .texture("up", Phonos.id("block/gourd_speaker_top"))
+            );
+            pack.addItemModel(Phonos.id("copper_speaker"), builder -> builder
+                    .parent(new Identifier("block/cube"))
+                    .texture("particle", Phonos.id("block/copper_speaker_side"))
+                    .texture("north", Phonos.id("block/copper_speaker_side"))
+                    .texture("south", Phonos.id("block/copper_speaker_side"))
+                    .texture("east", Phonos.id("block/copper_speaker_side"))
+                    .texture("west", Phonos.id("block/copper_speaker_side"))
+                    .texture("down", Phonos.id("block/speaker_bottom"))
+                    .texture("up", Phonos.id("block/copper_speaker_top"))
+            );
+            pack.addItemModel(Phonos.id("exposed_copper_speaker"), builder -> builder
+                    .parent(new Identifier("block/cube"))
+                    .texture("particle", Phonos.id("block/exposed_copper_speaker_side"))
+                    .texture("north", Phonos.id("block/exposed_copper_speaker_side"))
+                    .texture("south", Phonos.id("block/exposed_copper_speaker_side"))
+                    .texture("east", Phonos.id("block/exposed_copper_speaker_side"))
+                    .texture("west", Phonos.id("block/exposed_copper_speaker_side"))
+                    .texture("down", Phonos.id("block/speaker_bottom"))
+                    .texture("up", Phonos.id("block/copper_speaker_top"))
+            );
+            pack.addItemModel(Phonos.id("weathered_copper_speaker"), builder -> builder
+                    .parent(new Identifier("block/cube"))
+                    .texture("particle", Phonos.id("block/weathered_copper_speaker_side"))
+                    .texture("north", Phonos.id("block/weathered_copper_speaker_side"))
+                    .texture("south", Phonos.id("block/weathered_copper_speaker_side"))
+                    .texture("east", Phonos.id("block/weathered_copper_speaker_side"))
+                    .texture("west", Phonos.id("block/weathered_copper_speaker_side"))
+                    .texture("down", Phonos.id("block/speaker_bottom"))
+                    .texture("up", Phonos.id("block/copper_speaker_top"))
+            );
+            pack.addItemModel(Phonos.id("oxidized_copper_speaker"), builder -> builder
+                    .parent(new Identifier("block/cube"))
+                    .texture("particle", Phonos.id("block/oxidized_copper_speaker_side"))
+                    .texture("north", Phonos.id("block/oxidized_copper_speaker_side"))
+                    .texture("south", Phonos.id("block/oxidized_copper_speaker_side"))
+                    .texture("east", Phonos.id("block/oxidized_copper_speaker_side"))
+                    .texture("west", Phonos.id("block/oxidized_copper_speaker_side"))
+                    .texture("down", Phonos.id("block/speaker_bottom"))
+                    .texture("up", Phonos.id("block/copper_speaker_top"))
+            );
+            pack.addItemModel(Phonos.id("waxed_copper_speaker"), builder -> builder
+                    .parent(new Identifier("block/cube"))
+                    .texture("particle", Phonos.id("block/copper_speaker_side"))
+                    .texture("north", Phonos.id("block/copper_speaker_side"))
+                    .texture("south", Phonos.id("block/copper_speaker_side"))
+                    .texture("east", Phonos.id("block/copper_speaker_side"))
+                    .texture("west", Phonos.id("block/copper_speaker_side"))
+                    .texture("down", Phonos.id("block/speaker_bottom"))
+                    .texture("up", Phonos.id("block/copper_speaker_top"))
+            );
+            pack.addItemModel(Phonos.id("waxed_exposed_copper_speaker"), builder -> builder
+                    .parent(new Identifier("block/cube"))
+                    .texture("particle", Phonos.id("block/exposed_copper_speaker_side"))
+                    .texture("north", Phonos.id("block/exposed_copper_speaker_side"))
+                    .texture("south", Phonos.id("block/exposed_copper_speaker_side"))
+                    .texture("east", Phonos.id("block/exposed_copper_speaker_side"))
+                    .texture("west", Phonos.id("block/exposed_copper_speaker_side"))
+                    .texture("down", Phonos.id("block/speaker_bottom"))
+                    .texture("up", Phonos.id("block/copper_speaker_top"))
+            );
+            pack.addItemModel(Phonos.id("waxed_weathered_copper_speaker"), builder -> builder
+                    .parent(new Identifier("block/cube"))
+                    .texture("particle", Phonos.id("block/weathered_copper_speaker_side"))
+                    .texture("north", Phonos.id("block/weathered_copper_speaker_side"))
+                    .texture("south", Phonos.id("block/weathered_copper_speaker_side"))
+                    .texture("east", Phonos.id("block/weathered_copper_speaker_side"))
+                    .texture("west", Phonos.id("block/weathered_copper_speaker_side"))
+                    .texture("down", Phonos.id("block/speaker_bottom"))
+                    .texture("up", Phonos.id("block/copper_speaker_top"))
             );
             pack.addItemModel(Phonos.id("tiny_potato_speaker"), builder -> builder
                     .parent(Phonos.id("block/tiny_potato_speaker_base"))
