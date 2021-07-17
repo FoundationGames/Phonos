@@ -41,15 +41,15 @@ public class NoteBlockTunerItem extends Item {
         World world = ctx.getWorld();
         BlockPos pos = ctx.getBlockPos();
         ItemStack stack = ctx.getStack();
-        int tunerMode = stack.getOrCreateSubTag("TunerData").getInt("Mode");
-        int note = stack.getOrCreateSubTag("TunerData").getInt("Note");
+        int tunerMode = stack.getOrCreateSubNbt("TunerData").getInt("Mode");
+        int note = stack.getOrCreateSubNbt("TunerData").getInt("Note");
         if(state.isOf(PhonosBlocks.RADIO_NOTE_BLOCK) || state.isOf(Blocks.NOTE_BLOCK)) {
             if(tunerMode == APPLY_MODE) {
                 world.setBlockState(pos, state.with(Properties.NOTE, note));
                 ctx.getPlayer().sendMessage(new TranslatableText("message.phonos.apply_note_tune_success").formatted(Formatting.GREEN), true);
             } else if(tunerMode == COPY_MODE) {
-                stack.getOrCreateSubTag("TunerData").putInt("Note", state.get(Properties.NOTE));
-                stack.getOrCreateSubTag("TunerData").putInt("Mode", APPLY_MODE);
+                stack.getOrCreateSubNbt("TunerData").putInt("Note", state.get(Properties.NOTE));
+                stack.getOrCreateSubNbt("TunerData").putInt("Mode", APPLY_MODE);
                 ctx.getPlayer().sendMessage(new TranslatableText("message.phonos.copy_note_tune_success").formatted(Formatting.AQUA), true);
             }
             return ActionResult.success(ctx.getWorld().isClient());
@@ -58,7 +58,7 @@ public class NoteBlockTunerItem extends Item {
             if(tunerMode == ADJUST_MODE) {
                 note += 1;
                 if(note > 24) note = 0;
-                stack.getOrCreateSubTag("TunerData").putInt("Note", note);
+                stack.getOrCreateSubNbt("TunerData").putInt("Note", note);
                 playNote(sound, note, world, pos);
             } else if(tunerMode == APPLY_MODE) {
                 playNote(sound, note, world, pos);
@@ -74,20 +74,20 @@ public class NoteBlockTunerItem extends Item {
     @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
         ItemStack stack = user.getStackInHand(hand);
-        int tunerMode = stack.getOrCreateSubTag("TunerData").getInt("Mode");
+        int tunerMode = stack.getOrCreateSubNbt("TunerData").getInt("Mode");
         tunerMode += 1;
         if(tunerMode > 2) tunerMode = 0;
-        stack.getOrCreateSubTag("TunerData").putInt("Mode", tunerMode);
+        stack.getOrCreateSubNbt("TunerData").putInt("Mode", tunerMode);
         user.sendMessage(new TranslatableText("message.phonos.mode_prefix").append(new TranslatableText("message.phonos.mode_"+tunerMode+"_title").formatted(Formatting.AQUA)), true);
         return world.isClient() ? TypedActionResult.consume(stack) : TypedActionResult.pass(stack);
     }
 
     @Override
     public void appendStacks(ItemGroup group, DefaultedList<ItemStack> stacks) {
-        if(group == this.getGroup()) {
+        if(group == this.getGroup() || group == ItemGroup.SEARCH) {
             ItemStack stack = new ItemStack(this);
-            stack.getOrCreateSubTag("TunerData").putInt("Mode", APPLY_MODE);
-            stack.getOrCreateSubTag("TunerData").putInt("Note", 0);
+            stack.getOrCreateSubNbt("TunerData").putInt("Mode", APPLY_MODE);
+            stack.getOrCreateSubNbt("TunerData").putInt("Note", 0);
             stacks.add(stack);
         }
     }

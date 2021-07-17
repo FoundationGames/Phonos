@@ -36,7 +36,7 @@ public class CustomMusicDiscGuiDescription extends SyncedGuiDescription {
         WTextField soundIdField = new WTextField();
         soundIdField.setEditable(true);
         soundIdField.setMaxLength(99);
-        soundIdField.setText(stack.getOrCreateSubTag("MusicData").getString("SoundId"));
+        soundIdField.setText(stack.getOrCreateSubNbt("MusicData").getString("SoundId"));
         this.soundField = soundIdField;
         root.add(soundIdField, 0, 1, 24, 7);
 
@@ -44,7 +44,7 @@ public class CustomMusicDiscGuiDescription extends SyncedGuiDescription {
         root.add(comparatorLabel, 8, 4, 20, 7);
 
         WSlider comparatorOutField = new WSlider(1, 15, Axis.HORIZONTAL);
-        comparatorOutField.setValue(stack.getOrCreateSubTag("MusicData").getInt("ComparatorSignal"));
+        comparatorOutField.setValue(stack.getOrCreateSubNbt("MusicData").getInt("ComparatorSignal"));
         comparatorOutField.setDraggingFinishedListener(i -> {
             this.comparatorOutput = i;
             comparatorLabel.setText(new LiteralText(Integer.toString(i)));
@@ -75,18 +75,18 @@ public class CustomMusicDiscGuiDescription extends SyncedGuiDescription {
         ServerPlayNetworking.registerGlobalReceiver(Phonos.id("set_disc_sound_id"), (server, player, handler, buf, sender) -> {
             ItemStack stack = player.getInventory().getStack(buf.readInt());
             String soundId = buf.readString(32767);
-            server.execute(() -> stack.getOrCreateSubTag("MusicData").putString("SoundId", soundId));
+            server.execute(() -> stack.getOrCreateSubNbt("MusicData").putString("SoundId", soundId));
         });
         ServerPlayNetworking.registerGlobalReceiver(Phonos.id("set_disc_comparator_signal"), (server, player, handler, buf, sender) -> {
             ItemStack stack = player.getInventory().getStack(buf.readInt());
             int signal = buf.readInt();
-            server.execute(() -> stack.getOrCreateSubTag("MusicData").putInt("ComparatorSignal", signal));
+            server.execute(() -> stack.getOrCreateSubNbt("MusicData").putInt("ComparatorSignal", signal));
         });
     }
 
     @Environment(EnvType.CLIENT)
     private void setDiscSoundId(String sid) {
-        stack.getOrCreateSubTag("MusicData").putString("SoundId", sid);
+        stack.getOrCreateSubNbt("MusicData").putString("SoundId", sid);
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
         buf.writeInt(stackSlot);
         buf.writeString(sid);
@@ -95,7 +95,7 @@ public class CustomMusicDiscGuiDescription extends SyncedGuiDescription {
 
     @Environment(EnvType.CLIENT)
     private void setDiscComparatorSignal(int signal) {
-        stack.getOrCreateSubTag("MusicData").putInt("ComparatorSignal", signal);
+        stack.getOrCreateSubNbt("MusicData").putInt("ComparatorSignal", signal);
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
         buf.writeInt(stackSlot);
         buf.writeInt(signal);

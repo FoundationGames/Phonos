@@ -1,7 +1,7 @@
 package io.github.foundationgames.phonos.screen.widget;
 
-import io.github.cottonmc.cotton.gui.client.BackgroundPainter;
 import io.github.cottonmc.cotton.gui.widget.WWidget;
+import io.github.cottonmc.cotton.gui.widget.data.InputResult;
 import io.github.foundationgames.phonos.screen.ExtendedBackgroundPainter;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -11,7 +11,7 @@ public class WBasicButton extends WWidget {
     private ClickFunction clicked = (button, x, y, mbutton) -> {};
     @Environment(EnvType.CLIENT)
     private ExtendedBackgroundPainter backgroundPainter = null;
-    private ScrollFunction scroll = ((button, x, y, amount) -> {});
+    private ScrollFunction scroll = ((button, x, y, amount) -> InputResult.IGNORED);
     public boolean enabled = true;
 
     public WBasicButton(int width, int height) {
@@ -23,7 +23,7 @@ public class WBasicButton extends WWidget {
     public void paint(MatrixStack matrices, int x, int y, int mouseX, int mouseY) {
         super.paint(matrices, x, y, mouseX, mouseY);
         if (this.backgroundPainter != null) {
-            this.backgroundPainter.paintBackground(x, y, mouseX, mouseY, this);
+            this.backgroundPainter.paintBackground(matrices, x, y, mouseX, mouseY, this);
         }
     }
 
@@ -46,17 +46,18 @@ public class WBasicButton extends WWidget {
     }
 
     @Override
-    public WWidget onMouseDown(int x, int y, int button) {
-        if(isWithinBounds(x, y) && enabled) this.clicked.apply(this, x, y, button);
+    public InputResult onMouseDown(int x, int y, int button) {
+        if (isWithinBounds(x, y) && enabled) this.clicked.apply(this, x, y, button);
         return super.onMouseDown(x, y, button);
     }
 
     @Override
-    public void onMouseScroll(int x, int y, double amount) {
+    public InputResult onMouseScroll(int x, int y, double amount) {
         super.onMouseScroll(x, y, amount);
         if(isWithinBounds(x, y)) {
-            scroll.apply(this, x, y, amount);
+            return scroll.apply(this, x, y, amount);
         }
+        return super.onMouseScroll(x, y, amount);
     }
 
     @FunctionalInterface
@@ -66,7 +67,7 @@ public class WBasicButton extends WWidget {
 
     @FunctionalInterface
     public interface ScrollFunction {
-        void apply(WBasicButton button, int x, int y, double amount);
+        InputResult apply(WBasicButton button, int x, int y, double amount);
     }
 
     @FunctionalInterface

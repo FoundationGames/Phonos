@@ -27,7 +27,7 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.function.BiFunction;
 
-public class TechnicianVillagerProfession {
+public enum TechnicianVillagerProfession {;
 
     public static final PointOfInterestType TECHNICIAN_WORKSTATION = PointOfInterestHelper.register(Phonos.id("technician_job_site"), 1, 1, PhonosBlocks.RADIO_JUKEBOX);
 

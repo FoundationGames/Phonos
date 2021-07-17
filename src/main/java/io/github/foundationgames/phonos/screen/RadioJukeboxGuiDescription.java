@@ -6,6 +6,7 @@ import io.github.cottonmc.cotton.gui.widget.WGridPanel;
 import io.github.cottonmc.cotton.gui.widget.WItemSlot;
 import io.github.cottonmc.cotton.gui.widget.WLabel;
 import io.github.cottonmc.cotton.gui.widget.WPlayerInvPanel;
+import io.github.cottonmc.cotton.gui.widget.data.InputResult;
 import io.github.cottonmc.cotton.gui.widget.data.Texture;
 import io.github.foundationgames.phonos.Phonos;
 import io.github.foundationgames.phonos.block.entity.RadioJukeboxBlockEntity;
@@ -13,6 +14,7 @@ import io.github.foundationgames.phonos.item.CustomMusicDiscItem;
 import io.github.foundationgames.phonos.util.SoundUtil;
 import io.github.foundationgames.phonos.screen.widget.WBasicButton;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.MusicDiscItem;
 import net.minecraft.screen.ScreenHandlerContext;
@@ -105,7 +107,9 @@ public class RadioJukeboxGuiDescription extends SyncedGuiDescription {
             if(!g) {
                 blockEntity.performSyncedOperation(RadioJukeboxBlockEntity.Ops.SET_PITCH, value);
                 SoundUtil.playPositionedSound(SoundEvents.BLOCK_NOTE_BLOCK_BASEDRUM, SoundCategory.MASTER, 0.3f, (float)value / 10, this.playerInventory.player.getBlockPos());
+                return InputResult.IGNORED;
             }
+            return InputResult.IGNORED;
         });
         this.pitchField = pitchAdjust;
         root.add(pitchAdjust, 4, 40);
@@ -135,7 +139,9 @@ public class RadioJukeboxGuiDescription extends SyncedGuiDescription {
                 if(!g) {
                     blockEntity.performSyncedOperation(RadioJukeboxBlockEntity.SLOT_2_OP.get(fi), dur);
                     SoundUtil.playPositionedSound(SoundEvents.UI_BUTTON_CLICK, SoundCategory.MASTER, 0.1f, 1.85f - (s ? 0.3f : 0), this.playerInventory.player.getBlockPos());
+                    return InputResult.PROCESSED;
                 }
+                return InputResult.IGNORED;
             });
             durationFields[i] = durationField;
             root.add(durationField, 116 - (i * 18), 51);
@@ -154,57 +160,57 @@ public class RadioJukeboxGuiDescription extends SyncedGuiDescription {
     @Override
     public void addPainters() {
         super.addPainters();
-        getRootPanel().setBackgroundPainter((x, y, widget) -> drawTexture(createTexture(TEXTURE, 0, 0, 176, 166, 256, 256), x-7, y-3, 176, 166));
-        discs.setBackgroundPainter((x, y, widget) -> {
+        getRootPanel().setBackgroundPainter((mat, x, y, widget) -> drawTexture(mat, createTexture(TEXTURE, 0, 0, 176, 166, 256, 256), x-7, y-3, 176, 166));
+        discs.setBackgroundPainter((mat, x, y, widget) -> {
             for (int i = 0; i < 6; i++) {
-                if(blockInventory.getStack(i).isEmpty()) drawTexture(createTexture(TEXTURE, 176, 42, 18, 18, 256, 256), x+(i*18), y, 18, 18);
+                if(blockInventory.getStack(i).isEmpty()) drawTexture(mat, createTexture(TEXTURE, 176, 42, 18, 18, 256, 256), x+(i*18), y, 18, 18);
             }
         });
-        playButton.setBackgroundPainter((x, y, mouseX, mouseY, button) -> {
+        playButton.setBackgroundPainter((mat, x, y, mouseX, mouseY, button) -> {
             boolean g = true;
             if(blockEntity != null) g = blockEntity.isPlaying();
-            drawTexture(createTexture(TEXTURE, 176+(g?19:0), 86, 19, 14, 256, 256), x, y, 19, 14);
-            if(button.isWithinBounds(mouseX, mouseY)) drawTexture(createTexture(TEXTURE, 176, 100, 19, 14, 256, 256), x, y, 19, 14);
+            drawTexture(mat, createTexture(TEXTURE, 176+(g?19:0), 86, 19, 14, 256, 256), x, y, 19, 14);
+            if(button.isWithinBounds(mouseX, mouseY)) drawTexture(mat, createTexture(TEXTURE, 176, 100, 19, 14, 256, 256), x, y, 19, 14);
         });
-        forwardButton.setBackgroundPainter((x, y, mouseX, mouseY, button) -> {
-            drawTexture(createTexture(TEXTURE, 214, 86, 18, 14, 256, 256), x, y, 18, 14);
-            if(button.isWithinBounds(mouseX, mouseY)) drawTexture(createTexture(TEXTURE, 195, 100, 18, 14, 256, 256), x, y, 18, 14);
+        forwardButton.setBackgroundPainter((mat, x, y, mouseX, mouseY, button) -> {
+            drawTexture(mat, createTexture(TEXTURE, 214, 86, 18, 14, 256, 256), x, y, 18, 14);
+            if(button.isWithinBounds(mouseX, mouseY)) drawTexture(mat, createTexture(TEXTURE, 195, 100, 18, 14, 256, 256), x, y, 18, 14);
         });
-        backButton.setBackgroundPainter((x, y, mouseX, mouseY, button) -> {
-            drawTexture(createTexture(TEXTURE, 232, 86, 18, 14, 256, 256), x, y, 18, 14);
-            if(button.isWithinBounds(mouseX, mouseY)) drawTexture(createTexture(TEXTURE, 195, 100, 18, 14, 256, 256), x, y, 18, 14);
+        backButton.setBackgroundPainter((mat, x, y, mouseX, mouseY, button) -> {
+            drawTexture(mat, createTexture(TEXTURE, 232, 86, 18, 14, 256, 256), x, y, 18, 14);
+            if(button.isWithinBounds(mouseX, mouseY)) drawTexture(mat, createTexture(TEXTURE, 195, 100, 18, 14, 256, 256), x, y, 18, 14);
         });
-        shuffleButton.setBackgroundPainter((x, y, mouseX, mouseY, button) -> {
-            if(blockEntity != null && blockEntity.doShuffle) drawTexture(createTexture(TEXTURE, 176, 60, 15, 13, 256, 256), x, y, 15, 13);
-            else drawTexture(createTexture(TEXTURE, 191, 60, 15, 13, 256, 256), x, y, 15, 13);
-            if(button.isWithinBounds(mouseX, mouseY)) drawTexture(createTexture(TEXTURE, 176, 73, 15, 13, 256, 256), x, y, 15, 13);
+        shuffleButton.setBackgroundPainter((mat, x, y, mouseX, mouseY, button) -> {
+            if(blockEntity != null && blockEntity.doShuffle) drawTexture(mat, createTexture(TEXTURE, 176, 60, 15, 13, 256, 256), x, y, 15, 13);
+            else drawTexture(mat, createTexture(TEXTURE, 191, 60, 15, 13, 256, 256), x, y, 15, 13);
+            if(button.isWithinBounds(mouseX, mouseY)) drawTexture(mat, createTexture(TEXTURE, 176, 73, 15, 13, 256, 256), x, y, 15, 13);
         });
-        pitchField.setBackgroundPainter((x, y, mouseX, mouseY, button) -> {
+        pitchField.setBackgroundPainter((mat, x, y, mouseX, mouseY, button) -> {
             boolean g = true;
             if(blockEntity != null) g = blockEntity.isPlaying();
             int d = 10;
             if(blockEntity != null) d = (int)(blockEntity.pitch * 10);
             if(g) {
-                drawTexture(createTexture(TEXTURE, 208, 114, 15, 13, 256, 256), x, y, 15, 13);
+                drawTexture(mat, createTexture(TEXTURE, 208, 114, 15, 13, 256, 256), x, y, 15, 13);
             } else {
-                if(!button.isWithinBounds(mouseX, mouseY)) drawTexture(createTexture(TEXTURE, 176, 114, 15, 13, 256, 256), x, y, 15, 13);
-                else drawTexture(createTexture(TEXTURE, 191, 114, 17, 13, 256, 256), x, y, 17, 13);
+                if(!button.isWithinBounds(mouseX, mouseY)) drawTexture(mat, createTexture(TEXTURE, 176, 114, 15, 13, 256, 256), x, y, 15, 13);
+                else drawTexture(mat, createTexture(TEXTURE, 191, 114, 17, 13, 256, 256), x, y, 17, 13);
             }
             int t = (int)Math.floor((float)d /10);
-            drawDigit(x+3, y+4, t, g);
-            drawDigit(x+9, y+4, d - (t*10), g);
+            drawDigit(mat, x+3, y+4, t, g);
+            drawDigit(mat, x+9, y+4, d - (t*10), g);
         });
         for (int i = 0; i < durationFields.length; i++) {
             WBasicButton durationField = durationFields[i];
             int fi = 5 - i;
-            durationField.setBackgroundPainter((x, y, mouseX, mouseY, button) -> {
+            durationField.setBackgroundPainter((mat, x, y, mouseX, mouseY, button) -> {
                 boolean g = blockEntity.isPlaying();
                 int v = 0;
                 if(g) {
-                    drawTexture(createTexture(TEXTURE, 196, 14, 22, 9, 256, 256), x, y, 22, 9);
+                    drawTexture(mat, createTexture(TEXTURE, 196, 14, 22, 9, 256, 256), x, y, 22, 9);
                 } else {
                     if(button.isWithinBounds(mouseX, mouseY)) v += 9;
-                    drawTexture(createTexture(TEXTURE, 176, 14+v, 20+(button.isWithinBounds(mouseX, mouseY)?2:0), 9, 256, 256), x, y, 20+(button.isWithinBounds(mouseX, mouseY)?2:0), 9);
+                    drawTexture(mat, createTexture(TEXTURE, 176, 14+v, 20+(button.isWithinBounds(mouseX, mouseY)?2:0), 9, 256, 256), x, y, 20+(button.isWithinBounds(mouseX, mouseY)?2:0), 9);
                 }
                 int dur = 0;
                 dur = (fi == 0 ? blockEntity.disc1Duration : dur);
@@ -216,12 +222,12 @@ public class RadioJukeboxGuiDescription extends SyncedGuiDescription {
                 int min = (int)Math.floor((float)dur / 60);
                 int secTens = (int)Math.floor((float)(dur - min*60) / 10);
                 int secOnes = dur - ((min * 60) + (secTens * 10));
-                drawDigit(x+4, y+2, min, g);
-                drawDigit(x+10, y+2, secTens, g);
-                drawDigit(x+14, y+2, secOnes, g);
+                drawDigit(mat, x+4, y+2, min, g);
+                drawDigit(mat, x+10, y+2, secTens, g);
+                drawDigit(mat, x+14, y+2, secOnes, g);
             });
         }
-        progressBar.setBackgroundPainter((x, y, mouseX, mouseY, button) -> {
+        progressBar.setBackgroundPainter((mat, x, y, mouseX, mouseY, button) -> {
             int track = 0;
             float progress = 0;
             boolean playing = false;
@@ -232,18 +238,18 @@ public class RadioJukeboxGuiDescription extends SyncedGuiDescription {
             }
             if(playing) {
                 int len = ((track+1)*18) - 9;
-                drawTexture(createTexture(TEXTURE, 0, 166, len, 9, 256, 256), x, y+2, len, 9);
-                drawTexture(createTexture(TEXTURE, 202, 127, 13, 15, 256, 256), x+len-6, y, 13, 15);
-                drawTexture(createTexture(TEXTURE, 189, 127, Math.round(13 * progress), 15, 256, 256), x+len-6, y, Math.round(13 * progress), 15);
+                drawTexture(mat, createTexture(TEXTURE, 0, 166, len, 9, 256, 256), x, y+2, len, 9);
+                drawTexture(mat, createTexture(TEXTURE, 202, 127, 13, 15, 256, 256), x+len-6, y, 13, 15);
+                drawTexture(mat, createTexture(TEXTURE, 189, 127, Math.round(13 * progress), 15, 256, 256), x+len-6, y, Math.round(13 * progress), 15);
             } else {
-                drawTexture(createTexture(TEXTURE, 176, 127, 13, 15, 256, 256), x+3, y, 13, 15);
+                drawTexture(mat, createTexture(TEXTURE, 176, 127, 13, 15, 256, 256), x+3, y, 13, 15);
             }
         });
-        pinvPanel.setBackgroundPainter((x, y, widget) -> {});
+        pinvPanel.setBackgroundPainter((mat, x, y, widget) -> {});
     }
 
-    private static void drawTexture(Texture texture, int x, int y, int width, int height) {
-        ScreenDrawing.texturedRect(x, y, width, height, texture, 0xFFFFFF, 1.0f);
+    private static void drawTexture(MatrixStack matrices, Texture texture, int x, int y, int width, int height) {
+        ScreenDrawing.texturedRect(matrices, x, y, width, height, texture, 0xFFFFFF, 1.0f);
     }
 
     private static Texture createTexture(Identifier texture, int u, int v, int width, int height, int texWidth, int texHeight) {
@@ -254,8 +260,8 @@ public class RadioJukeboxGuiDescription extends SyncedGuiDescription {
         return new Texture(texture, u0, v0, u1, v1);
     }
 
-    private static void drawDigit(int x, int y, int digit, boolean grayed) {
+    private static void drawDigit(MatrixStack matrices, int x, int y, int digit, boolean grayed) {
         digit = Math.max(0, Math.min(9, digit));
-        drawTexture(createTexture(TEXTURE, 176+(digit*3), 32+(grayed?5:0), 3, 5, 256, 256), x, y, 3, 5);
+        drawTexture(matrices, createTexture(TEXTURE, 176+(digit*3), 32+(grayed?5:0), 3, 5, 256, 256), x, y, 3, 5);
     }
 }

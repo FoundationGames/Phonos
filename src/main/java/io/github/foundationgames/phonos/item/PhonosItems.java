@@ -16,5 +16,5 @@ public class PhonosItems {
         return Registry.register(Registry.ITEM, Phonos.id(name), item);
     }
 
-    public static void init(){}
+    public static void init() {}
 }

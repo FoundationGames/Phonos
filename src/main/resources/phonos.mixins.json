@@ -4,6 +4,9 @@
   "package": "io.github.foundationgames.phonos.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "AxeItemMixin",
+    "HoneycombItemMixin",
+    "LightningEntityMixin",
     "MusicDiscItemAccess",
     "NoteBlockMixin",
     "PlayerManagerMixin",

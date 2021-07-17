@@ -1,6 +1,6 @@
 package io.github.foundationgames.phonos.block;
 
-import io.github.foundationgames.phonos.client.ClientRecieverLocationStorage;
+import io.github.foundationgames.phonos.client.ClientRecieverStorage;
 import io.github.foundationgames.phonos.item.ChannelTunerItem;
 import io.github.foundationgames.phonos.util.PhonosUtil;
 import io.github.foundationgames.phonos.world.RadioChannelState;
@@ -83,7 +83,7 @@ public class LoudspeakerBlock extends Block implements SoundPlayReceivable, Radi
     @Override
     @Environment(EnvType.CLIENT)
     public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
-        if(ClientRecieverLocationStorage.isChannelPlaying(state.get(CHANNEL))) noteParticle(world, pos);
+        if(ClientRecieverStorage.isChannelPlaying(state.get(CHANNEL))) noteParticle(world, pos);
     }
 
     protected void noteParticle(World world, BlockPos pos) {

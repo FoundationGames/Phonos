@@ -1,6 +1,7 @@
 package io.github.foundationgames.phonos.screen.widget;
 
 import io.github.cottonmc.cotton.gui.widget.WWidget;
+import io.github.cottonmc.cotton.gui.widget.data.InputResult;
 import net.minecraft.client.util.math.MatrixStack;
 
 import java.util.function.Consumer;
@@ -31,13 +32,14 @@ public class WNumberField extends WWidget {
     public void whenValueChanged(Consumer<WNumberField> process) {this.valueChanged = process;}
 
     @Override
-    public void onMouseScroll(int x, int y, double amount) {
-        super.onMouseScroll(x, y, amount);
+    public InputResult onMouseScroll(int x, int y, double amount) {
         if(isWithinBounds(x, y)) {
             value += increment * (amount > 0 ? 1 : -1);
             value = Math.min(Math.max(minimum, value), maximum);
             valueChanged.accept(this);
+            return InputResult.PROCESSED;
         }
+        return super.onMouseScroll(x, y, amount);
     }
 
     @Override

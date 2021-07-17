@@ -43,7 +43,7 @@ public class CustomMusicDiscItem extends Item {
             if (!world.isClient) {
                 ((JukeboxBlock)Blocks.JUKEBOX).setRecord(world, pos, state, stack);
                 for(ServerPlayerEntity player : ((ServerWorld)world).getPlayers()) {
-                    Identifier soundId = Identifier.tryParse(stack.getOrCreateSubTag("MusicData").getString("SoundId"));
+                    Identifier soundId = Identifier.tryParse(stack.getOrCreateSubNbt("MusicData").getString("SoundId"));
                     PayloadPackets.sendJukeboxIdSound(player, soundId, pos);
                     //ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, new PlaySoundIdS2CPacket(soundId, SoundCategory.BLOCKS, Vec3d.of(pos).add(0.5, 0.5, 0.5), 1.8f, 1.0f));
                 }
@@ -71,10 +71,10 @@ public class CustomMusicDiscItem extends Item {
 
     @Override
     public void appendStacks(ItemGroup group, DefaultedList<ItemStack> stacks) {
-        if(group == this.getGroup()) {
+        if(group == this.getGroup() || group == ItemGroup.SEARCH) {
             ItemStack s = new ItemStack(this);
-            s.getOrCreateSubTag("MusicData").putString("SoundId", "minecraft:empty");
-            s.getOrCreateSubTag("MusicData").putInt("ComparatorSignal", 1);
+            s.getOrCreateSubNbt("MusicData").putString("SoundId", "minecraft:empty");
+            s.getOrCreateSubNbt("MusicData").putInt("ComparatorSignal", 1);
             stacks.add(s);
         }
     }
@@ -82,7 +82,7 @@ public class CustomMusicDiscItem extends Item {
     @Override
     public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
         super.appendTooltip(stack, world, tooltip, context);
-        tooltip.add(new LiteralText(stack.getOrCreateSubTag("MusicData").getString("SoundId")).formatted(Formatting.BLUE));
+        tooltip.add(new LiteralText(stack.getOrCreateSubNbt("MusicData").getString("SoundId")).formatted(Formatting.BLUE));
     }
 
     public static class DiscGuiFactory implements ExtendedScreenHandlerFactory {

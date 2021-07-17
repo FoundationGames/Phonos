@@ -1,7 +1,5 @@
 package io.github.foundationgames.phonos.client;
 
-import com.google.common.collect.Maps;
-import io.github.foundationgames.phonos.Phonos;
 import io.github.foundationgames.phonos.sound.MultiPositionedSoundInstance;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
@@ -13,7 +11,6 @@ import net.minecraft.client.sound.SoundManager;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,24 +18,40 @@ import java.util.List;
 import java.util.Map;
 
 @Environment(EnvType.CLIENT)
-public class ClientRecieverLocationStorage {
-    private static final Int2ObjectMap<ArrayList<Long>> channelStorage = new Int2ObjectOpenHashMap<>();
+public class ClientRecieverStorage {
+    private static final Int2ObjectMap<ArrayList<Long>> blockStorage = new Int2ObjectOpenHashMap<>();
+    // TODO:
+    // private static final Int2ObjectMap<ArrayList<Integer>> entityStorage = new Int2ObjectOpenHashMap<>();
     private static final Int2ObjectMap<Map<BlockPos, SoundInstance>> stoppableSoundStorage = new Int2ObjectOpenHashMap<>();
     private static final List<SoundConsumer> playSoundCallbacks = new ArrayList<>();
 
     public static void addReciever(int channel, long pos) {
-        channelStorage.putIfAbsent(channel, new ArrayList<>());
-        ArrayList<Long> l = channelStorage.get(channel);
+        blockStorage.putIfAbsent(channel, new ArrayList<>());
+        ArrayList<Long> l = blockStorage.get(channel);
         if(!l.contains(pos)) l.add(pos);
     }
 
     public static void removeReciever(int channel, long pos) {
-        channelStorage.putIfAbsent(channel, new ArrayList<>());
-        channelStorage.get(channel).remove(pos);
+        blockStorage.putIfAbsent(channel, new ArrayList<>());
+        blockStorage.get(channel).remove(pos);
     }
 
+    /*
+    TODO
+    public static void addEntityReciever(int channel, int id) {
+        entityStorage.putIfAbsent(channel, new ArrayList<>());
+        ArrayList<Integer> i = entityStorage.get(channel);
+        if(!i.contains(id)) i.add(id);
+    }
+
+    public static void removeEntityReciever(int channel, int id) {
+        entityStorage.putIfAbsent(channel, new ArrayList<>());
+        entityStorage.get(channel).remove((Object)id);
+    }
+    */
+
     public static void clear() {
-        channelStorage.clear();
+        blockStorage.clear();
     }
 
     public static void playSound(SoundEvent sound, int channel, float volume, float pitch) {
@@ -46,8 +59,8 @@ public class ClientRecieverLocationStorage {
     }
 
     public static void playSound(Identifier sound, int channel, float volume, float pitch) {
-        MinecraftClient.getInstance().getSoundManager().play(new MultiPositionedSoundInstance(channelStorage.get(channel), sound, volume, pitch));
-        for(SoundConsumer c : playSoundCallbacks) c.apply(sound, channelStorage.get(channel), channel, volume, pitch, false);
+        MinecraftClient.getInstance().getSoundManager().play(new MultiPositionedSoundInstance(blockStorage.get(channel), sound, volume, pitch));
+        for(SoundConsumer c : playSoundCallbacks) c.apply(sound, blockStorage.get(channel), channel, volume, pitch, false);
     }
 
     public static void playStoppableSound(BlockPos pos, SoundEvent sound, int channel, float volume, float pitch) {
@@ -57,11 +70,11 @@ public class ClientRecieverLocationStorage {
     public static void playStoppableSound(BlockPos pos, Identifier sound, int channel, float volume, float pitch) {
         SoundManager manager = MinecraftClient.getInstance().getSoundManager();
         tryStopSound(pos, channel);
-        SoundInstance instance = new MultiPositionedSoundInstance(channelStorage.get(channel), sound, volume, pitch);
+        SoundInstance instance = new MultiPositionedSoundInstance(blockStorage.get(channel), sound, volume, pitch);
         manager.play(instance);
         if(!stoppableSoundStorage.containsKey(channel)) stoppableSoundStorage.put(channel, new HashMap<>());
         stoppableSoundStorage.get(channel).put(pos, instance);
-        for(SoundConsumer c : playSoundCallbacks) c.apply(sound, channelStorage.get(channel), channel, volume, pitch, true);
+        for(SoundConsumer c : playSoundCallbacks) c.apply(sound, blockStorage.get(channel), channel, volume, pitch, true);
     }
 
     public static void tryStopSound(BlockPos pos, int channel) {

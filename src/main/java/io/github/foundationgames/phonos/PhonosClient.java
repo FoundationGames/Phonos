@@ -3,10 +3,10 @@ package io.github.foundationgames.phonos;
 import io.github.foundationgames.phonos.block.PhonosBlocks;
 import io.github.foundationgames.phonos.block.RadioNoteBlock;
 import io.github.foundationgames.phonos.block.SoundPlayReceivable;
-import io.github.foundationgames.phonos.client.ClientRecieverLocationStorage;
+import io.github.foundationgames.phonos.client.ClientRecieverStorage;
 import io.github.foundationgames.phonos.item.PhonosItems;
 import io.github.foundationgames.phonos.network.ClientPayloadPackets;
-import io.github.foundationgames.phonos.resource.PhonosResources;
+import io.github.foundationgames.phonos.resource.PhonosAssets;
 import io.github.foundationgames.phonos.screen.CustomMusicDiscGuiDescription;
 import io.github.foundationgames.phonos.screen.CustomMusicDiscScreen;
 import io.github.foundationgames.phonos.screen.RadioJukeboxGuiDescription;
@@ -17,11 +17,15 @@ import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.item.UnclampedModelPredicateProvider;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Random;
 
@@ -33,10 +37,10 @@ public class PhonosClient implements ClientModInitializer {
         //Phonos.LOG.info("Success! \n");
 
         //Phonos.LOG.info("Registering Assets...");
-        PhonosResources.init();
+        PhonosAssets.init();
         //Phonos.LOG.info("Success! \n");
 
-        ClientRecieverLocationStorage.registerPlaySoundCallback(((sound, positions, channel, volume, pitch, stoppable) -> {
+        ClientRecieverStorage.registerPlaySoundCallback(((sound, positions, channel, volume, pitch, stoppable) -> {
             if(!stoppable) {
                 BlockPos.Mutable m = new BlockPos.Mutable();
                 PlayerEntity player = MinecraftClient.getInstance().player;
@@ -56,19 +60,19 @@ public class PhonosClient implements ClientModInitializer {
         }));
 
         //Phonos.LOG.info("Registering Model Predicates...");
-        FabricModelPredicateProviderRegistry.register(PhonosItems.CHANNEL_TUNER, new Identifier("tuned_channel"), (stack, world, entity, i) -> stack.getOrCreateSubTag("TunerData").getInt("Channel"));
-        FabricModelPredicateProviderRegistry.register(PhonosItems.NOTE_BLOCK_TUNER, new Identifier("tuner_mode"), (stack, world, entity, i) -> stack.getOrCreateSubTag("TunerData").getInt("Mode"));
+        FabricModelPredicateProviderRegistry.register(PhonosItems.CHANNEL_TUNER, new Identifier("tuned_channel"), (stack, world, entity, seed) -> (float)stack.getOrCreateSubNbt("TunerData").getInt("Channel") / 19);
+        FabricModelPredicateProviderRegistry.register(PhonosItems.NOTE_BLOCK_TUNER, new Identifier("tuner_mode"), (stack, world, entity, seed) -> (float)stack.getOrCreateSubNbt("TunerData").getInt("Mode") / 2);
         //Phonos.LOG.info("Success!");
 
         //Phonos.LOG.info("Registering Color Providers...");
         ColorProviderRegistry.BLOCK.register((state, world, pos, tintIndex) -> world != null && pos != null && state != null ? RadioNoteBlock.getColorFromNote(state.get(RadioNoteBlock.NOTE)) : 0xFFFFFF, PhonosBlocks.RADIO_NOTE_BLOCK);
         ColorProviderRegistry.ITEM.register((stack, tintIndex) -> {
-            int note = stack.getOrCreateSubTag("TunerData").getInt("Note");
+            int note = stack.getOrCreateSubNbt("TunerData").getInt("Note");
             return tintIndex > 0 ? -1 : RadioNoteBlock.getColorFromNote(note);
         }, PhonosItems.NOTE_BLOCK_TUNER);
         ColorProviderRegistry.ITEM.register((stack, tintIndex) -> {
             int color = 0;
-            String seed = stack.getOrCreateSubTag("MusicData").getString("SoundId");
+            String seed = stack.getOrCreateSubNbt("MusicData").getString("SoundId");
             if(seed != null) color = new Random(seed(seed)).nextInt(0xFFFFFF);
             return tintIndex > 0 ? -1 : color;
         }, PhonosItems.CUSTOM_MUSIC_DISC);

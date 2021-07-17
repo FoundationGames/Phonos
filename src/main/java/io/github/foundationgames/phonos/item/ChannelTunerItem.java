@@ -21,9 +21,9 @@ public class ChannelTunerItem extends Item {
     @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
         ItemStack stack = user.getStackInHand(hand);
-        int s = stack.getOrCreateSubTag("TunerData").getInt("Channel");
+        int s = stack.getOrCreateSubNbt("TunerData").getInt("Channel");
         s += user.isSneaking() ? -1 : 1; if(s > 19) s = 0; if(s < 0) s = 19;
-        stack.getOrCreateSubTag("TunerData").putInt("Channel", s);
+        stack.getOrCreateSubNbt("TunerData").putInt("Channel", s);
         return TypedActionResult.consume(stack);
     }
 
@@ -32,7 +32,7 @@ public class ChannelTunerItem extends Item {
         if(ctx.getWorld().getBlockState(ctx.getBlockPos()).getBlock() instanceof RadioChannelBlock) {
             RadioChannelBlock b = (RadioChannelBlock)ctx.getWorld().getBlockState(ctx.getBlockPos()).getBlock();
             IntProperty property = b.getChannelProperty();
-            int s = ctx.getStack().getOrCreateSubTag("TunerData").getInt("Channel");
+            int s = ctx.getStack().getOrCreateSubNbt("TunerData").getInt("Channel");
             s = Math.min(20, Math.max(s, 0));
             ctx.getWorld().setBlockState(ctx.getBlockPos(), ctx.getWorld().getBlockState(ctx.getBlockPos()).with(property, s));
             return ActionResult.success(ctx.getWorld().isClient());
@@ -42,9 +42,9 @@ public class ChannelTunerItem extends Item {
 
     @Override
     public void appendStacks(ItemGroup group, DefaultedList<ItemStack> stacks) {
-        if(group == this.getGroup()) {
+        if(group == this.getGroup() || group == ItemGroup.SEARCH) {
             ItemStack stack = new ItemStack(this);
-            stack.getOrCreateSubTag("TunerData").putInt("Channel", 0);
+            stack.getOrCreateSubNbt("TunerData").putInt("Channel", 0);
             stacks.add(stack);
         }
     }

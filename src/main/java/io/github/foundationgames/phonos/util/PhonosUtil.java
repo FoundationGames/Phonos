@@ -13,11 +13,11 @@ import net.minecraft.util.Identifier;
 
 import java.util.function.Supplier;
 
-public class PhonosUtil {
+public enum PhonosUtil {;
     public static RadioChannelState getRadioState(ServerWorld world) {
         return world.getPersistentStateManager().getOrCreate(tag -> {
-            RadioChannelState state = new RadioChannelState(world);
-            state.fromNbt(tag);
+            var state = new RadioChannelState(world);
+            state.readNbt(tag);
             return state;
         }, () -> new RadioChannelState(world), "radio_channel_state");
     }
@@ -35,7 +35,7 @@ public class PhonosUtil {
 
     public static StructurePool tryAddElementToPool(Identifier targetPool, StructurePool pool, String elementId, StructurePool.Projection projection, int weight) {
         if(targetPool.equals(pool.getId())) {
-            StructurePoolElement element = StructurePoolElement.method_30426(elementId, StructureProcessorLists.EMPTY).apply(projection);
+            var element = StructurePoolElement.ofProcessedLegacySingle(elementId, StructureProcessorLists.EMPTY).apply(projection);
             for (int i = 0; i < weight; i++) {
                 ((StructurePoolAccess)pool).getElements().add(element);
             }

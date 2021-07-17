@@ -1,7 +1,7 @@
 package io.github.foundationgames.phonos.network;
 
 import io.github.foundationgames.phonos.Phonos;
-import io.github.foundationgames.phonos.client.ClientRecieverLocationStorage;
+import io.github.foundationgames.phonos.client.ClientRecieverStorage;
 import io.github.foundationgames.phonos.mixin.ClientWorldAccess;
 import io.github.foundationgames.phonos.mixin.WorldRendererAccess;
 import net.fabricmc.api.EnvType;
@@ -30,8 +30,8 @@ public final class ClientPayloadPackets {
             float pitch = buf.readFloat();
             boolean stoppable = buf.readBoolean();
             client.execute(() -> {
-                if(stoppable) ClientRecieverLocationStorage.playStoppableSound(pos, sound, channel, volume, pitch);
-                else ClientRecieverLocationStorage.playSound(sound, channel, volume, pitch);
+                if(stoppable) ClientRecieverStorage.playStoppableSound(pos, sound, channel, volume, pitch);
+                else ClientRecieverStorage.playSound(sound, channel, volume, pitch);
             });
         });
 
@@ -43,8 +43,8 @@ public final class ClientPayloadPackets {
             float pitch = buf.readFloat();
             boolean stoppable = buf.readBoolean();
             client.execute(() -> {
-                if(stoppable) ClientRecieverLocationStorage.playStoppableSound(pos, sound, channel, volume, pitch);
-                else ClientRecieverLocationStorage.playSound(sound, channel, volume, pitch);
+                if(stoppable) ClientRecieverStorage.playStoppableSound(pos, sound, channel, volume, pitch);
+                else ClientRecieverStorage.playSound(sound, channel, volume, pitch);
             });
         });
 
@@ -65,7 +65,7 @@ public final class ClientPayloadPackets {
         ClientPlayNetworking.registerGlobalReceiver(Phonos.id("radio_channel_stop"), (client, handler, buf, sender) -> {
             BlockPos pos = buf.readBlockPos();
             int channel = buf.readInt();
-            client.execute(() -> ClientRecieverLocationStorage.tryStopSound(pos, channel));
+            client.execute(() -> ClientRecieverStorage.tryStopSound(pos, channel));
         });
 
         ClientPlayNetworking.registerGlobalReceiver(Phonos.id("update_receivers"), (client, handler, buf, sender) -> {
@@ -74,9 +74,9 @@ public final class ClientPayloadPackets {
             long[] positions = buf.readLongArray(new long[] {});
             client.execute(() -> {
                 for(long l : positions) {
-                    if(operation == RecieverStorageOperation.ADD) ClientRecieverLocationStorage.addReciever(channel, l);
-                    else if(operation == RecieverStorageOperation.REMOVE) ClientRecieverLocationStorage.removeReciever(channel, l);
-                    else if(operation == RecieverStorageOperation.CLEAR) ClientRecieverLocationStorage.clear();
+                    if(operation == RecieverStorageOperation.ADD) ClientRecieverStorage.addReciever(channel, l);
+                    else if(operation == RecieverStorageOperation.REMOVE) ClientRecieverStorage.removeReciever(channel, l);
+                    else if(operation == RecieverStorageOperation.CLEAR) ClientRecieverStorage.clear();
                 }
             });
         });

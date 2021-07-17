@@ -5,7 +5,7 @@ import io.github.foundationgames.phonos.network.RecieverStorageOperation;
 import io.github.foundationgames.phonos.util.PhonosUtil;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
@@ -26,7 +26,7 @@ public class RadioChannelState extends PersistentState {
         this.world = world;
     }
 
-    public void fromNbt(CompoundTag tag) {
+    public void readNbt(NbtCompound tag) {
         channelStorage.clear();
         Set<String> channels = tag.getKeys();
         for(String c : channels) {
@@ -40,7 +40,7 @@ public class RadioChannelState extends PersistentState {
     }
 
     @Override
-    public CompoundTag toNbt(CompoundTag tag) {
+    public NbtCompound writeNbt(NbtCompound tag) {
         //Phonos.LOG.info("TO TAG: "+channelStorage);
         for(int k : channelStorage.keySet()) {
             long[] la = new long[channelStorage.get(k).size()];
@@ -75,26 +75,20 @@ public class RadioChannelState extends PersistentState {
     }
 
     public static void sendPlayerJoinPackets(ServerPlayerEntity player) {
-        //Phonos.LOG.info("---- SENDING JOIN PACKETS ----");
         RadioChannelState state = PhonosUtil.getRadioState(player.getServerWorld());
-        //Phonos.LOG.info(state.channelStorage.keySet());
         for(int channel : state.channelStorage.keySet()) {
-            //Phonos.LOG.info("-- CHANNEL {} IN ITERATION --", channel);
             PayloadPackets.sendRecieversUpdate(player, RecieverStorageOperation.CLEAR, channel, new long[]{});
             ArrayList<Long> posList = state.channelStorage.get(channel);
             for (int i = 0; i < Math.ceil((float)posList.size() / 16); i++) {
-                //Phonos.LOG.info("-- POSITION SPLIT {} --", i);
                 int repeats = Math.min(posList.size() - (i * 16), 16);
                 long[] positions = new long[repeats];
                 for (int j = 0; j < repeats; j++) {
-                    //Phonos.LOG.info("-- SENDING POSITION {} IN SPLIT --", j);
                     int index = (i*16)+j;
                     positions[j] = posList.get(index);
                 }
                 PayloadPackets.sendRecieversUpdate(player, RecieverStorageOperation.ADD, channel, positions);
             }
         }
-        //Phonos.LOG.info("---- FINISHED SENDING JOIN PACKETS ----");
     }
 
     public void playSound(BlockPos origin, SoundEvent sound, int channel, float volume, float pitch, boolean stoppable) {

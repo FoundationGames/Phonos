@@ -1,0 +1,11 @@
+{
+    "replace": false,
+    "values": [
+        "phonos:loudspeaker",
+        "phonos:radio_jukebox",
+        "phonos:radio_jukebox",
+        "phonos:gourd_speaker",
+        "phonos:speak_o_lantern",
+        "phonos:tiny_potato_speaker"
+    ]
+}

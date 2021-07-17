@@ -14,7 +14,7 @@ public class PhonosCompat {
         if(FabricLoader.getInstance().isModLoaded("patchouli")) {
             return new TechnicianVillagerProfession.BasicTradeFactory(i(Items.EMERALD, 3), PhonosUtil.create(() -> {
                 ItemStack i = i(Registry.ITEM.get(new Identifier("patchouli:guide_book")));
-                i.getOrCreateTag().putString("patchouli:book", "phonos:phonos_guidebook");
+                i.getOrCreateNbt().putString("patchouli:book", "phonos:phonos_guidebook");
                 return i;
             }), 1, 7, 0.2f);
         }

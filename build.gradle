@@ -1,23 +1,21 @@
 plugins {
-	id 'fabric-loom' version '0.4-SNAPSHOT'
+	id 'fabric-loom' version '0.8-SNAPSHOT'
 	id 'maven-publish'
 }
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+sourceCompatibility = JavaVersion.VERSION_16
+targetCompatibility = JavaVersion.VERSION_16
 
 archivesBaseName = project.archives_base_name
 version = project.mod_version
 group = project.maven_group
 
 repositories {
-	jcenter()
 	maven {
 		name = "CottonMC"
 		url = "https://server.bbkr.space/artifactory/libs-release"
 	}
-	flatDir name: "local-repo", dirs: "./local_deps"
-	maven { url 'https://maven.blamejared.com' }
+	maven { url = "https://storage.googleapis.com/devan-maven/" }
 }
 
 dependencies {
@@ -30,19 +28,12 @@ dependencies {
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
 	// Artifice because some of the resources can be tedious
-	modImplementation "com.lettuce.fudge:artifice:0.13.2+1.16.3"
-	include "com.lettuce.fudge:artifice:0.13.2+1.16.3"
+	modImplementation "net.devtech:arrp:${project.arrp_version}"
+	include "net.devtech:arrp:${project.arrp_version}"
 
 	// LibGui because yes
-	modImplementation "local-repo:LibGui-3.3.3+21w05a-dev"
-	include "local-repo:LibGui-3.3.3+21w05a-dev"
-	/*modImplementation "io.github.cottonmc:LibGui:3.2.2+1.16.3"
-	include "io.github.cottonmc:LibGui:3.2.2+1.16.3"*/
-	modImplementation "io.github.cottonmc:Jankson-Fabric:3.0.1+j1.2.0"
-	include "io.github.cottonmc:Jankson-Fabric:3.0.1+j1.2.0"
-
-	modImplementation "me.zeroeightsix:fiber:0.23.0-2"
-	include "me.zeroeightsix:fiber:0.23.0-2"
+	modImplementation "io.github.cottonmc:LibGui:${project.libgui_version}"
+	include "io.github.cottonmc:LibGui:${project.libgui_version}"
 
 	//patchouli
 	//modImplementation "vazkii.patchouli:Patchouli:1.16.4-48-FABRIC"
@@ -55,13 +46,8 @@ dependencies {
 processResources {
 	inputs.property "version", project.version
 
-	from(sourceSets.main.resources.srcDirs) {
-		include "fabric.mod.json"
+	filesMatching("fabric.mod.json") {
 		expand "version": project.version
-	}
-
-	from(sourceSets.main.resources.srcDirs) {
-		exclude "fabric.mod.json"
 	}
 }
 

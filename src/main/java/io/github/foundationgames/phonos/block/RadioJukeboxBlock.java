@@ -101,7 +101,7 @@ public class RadioJukeboxBlock extends BlockWithEntity implements RadioChannelBl
 
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-        return world.isClient ? checkType(type, PhonosBlocks.RADIO_JUKEBOX_ENTITY, RadioJukeboxBlockEntity::tick) : null;
+        return checkType(type, PhonosBlocks.RADIO_JUKEBOX_ENTITY, RadioJukeboxBlockEntity::tick);
     }
 
     @Override
