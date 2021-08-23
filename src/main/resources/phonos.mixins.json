@@ -7,7 +7,6 @@
     "AxeItemMixin",
     "HoneycombItemMixin",
     "LightningEntityMixin",
-    "MusicDiscItemAccess",
     "NoteBlockMixin",
     "PlayerManagerMixin",
     "StructurePoolAccess",
