@@ -4,6 +4,7 @@ import io.github.foundationgames.phonos.block.PhonosBlocks;
 import io.github.foundationgames.phonos.block.RadioNoteBlock;
 import io.github.foundationgames.phonos.block.SoundPlayReceivable;
 import io.github.foundationgames.phonos.client.ClientRecieverStorage;
+import io.github.foundationgames.phonos.entity.SoundPlayEntityReceivable;
 import io.github.foundationgames.phonos.item.PhonosItems;
 import io.github.foundationgames.phonos.network.ClientPayloadPackets;
 import io.github.foundationgames.phonos.resource.PhonosAssets;
@@ -20,6 +21,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.UnclampedModelPredicateProvider;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -32,26 +34,37 @@ import java.util.Random;
 public class PhonosClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
-        //Phonos.LOG.info("Registering Client Packets...");
+        // Phonos.LOG.info("Registering Client Packets...");
         ClientPayloadPackets.initClient();
-        //Phonos.LOG.info("Success! \n");
+        // Phonos.LOG.info("Success! \n");
 
-        //Phonos.LOG.info("Registering Assets...");
+        // Phonos.LOG.info("Registering Assets...");
         PhonosAssets.init();
-        //Phonos.LOG.info("Success! \n");
+        // Phonos.LOG.info("Success! \n");
 
-        ClientRecieverStorage.registerPlaySoundCallback(((sound, positions, channel, volume, pitch, stoppable) -> {
+        ClientRecieverStorage.registerPlaySoundCallback(((sound, blocks, entities, channel, volume, pitch, stoppable) -> {
             if(!stoppable) {
                 BlockPos.Mutable m = new BlockPos.Mutable();
                 PlayerEntity player = MinecraftClient.getInstance().player;
                 ClientWorld world = MinecraftClient.getInstance().world;
-                if(player != null && world != null && positions != null) {
+                if(player != null && world != null) {
                     BlockPos pos = player.getBlockPos();
-                    for(long l : positions) {
-                        m.set(l);
-                        if(pos.isWithinDistance(m, 30)) {
-                            if(world.getBlockState(m).getBlock() instanceof SoundPlayReceivable) {
-                                ((SoundPlayReceivable)world.getBlockState(m).getBlock()).onRecievedSoundClient(world, world.getBlockState(m), m.toImmutable(), channel, volume, pitch);
+                    if(blocks != null) {
+                        for(BlockPos l : blocks) {
+                            m.set(l);
+                            if(pos.isWithinDistance(m, 30)) {
+                                if(world.getBlockState(m).getBlock() instanceof SoundPlayReceivable) {
+                                    ((SoundPlayReceivable)world.getBlockState(m).getBlock()).onRecievedSoundClient(world, world.getBlockState(m), m.toImmutable(), channel, volume, pitch);
+                                }
+                            }
+                        }
+                    }
+                    if(entities != null) {
+                        for(Entity e : entities) {
+                            if(pos.isWithinDistance(e.getPos(), 30)) {
+                                if(e instanceof SoundPlayEntityReceivable) {
+                                    ((SoundPlayEntityReceivable) e).onRecievedSoundClient(world, e, channel, volume, pitch);
+                                }
                             }
                         }
                     }
@@ -59,12 +72,13 @@ public class PhonosClient implements ClientModInitializer {
             }
         }));
 
-        //Phonos.LOG.info("Registering Model Predicates...");
+        // Phonos.LOG.info("Registering Model Predicates...");
         FabricModelPredicateProviderRegistry.register(PhonosItems.CHANNEL_TUNER, new Identifier("tuned_channel"), (stack, world, entity, seed) -> (float)stack.getOrCreateSubNbt("TunerData").getInt("Channel") / 19);
         FabricModelPredicateProviderRegistry.register(PhonosItems.NOTE_BLOCK_TUNER, new Identifier("tuner_mode"), (stack, world, entity, seed) -> (float)stack.getOrCreateSubNbt("TunerData").getInt("Mode") / 2);
-        //Phonos.LOG.info("Success!");
+        FabricModelPredicateProviderRegistry.register(PhonosItems.PORTABLE_SPEAKER, new Identifier("tuned_channel"), (stack, world, entity, seed) -> (float)stack.getOrCreateSubNbt("TunerData").getInt("Channel") / 19);
+        // Phonos.LOG.info("Success!");
 
-        //Phonos.LOG.info("Registering Color Providers...");
+        // Phonos.LOG.info("Registering Color Providers...");
         ColorProviderRegistry.BLOCK.register((state, world, pos, tintIndex) -> world != null && pos != null && state != null ? RadioNoteBlock.getColorFromNote(state.get(RadioNoteBlock.NOTE)) : 0xFFFFFF, PhonosBlocks.RADIO_NOTE_BLOCK);
         ColorProviderRegistry.ITEM.register((stack, tintIndex) -> {
             int note = stack.getOrCreateSubNbt("TunerData").getInt("Note");
@@ -76,22 +90,23 @@ public class PhonosClient implements ClientModInitializer {
             if(seed != null) color = new Random(seed(seed)).nextInt(0xFFFFFF);
             return tintIndex > 0 ? -1 : color;
         }, PhonosItems.CUSTOM_MUSIC_DISC);
-        //Phonos.LOG.info("Success!");
+        // Phonos.LOG.info("Success!");
 
-        //Phonos.LOG.info("Putting to render layers...");
+        // Phonos.LOG.info("Putting to render layers...");
         BlockRenderLayerMap.INSTANCE.putBlock(PhonosBlocks.RADIO_NOTE_BLOCK, RenderLayer.getCutout());
-        //Phonos.LOG.info("Success!");
+        // Phonos.LOG.info("Success!");
 
-        //Phonos.LOG.info("Registering GUI Screens...");
+        // Phonos.LOG.info("Registering GUI Screens...");
         ScreenRegistry.<RadioJukeboxGuiDescription, RadioJukeboxScreen>register(Phonos.RADIO_JUKEBOX_HANDLER, (gui, inventory, title) -> new RadioJukeboxScreen(gui, inventory.player));
         ScreenRegistry.<CustomMusicDiscGuiDescription, CustomMusicDiscScreen>register(Phonos.CUSTOM_DISC_HANDLER, (gui, inventory, title) -> new CustomMusicDiscScreen(gui, inventory.player));
-        //Phonos.LOG.info("Success!");
+        // Phonos.LOG.info("Success!");
     }
 
     private static long seed(String s) {
-        if (s == null) return 0;
+        if(s == null) return 0;
         long l = 0;
-        for (char c : s.toCharArray()) l = 31L*l + c;
+        for(char c : s.toCharArray())
+            l = 31L * l + c;
         return l;
     }
 }

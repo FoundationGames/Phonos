@@ -8,50 +8,49 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.client.sound.SoundManager;
+import net.minecraft.entity.Entity;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Environment(EnvType.CLIENT)
 public class ClientRecieverStorage {
-    private static final Int2ObjectMap<ArrayList<Long>> blockStorage = new Int2ObjectOpenHashMap<>();
+    private static final Int2ObjectMap<LinkedHashSet<BlockPos>> blockStorage = new Int2ObjectOpenHashMap<>();
     // TODO:
-    // private static final Int2ObjectMap<ArrayList<Integer>> entityStorage = new Int2ObjectOpenHashMap<>();
+    private static final Int2ObjectMap<LinkedHashSet<Entity>> entityStorage = new Int2ObjectOpenHashMap<>();
     private static final Int2ObjectMap<Map<BlockPos, SoundInstance>> stoppableSoundStorage = new Int2ObjectOpenHashMap<>();
     private static final List<SoundConsumer> playSoundCallbacks = new ArrayList<>();
 
-    public static void addReciever(int channel, long pos) {
-        blockStorage.putIfAbsent(channel, new ArrayList<>());
-        ArrayList<Long> l = blockStorage.get(channel);
-        if(!l.contains(pos)) l.add(pos);
+    public static void addReciever(int channel, BlockPos pos) {
+        blockStorage.putIfAbsent(channel, new LinkedHashSet<>());
+        blockStorage.get(channel).add(pos);
     }
 
-    public static void removeReciever(int channel, long pos) {
-        blockStorage.putIfAbsent(channel, new ArrayList<>());
+    public static void removeReciever(int channel, BlockPos pos) {
+        blockStorage.putIfAbsent(channel, new LinkedHashSet<>());
         blockStorage.get(channel).remove(pos);
     }
 
-    /*
-    TODO
-    public static void addEntityReciever(int channel, int id) {
-        entityStorage.putIfAbsent(channel, new ArrayList<>());
-        ArrayList<Integer> i = entityStorage.get(channel);
-        if(!i.contains(id)) i.add(id);
+    public static void addEntityReciever(int channel, Entity ent) {
+        entityStorage.putIfAbsent(channel, new LinkedHashSet<>());
+        entityStorage.get(channel).add(ent);
     }
 
-    public static void removeEntityReciever(int channel, int id) {
-        entityStorage.putIfAbsent(channel, new ArrayList<>());
-        entityStorage.get(channel).remove((Object)id);
+    public static void removeEntityReciever(int channel, Entity ent) {
+        entityStorage.putIfAbsent(channel, new LinkedHashSet<>());
+        entityStorage.get(channel).remove(ent);
     }
-    */
 
     public static void clear() {
         blockStorage.clear();
+        entityStorage.clear();
     }
 
     public static void playSound(SoundEvent sound, int channel, float volume, float pitch) {
@@ -59,8 +58,10 @@ public class ClientRecieverStorage {
     }
 
     public static void playSound(Identifier sound, int channel, float volume, float pitch) {
-        MinecraftClient.getInstance().getSoundManager().play(new MultiPositionedSoundInstance(blockStorage.get(channel), sound, volume, pitch));
-        for(SoundConsumer c : playSoundCallbacks) c.apply(sound, blockStorage.get(channel), channel, volume, pitch, false);
+        blockStorage.putIfAbsent(channel, new LinkedHashSet<>());
+        entityStorage.putIfAbsent(channel, new LinkedHashSet<>());
+        MinecraftClient.getInstance().getSoundManager().play(new MultiPositionedSoundInstance(blockStorage.get(channel), entityStorage.get(channel), sound, volume, pitch));
+        for(SoundConsumer c : playSoundCallbacks) c.apply(sound, blockStorage.get(channel), entityStorage.get(channel), channel, volume, pitch, false);
     }
 
     public static void playStoppableSound(BlockPos pos, SoundEvent sound, int channel, float volume, float pitch) {
@@ -68,13 +69,15 @@ public class ClientRecieverStorage {
     }
 
     public static void playStoppableSound(BlockPos pos, Identifier sound, int channel, float volume, float pitch) {
+        blockStorage.putIfAbsent(channel, new LinkedHashSet<>());
+        entityStorage.putIfAbsent(channel, new LinkedHashSet<>());
         SoundManager manager = MinecraftClient.getInstance().getSoundManager();
         tryStopSound(pos, channel);
-        SoundInstance instance = new MultiPositionedSoundInstance(blockStorage.get(channel), sound, volume, pitch);
+        SoundInstance instance = new MultiPositionedSoundInstance(blockStorage.get(channel), entityStorage.get(channel), sound, volume, pitch);
         manager.play(instance);
         if(!stoppableSoundStorage.containsKey(channel)) stoppableSoundStorage.put(channel, new HashMap<>());
         stoppableSoundStorage.get(channel).put(pos, instance);
-        for(SoundConsumer c : playSoundCallbacks) c.apply(sound, blockStorage.get(channel), channel, volume, pitch, true);
+        for(SoundConsumer c : playSoundCallbacks) c.apply(sound, blockStorage.get(channel), entityStorage.get(channel), channel, volume, pitch, true);
     }
 
     public static void tryStopSound(BlockPos pos, int channel) {
@@ -109,6 +112,6 @@ public class ClientRecieverStorage {
 
     @FunctionalInterface
     public interface SoundConsumer {
-        void apply(Identifier sound, List<Long> positions, int channel, float volume, float pitch, boolean stoppable);
+        void apply(Identifier sound, Set<BlockPos> blocks, Set<Entity> entities, int channel, float volume, float pitch, boolean stoppable);
     }
 }

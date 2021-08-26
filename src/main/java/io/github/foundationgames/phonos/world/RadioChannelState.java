@@ -5,6 +5,7 @@ import io.github.foundationgames.phonos.network.RecieverStorageOperation;
 import io.github.foundationgames.phonos.util.PhonosUtil;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -13,12 +14,13 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.PersistentState;
 
-import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class RadioChannelState extends PersistentState {
 
-    private final Int2ObjectMap<ArrayList<Long>> channelStorage = new Int2ObjectOpenHashMap<>();
+    private final Int2ObjectMap<LinkedHashSet<Long>> blockStorage = new Int2ObjectOpenHashMap<>();
+    private final Int2ObjectMap<LinkedHashSet<Entity>> entityStorage = new Int2ObjectOpenHashMap<>();
     private final ServerWorld world;
 
     public RadioChannelState(ServerWorld world) {
@@ -27,14 +29,18 @@ public class RadioChannelState extends PersistentState {
     }
 
     public void readNbt(NbtCompound tag) {
-        channelStorage.clear();
+        blockStorage.clear();
+        entityStorage.clear();
         Set<String> channels = tag.getKeys();
         for(String c : channels) {
             int i = Integer.parseInt(c);
             long[] la = tag.getLongArray(c);
-            ArrayList<Long> lt = new ArrayList<>();
-            for(long l : la) lt.add(l);
-            channelStorage.put(i, lt);
+            LinkedHashSet<Long> lt = new LinkedHashSet<>();
+            for(long l : la) {
+                lt.add(l);
+//                System.out.println(l);
+            }
+            blockStorage.put(i, lt);
         }
         //Phonos.LOG.info("FROM TAG: "+channelStorage);
     }
@@ -42,51 +48,80 @@ public class RadioChannelState extends PersistentState {
     @Override
     public NbtCompound writeNbt(NbtCompound tag) {
         //Phonos.LOG.info("TO TAG: "+channelStorage);
-        for(int k : channelStorage.keySet()) {
-            long[] la = new long[channelStorage.get(k).size()];
-            for (int i = 0; i < channelStorage.get(k).size(); i++) {
-                la[i] = channelStorage.get(k).get(i);
-            }
+        for(int k : blockStorage.keySet()) {
+            long[] la = blockStorage.get(k).stream().mapToLong(l -> l).toArray();
             tag.putLongArray(Integer.toString(k), la);
         }
         return tag;
     }
 
     public void addReciever(int channel, BlockPos pos) {
-        channelStorage.putIfAbsent(channel, new ArrayList<>());
-        ArrayList<Long> l = channelStorage.get(channel);
-        if(!l.contains(pos.asLong())) {
-            l.add(pos.asLong());
-            for(ServerPlayerEntity player : world.getPlayers()) PayloadPackets.sendRecieversUpdate(player, RecieverStorageOperation.ADD, channel, new long[] { pos.asLong() });
+        blockStorage.putIfAbsent(channel, new LinkedHashSet<>());
+        LinkedHashSet<Long> l = blockStorage.get(channel);
+        if(l.add(pos.asLong())) {
+            for(ServerPlayerEntity player : world.getPlayers()) PayloadPackets.sendRecieversUpdate(player, RecieverStorageOperation.ADD, channel, new long[] { pos.asLong() }, new int[] {});
         }
         this.setDirty(true);
     }
 
     public void removeReciever(int channel, BlockPos pos) {
-        channelStorage.putIfAbsent(channel, new ArrayList<>());
-        channelStorage.get(channel).remove(pos.asLong());
-        for(ServerPlayerEntity player : world.getPlayers()) PayloadPackets.sendRecieversUpdate(player, RecieverStorageOperation.REMOVE, channel, new long[] { pos.asLong() });
+        blockStorage.putIfAbsent(channel, new LinkedHashSet<>());
+        blockStorage.get(channel).remove(pos.asLong());
+        for(ServerPlayerEntity player : world.getPlayers()) PayloadPackets.sendRecieversUpdate(player, RecieverStorageOperation.REMOVE, channel, new long[] { pos.asLong() }, new int[] {});
+        this.setDirty(true);
+    }
+    
+    public void addEntityReciever(int channel, Entity ent) {
+        entityStorage.putIfAbsent(channel, new LinkedHashSet<>());
+        LinkedHashSet<Entity> l = entityStorage.get(channel);
+        if(l.add(ent)) {
+            for(ServerPlayerEntity player : world.getPlayers()) PayloadPackets.sendRecieversUpdate(player, RecieverStorageOperation.ADD, channel, new long[] {}, new int[] { ent.getId() });
+        }
         this.setDirty(true);
     }
 
+    public void removeEntityReciever(int channel, Entity ent) {
+        entityStorage.putIfAbsent(channel, new LinkedHashSet<>());
+        entityStorage.get(channel).remove(ent);
+        for(ServerPlayerEntity player : world.getPlayers()) PayloadPackets.sendRecieversUpdate(player, RecieverStorageOperation.REMOVE, channel, new long[] { }, new int[] {ent.getId()});
+        this.setDirty(true);
+    }
+    
     public boolean hasReciever(int channel, BlockPos pos) {
-        if(channelStorage.containsKey(channel)) return channelStorage.get(channel).contains(pos.asLong());
+        if(blockStorage.containsKey(channel)) return blockStorage.get(channel).contains(pos.asLong());
+        return false;
+    }
+    
+    public boolean hasEntityReciever(int channel, Entity ent) {
+        if(entityStorage.containsKey(channel)) return entityStorage.get(channel).contains(ent);
         return false;
     }
 
     public static void sendPlayerJoinPackets(ServerPlayerEntity player) {
         RadioChannelState state = PhonosUtil.getRadioState(player.getServerWorld());
-        for(int channel : state.channelStorage.keySet()) {
-            PayloadPackets.sendRecieversUpdate(player, RecieverStorageOperation.CLEAR, channel, new long[]{});
-            ArrayList<Long> posList = state.channelStorage.get(channel);
-            for (int i = 0; i < Math.ceil((float)posList.size() / 16); i++) {
-                int repeats = Math.min(posList.size() - (i * 16), 16);
+        for(int channel : state.blockStorage.keySet()) {
+            PayloadPackets.sendRecieversUpdate(player, RecieverStorageOperation.CLEAR, channel, new long[]{}, new int[] {});
+            Long[] posList = state.blockStorage.get(channel).toArray(new Long[] {});
+            for (int i = 0; i < Math.ceil((float)posList.length / 16); i++) {
+                int repeats = Math.min(posList.length - (i * 16), 16);
                 long[] positions = new long[repeats];
                 for (int j = 0; j < repeats; j++) {
                     int index = (i*16)+j;
-                    positions[j] = posList.get(index);
+                    positions[j] = posList[index];
                 }
-                PayloadPackets.sendRecieversUpdate(player, RecieverStorageOperation.ADD, channel, positions);
+//                PayloadPackets.sendRecieversUpdate(player, RecieverStorageOperation.ADD, channel, positions, new int[] {});
+            }
+        }
+        for(int channel : state.entityStorage.keySet()) {
+            Entity[] entityList = state.entityStorage.get(channel).toArray(new Entity[] {});
+            for (int i = 0; i < Math.ceil((float)entityList.length / 16); i++) {
+                int repeats = Math.min(entityList.length - (i * 16), 16);
+                int[] entities = new int[repeats];
+                for (int j = 0; j < repeats; j++) {
+                    int index = (i*16)+j;
+                    entities[j] = entityList[index].getId();
+                }
+//                PayloadPackets.sendRecieversUpdate(player, RecieverStorageOperation.ADD, channel, new long[] {}, entities);
             }
         }
     }
