@@ -75,7 +75,7 @@ public class PhonosClient implements ClientModInitializer {
         // Phonos.LOG.info("Registering Model Predicates...");
         FabricModelPredicateProviderRegistry.register(PhonosItems.CHANNEL_TUNER, new Identifier("tuned_channel"), (stack, world, entity, seed) -> (float)stack.getOrCreateSubNbt("TunerData").getInt("Channel") / 19);
         FabricModelPredicateProviderRegistry.register(PhonosItems.NOTE_BLOCK_TUNER, new Identifier("tuner_mode"), (stack, world, entity, seed) -> (float)stack.getOrCreateSubNbt("TunerData").getInt("Mode") / 2);
-        FabricModelPredicateProviderRegistry.register(PhonosItems.PORTABLE_SPEAKER, new Identifier("tuned_channel"), (stack, world, entity, seed) -> (float)stack.getOrCreateSubNbt("TunerData").getInt("Channel") / 19);
+        FabricModelPredicateProviderRegistry.register(PhonosItems.PORTABLE_SPEAKER, new Identifier("radio_channel"), (stack, world, entity, seed) -> (float)stack.getOrCreateSubNbt("RadioData").getInt("Channel") / 19);
         // Phonos.LOG.info("Success!");
 
         // Phonos.LOG.info("Registering Color Providers...");

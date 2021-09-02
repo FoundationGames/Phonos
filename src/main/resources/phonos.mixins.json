@@ -11,7 +11,8 @@
     "NoteBlockMixin",
     "PlayerManagerMixin",
     "StructurePoolAccess",
-    "StructurePoolsMixin"
+    "StructurePoolsMixin",
+    "PlayerEntityMixin"
   ],
   "client": [
     "ClientWorldAccess",

@@ -38,7 +38,6 @@ public class RadioChannelState extends PersistentState {
             LinkedHashSet<Long> lt = new LinkedHashSet<>();
             for(long l : la) {
                 lt.add(l);
-//                System.out.println(l);
             }
             blockStorage.put(i, lt);
         }
@@ -109,11 +108,12 @@ public class RadioChannelState extends PersistentState {
                     int index = (i*16)+j;
                     positions[j] = posList[index];
                 }
-//                PayloadPackets.sendRecieversUpdate(player, RecieverStorageOperation.ADD, channel, positions, new int[] {});
+                PayloadPackets.sendRecieversUpdate(player, RecieverStorageOperation.ADD, channel, positions, new int[] {});
             }
         }
         for(int channel : state.entityStorage.keySet()) {
             Entity[] entityList = state.entityStorage.get(channel).toArray(new Entity[] {});
+            PayloadPackets.sendRecieversUpdate(player, RecieverStorageOperation.CLEAR, channel, new long[]{}, new int[] {});
             for (int i = 0; i < Math.ceil((float)entityList.length / 16); i++) {
                 int repeats = Math.min(entityList.length - (i * 16), 16);
                 int[] entities = new int[repeats];
@@ -121,7 +121,7 @@ public class RadioChannelState extends PersistentState {
                     int index = (i*16)+j;
                     entities[j] = entityList[index].getId();
                 }
-//                PayloadPackets.sendRecieversUpdate(player, RecieverStorageOperation.ADD, channel, new long[] {}, entities);
+                PayloadPackets.sendRecieversUpdate(player, RecieverStorageOperation.ADD, channel, new long[] {}, entities);
             }
         }
     }
