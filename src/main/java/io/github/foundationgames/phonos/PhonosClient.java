@@ -61,9 +61,10 @@ public class PhonosClient implements ClientModInitializer {
                     }
                     if(entities != null) {
                         for(Entity e : entities) {
-                            if(pos.isWithinDistance(e.getPos(), 30)) {
+                            m.set(e.getBlockPos());
+                            if(pos.isWithinDistance(m, 30)) {
                                 if(e instanceof SoundPlayEntityReceivable) {
-                                    ((SoundPlayEntityReceivable) e).onRecievedSoundClient(world, e, channel, volume, pitch);
+                                    ((SoundPlayEntityReceivable)e).onRecievedSoundClient(world, e, channel, volume, pitch);
                                 }
                             }
                         }

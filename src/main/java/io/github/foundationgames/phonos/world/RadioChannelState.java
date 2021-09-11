@@ -100,6 +100,11 @@ public class RadioChannelState extends PersistentState {
         RadioChannelState state = PhonosUtil.getRadioState(player.getServerWorld());
         for(int channel : state.blockStorage.keySet()) {
             PayloadPackets.sendRecieversUpdate(player, RecieverStorageOperation.CLEAR, channel, new long[]{}, new int[] {});
+        }
+        for(int channel : state.entityStorage.keySet()) {
+            PayloadPackets.sendRecieversUpdate(player, RecieverStorageOperation.CLEAR, channel, new long[]{}, new int[] {});
+        }
+        for(int channel : state.blockStorage.keySet()) {
             Long[] posList = state.blockStorage.get(channel).toArray(new Long[] {});
             for (int i = 0; i < Math.ceil((float)posList.length / 16); i++) {
                 int repeats = Math.min(posList.length - (i * 16), 16);
@@ -113,7 +118,6 @@ public class RadioChannelState extends PersistentState {
         }
         for(int channel : state.entityStorage.keySet()) {
             Entity[] entityList = state.entityStorage.get(channel).toArray(new Entity[] {});
-            PayloadPackets.sendRecieversUpdate(player, RecieverStorageOperation.CLEAR, channel, new long[]{}, new int[] {});
             for (int i = 0; i < Math.ceil((float)entityList.length / 16); i++) {
                 int repeats = Math.min(entityList.length - (i * 16), 16);
                 int[] entities = new int[repeats];
