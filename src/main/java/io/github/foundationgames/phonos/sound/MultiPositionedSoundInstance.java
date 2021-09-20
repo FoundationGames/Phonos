@@ -51,7 +51,7 @@ public class MultiPositionedSoundInstance extends AbstractSoundInstance implemen
             this.volume = 0;
             return;
         }
-        if(this.entities.contains(this.player)) {
+        if(this.entities.contains(this.player) && this.player.isAlive()) {
             // if the player listening is producing audio, only play them from their POV.
             this.x = this.player.getX();
             this.y = -10000;
@@ -87,6 +87,7 @@ public class MultiPositionedSoundInstance extends AbstractSoundInstance implemen
         }
         // Now, iterate through the entities too.
         for(Entity ent : this.entities) {
+            if(ent == null || !ent.isAlive()) continue; // if the entity is dead, don't play it!
             // for every block, lets get the current position of it as a vector.
             Vec3d workingPos = ent.getPos();
             // And the square distance from that to the player.
