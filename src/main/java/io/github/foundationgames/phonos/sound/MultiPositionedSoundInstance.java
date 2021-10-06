@@ -38,6 +38,7 @@ public class MultiPositionedSoundInstance extends AbstractSoundInstance implemen
         this.blocks = blocks;
         this.entities = entities;
         this.maxVol = volume;
+        this.pitch = pitch;
         this.volume = 0;
         this.player = MinecraftClient.getInstance().player;
         // no attenuation, we are controlling this entirely.
