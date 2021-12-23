@@ -5,7 +5,6 @@ import io.github.foundationgames.phonos.Phonos;
 import io.github.foundationgames.phonos.block.PhonosBlocks;
 import io.github.foundationgames.phonos.block.RadioJukeboxBlock;
 import io.github.foundationgames.phonos.item.CustomMusicDiscItem;
-import io.github.foundationgames.phonos.mixin.MusicDiscItemAccess;
 import io.github.foundationgames.phonos.screen.RadioJukeboxGuiDescription;
 import io.github.foundationgames.phonos.util.PhonosUtil;
 import io.github.foundationgames.phonos.world.RadioChannelState;
@@ -116,7 +115,7 @@ public class RadioJukeboxBlockEntity extends BlockEntity implements ExtendedScre
             RadioChannelState pstate = PhonosUtil.getRadioState((ServerWorld)world);
             ItemStack disc = items.get(slot);
             if(disc.getItem() instanceof MusicDiscItem) {
-                pstate.playSound(pos, ((MusicDiscItemAccess)disc.getItem()).getSoundEvent(), getChannel(), 1.8f, pitch, true);
+                pstate.playSound(pos, ((MusicDiscItem)disc.getItem()).getSound(), getChannel(), 1.8f, pitch, true);
             }
             if(disc.getItem() instanceof CustomMusicDiscItem) {
                 Identifier id = Identifier.tryParse(disc.getOrCreateSubNbt("MusicData").getString("SoundId"));
@@ -239,13 +238,13 @@ public class RadioJukeboxBlockEntity extends BlockEntity implements ExtendedScre
 
     private void shuffle() {
         List<Pair<ItemStack, Integer>> discs = new ArrayList<>();
-        for (int i = 0; i < 6; i++) {
+        for(int i = 0; i < 6; i++) {
             int d = getDuration(i);
             discs.add(Pair.of(items.get(i), d));
         }
         Collections.shuffle(discs);
         items.clear();
-        for (int i = 0; i < discs.size(); i++) {
+        for(int i = 0; i < discs.size(); i++) {
             items.set(i, discs.get(i).getFirst());
             setDuration(i, discs.get(i).getSecond());
         }
@@ -254,7 +253,7 @@ public class RadioJukeboxBlockEntity extends BlockEntity implements ExtendedScre
 
     private void pushDiscs() {
         List<Pair<ItemStack, Integer>> discs = new ArrayList<>();
-        for (int i = 0; i < 6; i++) {
+        for(int i = 0; i < 6; i++) {
             int d = getDuration(i);
             discs.add(Pair.of(items.get(i), d));
         }
@@ -324,10 +323,10 @@ public class RadioJukeboxBlockEntity extends BlockEntity implements ExtendedScre
 
     public static void doOperation(RadioJukeboxBlockEntity be, byte op, int data) {
         if(op == Ops.SET_PITCH) {
-            be.pitch = (float)Math.min(20, Math.max(data, 1))/10;
-        } else if (op == Ops.SET_SHUFFLE) {
+            be.pitch = (float)Math.min(20, Math.max(data, 1)) / 10;
+        } else if(op == Ops.SET_SHUFFLE) {
             be.doShuffle = data > 0;
-        } else if (op == Ops.PLAY_STOP) {
+        } else if(op == Ops.PLAY_STOP) {
             be.playOrStop();
         } else if(op == Ops.SET_DURATION_1) {
             be.disc1Duration = Math.max(1, Math.min(data, 599));
@@ -381,7 +380,7 @@ public class RadioJukeboxBlockEntity extends BlockEntity implements ExtendedScre
         public static final byte PREV_SONG = 0x0A;
     }
 
-    //--------------------------------------------------------------------
+    // --------------------------------------------------------------------
 
     @Override
     public void fromClientTag(NbtCompound NbtCompound) {
