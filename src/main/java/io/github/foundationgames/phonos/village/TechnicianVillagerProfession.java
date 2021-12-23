@@ -46,6 +46,7 @@ public enum TechnicianVillagerProfession {;
                 2, new TradeOffers.Factory[] {
                         new BasicTradeFactory(i(Items.EMERALD, 8), i(PhonosItems.CHANNEL_TUNER), 3, 4, 0.0f),
                         new BasicTradeFactory(i(Items.EMERALD, 12), i(PhonosItems.NOTE_BLOCK_TUNER), 2, 5, 0.0f),
+                        new BasicTradeFactory(i(Items.EMERALD, 12), i(PhonosItems.PORTABLE_SPEAKER), 2, 5, 0.0f),
                         new BasicTradeFactory(i(PhonosBlocks.LOUDSPEAKER), i(Items.EMERALD, 5), 4, 5, 0.0f),
                         new BasicTradeFactory(i(Items.EMERALD, 4), i(Blocks.NOTE_BLOCK), 2, 5, 0.0f)
                 },

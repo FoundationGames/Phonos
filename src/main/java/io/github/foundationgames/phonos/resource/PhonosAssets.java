@@ -26,6 +26,17 @@ public class PhonosAssets {
                 ctModel,
                 Phonos.id("item/channel_tuner")
         );
+        
+        // CHANNEL TUNER
+        JModel psModel = new JModel().parent("item/handheld").textures(JModel.textures().var("layer0", "phonos:item/portable_speaker"));
+        for (int i = 0; i < 20; i++) {
+            psModel.addOverride(JModel.override(JModel.condition().parameter("radio_channel", (float)i / 19), Phonos.id("item/portable_speaker_"+i)));
+            pack.addModel(new JModel().parent("item/handheld").textures(JModel.textures().var("layer0", "phonos:item/portable_speaker_"+i)), Phonos.id("item/portable_speaker_"+i));
+        }
+        pack.addModel(
+                psModel,
+                Phonos.id("item/portable_speaker")
+        );
 
         // REDSTONE CHIP
         addGeneratedItem(pack, "redstone_chip");

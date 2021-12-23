@@ -82,12 +82,20 @@ public final class ClientPayloadPackets {
         ClientPlayNetworking.registerGlobalReceiver(Phonos.id("update_receivers"), (client, handler, buf, sender) -> {
             RecieverStorageOperation operation = RecieverStorageOperation.fromByte(buf.readByte());
             int channel = buf.readInt();
-            long[] positions = buf.readLongArray(new long[] {});
+            long[] positions = buf.readLongArray();
+            int[] entities = buf.readIntArray();
             client.execute(() -> {
+                if(operation == RecieverStorageOperation.CLEAR) {
+                    ClientRecieverStorage.clear();
+                    return;
+                }
                 for(long l : positions) {
-                    if(operation == RecieverStorageOperation.ADD) ClientRecieverStorage.addReciever(channel, l);
-                    else if(operation == RecieverStorageOperation.REMOVE) ClientRecieverStorage.removeReciever(channel, l);
-                    else if(operation == RecieverStorageOperation.CLEAR) ClientRecieverStorage.clear();
+                    if(operation == RecieverStorageOperation.ADD) ClientRecieverStorage.addReciever(channel, BlockPos.fromLong(l));
+                    else if(operation == RecieverStorageOperation.REMOVE) ClientRecieverStorage.removeReciever(channel, BlockPos.fromLong(l));
+                }
+                for(int i : entities) {
+                    if(operation == RecieverStorageOperation.ADD) ClientRecieverStorage.addEntityReciever(channel, client.world.getEntityById(i));
+                    else if(operation == RecieverStorageOperation.REMOVE) ClientRecieverStorage.removeEntityReciever(channel, client.world.getEntityById(i));
                 }
             });
         });
