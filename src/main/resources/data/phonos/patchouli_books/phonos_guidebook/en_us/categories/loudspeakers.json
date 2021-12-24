@@ -1,5 +1,5 @@
 {
-  "name": "Loudspeakers",
+  "name": "Speakers",
   "description": "Outputting audio across your world",
-  "icon": "phonos:loudspeaker"
+  "icon": "phonos:boombox"
 }

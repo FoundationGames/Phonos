@@ -1,20 +1,21 @@
 {
   "name": "Decorative Speakers",
-  "category": "loudspeakers",
+  "category": "phonos:loudspeakers",
   "icon": "phonos:gourd_speaker",
-  "sortnum": 1,
+  "sortnum": 2,
   "pages": [
     {
       "type": "spotlight",
       "item": "phonos:gourd_speaker",
       "title": "Decorative Speakers",
 	  "link_recipe": false,
-	  "text": "Who said one type of loudspeaker was enough? You can decorate your builds with 3 other loudspeaker variants, which you can see in the album to the right."
+	  "text": "Who said one type of loudspeaker was enough? You can decorate your builds with several other loudspeaker variants, which you can see in the album to the right."
     },
 	{
       "type": "image",
 	  "images": [
-		"phonos:textures/gui/gallery/fallfest_speakers.png"
+		"phonos:textures/gui/gallery/fallfest_speakers.png",
+        "phonos:textures/gui/gallery/copper_speakers.png"
 	  ],
 	  "title": "Gallery",
 	  "border": true,
@@ -27,7 +28,8 @@
     },
 	{
       "type": "crafting",
-	  "recipe": "phonos:tiny_potato_speaker"
+      "recipe": "phonos:copper_speaker",
+	  "recipe2": "phonos:tiny_potato_speaker"
     }
   ]
 }

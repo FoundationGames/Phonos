@@ -1,6 +1,6 @@
 {
   "name": "Radio Note Blocks",
-  "category": "playing_music",
+  "category": "phonos:playing_music",
   "icon": "phonos:radio_note_block",
   "sortnum": 1,
   "pages": [

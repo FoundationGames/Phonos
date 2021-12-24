@@ -92,15 +92,6 @@ public class PhonosData {
                 "copper_speaker", 1,
                 "copper_ingot", "$redstone_chip", "#stone_crafting_materials", "iron_ingot"
         );
-        shaped(pack, "portable_speaker",
-                new String[]{
-                        "  A",
-                        " B ",
-                        "B  "
-                },
-                "portable_speaker", 1,
-                "$loudspeaker", "stick"
-        );
 
         shapeless(pack, "gourd_speaker",
                 "gourd_speaker", 1,

@@ -1,6 +1,6 @@
 {
   "name": "Note Block Tuners",
-  "category": "tuning_tools",
+  "category": "phonos:tuning_tools",
   "icon": "phonos:note_block_tuner{TunerData:{Mode:0,Note:5}}",
   "sortnum": 1,
   "pages": [
@@ -22,8 +22,7 @@
     },
 	{
       "type": "crafting",
-	  "recipe": "phonos:note_block_tuner_0",
-	  "recipe2": "phonos:note_block_tuner_1"
+	  "recipe": "phonos:note_block_tuner"
     }
   ]
 }

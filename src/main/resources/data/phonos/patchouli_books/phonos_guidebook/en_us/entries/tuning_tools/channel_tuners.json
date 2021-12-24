@@ -1,6 +1,6 @@
 {
   "name": "Channel Tuners",
-  "category": "tuning_tools",
+  "category": "phonos:tuning_tools",
   "icon": "phonos:channel_tuner{TunerData:{Channel:16}}",
   "sortnum": 1,
   "pages": [
@@ -22,8 +22,7 @@
     },
 	{
       "type": "crafting",
-	  "recipe": "phonos:channel_tuner_0",
-	  "recipe2": "phonos:channel_tuner_1"
+	  "recipe": "phonos:channel_tuner"
     }
   ]
 }

@@ -1,6 +1,6 @@
 {
-  "name": "Using Loudspeakers",
-  "category": "loudspeakers",
+  "name": "Using Speakers",
+  "category": "phonos:loudspeakers",
   "icon": "phonos:loudspeaker",
   "sortnum": 0,
   "pages": [
@@ -20,9 +20,27 @@
 	  "border": true,
 	  "text": "Some loudspeakers, which are tuned to channel 7, playing music."
     },
+    {
+      "type": "spotlight",
+      "item": "phonos:boombox",
+      "title": "Using Boomboxes",
+      "link_recipe": true,
+      "text": "Boomboxes function exactly like loudspeakers when placed. The channel can be adjusted by interacting with the back of the block, as long as there is space behind the boombox. Unlike loudspeakers, however, boomboxes are portable. While held, they continue to play sound and the channel can be adjusted."
+    },
+    {
+      "type": "image",
+      "images": [
+        "phonos:textures/gui/gallery/boomboxes.png",
+        "phonos:textures/gui/gallery/boombox_held.png"
+      ],
+      "title": "Gallery",
+      "border": true,
+      "text": "Boomboxes playing music when placed and when held."
+    },
 	{
       "type": "crafting",
-	  "recipe": "phonos:loudspeaker"
+      "recipe": "phonos:loudspeaker",
+      "recipe2": "phonos:boombox"
     }
   ]
 }
