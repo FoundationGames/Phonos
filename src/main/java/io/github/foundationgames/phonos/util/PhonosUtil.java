@@ -33,14 +33,13 @@ public enum PhonosUtil {;
         return -1;
     }
 
-    public static StructurePool tryAddElementToPool(Identifier targetPool, StructurePool pool, String elementId, StructurePool.Projection projection, int weight) {
+    public static void tryAddElementToPool(Identifier targetPool, StructurePool pool, String elementId, StructurePool.Projection projection, int weight) {
         if(targetPool.equals(pool.getId())) {
             var element = StructurePoolElement.ofProcessedLegacySingle(elementId, StructureProcessorLists.EMPTY).apply(projection);
             for (int i = 0; i < weight; i++) {
-                ((StructurePoolAccess)pool).getElements().add(element);
+                ((StructurePoolAccess)pool).phonos$getElements().add(element);
             }
-            ((StructurePoolAccess)pool).getElementCounts().add(Pair.of(element, weight));
+            ((StructurePoolAccess)pool).phonos$getElementCounts().add(Pair.of(element, weight));
         }
-        return pool;
     }
 }

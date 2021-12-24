@@ -1,7 +1,7 @@
 package io.github.foundationgames.phonos.network;
 
 import io.github.foundationgames.phonos.Phonos;
-import io.github.foundationgames.phonos.client.ClientRecieverStorage;
+import io.github.foundationgames.phonos.client.ClientReceiverStorage;
 import io.github.foundationgames.phonos.mixin.ClientWorldAccess;
 import io.github.foundationgames.phonos.mixin.WorldRendererAccess;
 import net.fabricmc.api.EnvType;
@@ -32,8 +32,8 @@ public final class ClientPayloadPackets {
             float pitch = buf.readFloat();
             boolean stoppable = buf.readBoolean();
             client.execute(() -> {
-                if(stoppable) ClientRecieverStorage.playStoppableSound(pos, sound, channel, volume, pitch);
-                else ClientRecieverStorage.playSound(sound, channel, volume, pitch);
+                if(stoppable) ClientReceiverStorage.playStoppableSound(pos, sound, channel, volume, pitch);
+                else ClientReceiverStorage.playSound(sound, channel, volume, pitch);
             });
         });
 
@@ -45,8 +45,8 @@ public final class ClientPayloadPackets {
             float pitch = buf.readFloat();
             boolean stoppable = buf.readBoolean();
             client.execute(() -> {
-                if(stoppable) ClientRecieverStorage.playStoppableSound(pos, sound, channel, volume, pitch);
-                else ClientRecieverStorage.playSound(sound, channel, volume, pitch);
+                if(stoppable) ClientReceiverStorage.playStoppableSound(pos, sound, channel, volume, pitch);
+                else ClientReceiverStorage.playSound(sound, channel, volume, pitch);
             });
         });
 
@@ -56,7 +56,7 @@ public final class ClientPayloadPackets {
             client.execute(() -> {
                 if(client.player.getEntityWorld() instanceof ClientWorld) {
                     ClientWorld world = (ClientWorld)client.player.getEntityWorld();
-                    Map<BlockPos, SoundInstance> songs = ((WorldRendererAccess)(((ClientWorldAccess)world).getWorldRenderer())).getPlayingSongs();
+                    Map<BlockPos, SoundInstance> songs = ((WorldRendererAccess)(((ClientWorldAccess)world).phonos$getWorldRenderer())).phonos$getPlayingSongs();
                     SoundInstance soundI = null;
                     if(sound != null) soundI = new PositionedSoundInstance(sound, SoundCategory.RECORDS, 1.8f, 1.0f, false, 0, SoundInstance.AttenuationType.LINEAR, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, false);
                     MinecraftClient.getInstance().getSoundManager().play(soundI);
@@ -76,26 +76,26 @@ public final class ClientPayloadPackets {
         ClientPlayNetworking.registerGlobalReceiver(Phonos.id("radio_channel_stop"), (client, handler, buf, sender) -> {
             BlockPos pos = buf.readBlockPos();
             int channel = buf.readInt();
-            client.execute(() -> ClientRecieverStorage.tryStopSound(pos, channel));
+            client.execute(() -> ClientReceiverStorage.tryStopSound(pos, channel));
         });
 
         ClientPlayNetworking.registerGlobalReceiver(Phonos.id("update_receivers"), (client, handler, buf, sender) -> {
-            RecieverStorageOperation operation = RecieverStorageOperation.fromByte(buf.readByte());
+            ReceiverStorageOperation operation = ReceiverStorageOperation.fromByte(buf.readByte());
             int channel = buf.readInt();
             long[] positions = buf.readLongArray();
             int[] entities = buf.readIntArray();
             client.execute(() -> {
-                if(operation == RecieverStorageOperation.CLEAR) {
-                    ClientRecieverStorage.clear();
+                if(operation == ReceiverStorageOperation.CLEAR) {
+                    ClientReceiverStorage.clear();
                     return;
                 }
                 for(long l : positions) {
-                    if(operation == RecieverStorageOperation.ADD) ClientRecieverStorage.addReciever(channel, BlockPos.fromLong(l));
-                    else if(operation == RecieverStorageOperation.REMOVE) ClientRecieverStorage.removeReciever(channel, BlockPos.fromLong(l));
+                    if(operation == ReceiverStorageOperation.ADD) ClientReceiverStorage.addReceiver(channel, BlockPos.fromLong(l));
+                    else if(operation == ReceiverStorageOperation.REMOVE) ClientReceiverStorage.removeReceiver(channel, BlockPos.fromLong(l));
                 }
                 for(int i : entities) {
-                    if(operation == RecieverStorageOperation.ADD) ClientRecieverStorage.addEntityReciever(channel, client.world.getEntityById(i));
-                    else if(operation == RecieverStorageOperation.REMOVE) ClientRecieverStorage.removeEntityReciever(channel, client.world.getEntityById(i));
+                    if(operation == ReceiverStorageOperation.ADD) ClientReceiverStorage.addEntityReceiver(channel, client.world.getEntityById(i));
+                    else if(operation == ReceiverStorageOperation.REMOVE) ClientReceiverStorage.removeEntityReceiver(channel, client.world.getEntityById(i));
                 }
             });
         });

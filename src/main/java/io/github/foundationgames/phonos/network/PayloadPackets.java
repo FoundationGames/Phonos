@@ -1,7 +1,5 @@
 package io.github.foundationgames.phonos.network;
 
-import java.util.Arrays;
-
 import io.github.foundationgames.phonos.Phonos;
 import io.github.foundationgames.phonos.block.entity.RadioJukeboxBlockEntity;
 import io.github.foundationgames.phonos.screen.CustomMusicDiscGuiDescription;
@@ -56,7 +54,7 @@ public final class PayloadPackets {
         ServerPlayNetworking.send(player, Phonos.id("radio_channel_stop"), buf);
     }
 
-    public static void sendRecieversUpdate(ServerPlayerEntity player, RecieverStorageOperation operation, int channel, long[] positions, int[] entities) {
+    public static void sendReceiversUpdate(ServerPlayerEntity player, ReceiverStorageOperation operation, int channel, long[] positions, int[] entities) {
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
         buf.writeByte(operation.asByte());
         buf.writeInt(channel);

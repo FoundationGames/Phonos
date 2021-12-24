@@ -3,7 +3,7 @@ package io.github.foundationgames.phonos;
 import io.github.foundationgames.phonos.block.PhonosBlocks;
 import io.github.foundationgames.phonos.block.RadioNoteBlock;
 import io.github.foundationgames.phonos.block.SoundPlayReceivable;
-import io.github.foundationgames.phonos.client.ClientRecieverStorage;
+import io.github.foundationgames.phonos.client.ClientReceiverStorage;
 import io.github.foundationgames.phonos.entity.SoundPlayEntityReceivable;
 import io.github.foundationgames.phonos.item.PhonosItems;
 import io.github.foundationgames.phonos.network.ClientPayloadPackets;
@@ -18,16 +18,12 @@ import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.item.UnclampedModelPredicateProvider;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Random;
 
@@ -42,7 +38,7 @@ public class PhonosClient implements ClientModInitializer {
         PhonosAssets.init();
         // Phonos.LOG.info("Success! \n");
 
-        ClientRecieverStorage.registerPlaySoundCallback(((sound, blocks, entities, channel, volume, pitch, stoppable) -> {
+        ClientReceiverStorage.registerPlaySoundCallback(((sound, blocks, entities, channel, volume, pitch, stoppable) -> {
             if(!stoppable) {
                 BlockPos.Mutable m = new BlockPos.Mutable();
                 PlayerEntity player = MinecraftClient.getInstance().player;
@@ -76,7 +72,7 @@ public class PhonosClient implements ClientModInitializer {
         // Phonos.LOG.info("Registering Model Predicates...");
         FabricModelPredicateProviderRegistry.register(PhonosItems.CHANNEL_TUNER, new Identifier("tuned_channel"), (stack, world, entity, seed) -> (float)stack.getOrCreateSubNbt("TunerData").getInt("Channel") / 19);
         FabricModelPredicateProviderRegistry.register(PhonosItems.NOTE_BLOCK_TUNER, new Identifier("tuner_mode"), (stack, world, entity, seed) -> (float)stack.getOrCreateSubNbt("TunerData").getInt("Mode") / 2);
-        FabricModelPredicateProviderRegistry.register(PhonosItems.PORTABLE_SPEAKER, new Identifier("radio_channel"), (stack, world, entity, seed) -> (float)stack.getOrCreateSubNbt("RadioData").getInt("Channel") / 19);
+        FabricModelPredicateProviderRegistry.register(PhonosItems.BOOMBOX, new Identifier("radio_channel"), (stack, world, entity, seed) -> (float)stack.getOrCreateSubNbt("RadioData").getInt("Channel") / 19);
         // Phonos.LOG.info("Success!");
 
         // Phonos.LOG.info("Registering Color Providers...");
@@ -95,6 +91,7 @@ public class PhonosClient implements ClientModInitializer {
 
         // Phonos.LOG.info("Putting to render layers...");
         BlockRenderLayerMap.INSTANCE.putBlock(PhonosBlocks.RADIO_NOTE_BLOCK, RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(PhonosBlocks.BOOMBOX, RenderLayer.getCutout());
         // Phonos.LOG.info("Success!");
 
         // Phonos.LOG.info("Registering GUI Screens...");

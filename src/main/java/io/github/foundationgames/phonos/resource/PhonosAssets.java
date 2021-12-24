@@ -27,15 +27,14 @@ public class PhonosAssets {
                 Phonos.id("item/channel_tuner")
         );
         
-        // CHANNEL TUNER
-        JModel psModel = new JModel().parent("item/handheld").textures(JModel.textures().var("layer0", "phonos:item/portable_speaker"));
+        // BOOMBOX ITEM
+        JModel bbModel = new JModel().parent("phonos:block/template_boombox").textures(JModel.textures().var("display", "phonos:block/boombox_display"));
         for (int i = 0; i < 20; i++) {
-            psModel.addOverride(JModel.override(JModel.condition().parameter("radio_channel", (float)i / 19), Phonos.id("item/portable_speaker_"+i)));
-            pack.addModel(new JModel().parent("item/handheld").textures(JModel.textures().var("layer0", "phonos:item/portable_speaker_"+i)), Phonos.id("item/portable_speaker_"+i));
+            bbModel.addOverride(JModel.override(JModel.condition().parameter("radio_channel", (float)i / 19), Phonos.id("block/boombox_tuned_"+i)));
         }
         pack.addModel(
-                psModel,
-                Phonos.id("item/portable_speaker")
+                bbModel,
+                Phonos.id("item/boombox")
         );
 
         // REDSTONE CHIP
@@ -135,6 +134,9 @@ public class PhonosAssets {
                     .var("bottom", "phonos:block/radio_note_block_bottom")
                     .var("top", "phonos:block/speaker_top_"+i)
             ), Phonos.id("block/radio_note_block_tuned_"+i));
+            pack.addModel(new JModel().parent("phonos:block/template_boombox").textures(new JTextures()
+                    .var("display", "phonos:block/boombox_display_"+i)
+            ), Phonos.id("block/boombox_tuned_"+i));
         }
 
         // TUNABLE BLOCKSTATES
@@ -168,6 +170,15 @@ public class PhonosAssets {
             jukeboxVar.put("playing=false,channel="+i, JState.model(Phonos.id("block/radio_jukebox_off_tuned_"+i)));
         }
         pack.addBlockState(new JState().add(jukeboxVar), Phonos.id("radio_jukebox"));
+
+        var boomboxVar = JState.variant();
+        for (int i = 0; i < 20; i++) {
+            boomboxVar.put("facing=north,channel="+i, JState.model(Phonos.id("block/boombox_tuned_"+i)).y(0));
+            boomboxVar.put("facing=south,channel="+i, JState.model(Phonos.id("block/boombox_tuned_"+i)).y(180));
+            boomboxVar.put("facing=east,channel="+i, JState.model(Phonos.id("block/boombox_tuned_"+i)).y(90));
+            boomboxVar.put("facing=west,channel="+i, JState.model(Phonos.id("block/boombox_tuned_"+i)).y(270));
+        }
+        pack.addBlockState(new JState().add(boomboxVar), Phonos.id("boombox"));
 
         // ITEM MODELS FOR SPEAKERS
         addSidedBlockModel(

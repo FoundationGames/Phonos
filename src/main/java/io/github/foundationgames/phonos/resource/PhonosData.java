@@ -57,6 +57,14 @@ public class PhonosData {
                 "radio_jukebox", 1,
                 "#planks", "iron_ingot", "$redstone_chip", "#stone_crafting_materials", "diamond"
         );
+        shaped(pack, "boombox",
+                new String[]{
+                        " C ",
+                        "ABA"
+                },
+                "boombox", 1,
+                "$loudspeaker", "#planks", "stick"
+        );
         shaped(pack, "channel_tuner",
                 new String[]{
                         "  A",

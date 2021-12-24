@@ -11,5 +11,5 @@ import java.util.Map;
 @Mixin(WorldRenderer.class)
 public interface WorldRendererAccess {
     @Accessor(value = "playingSongs")
-    Map<BlockPos, SoundInstance> getPlayingSongs();
+    Map<BlockPos, SoundInstance> phonos$getPlayingSongs();
 }

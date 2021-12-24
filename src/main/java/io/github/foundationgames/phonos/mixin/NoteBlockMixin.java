@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(NoteBlock.class)
 public class NoteBlockMixin {
     @Inject(method = "onUse", at = @At("HEAD"), cancellable = true)
-    public void checkIfTuner(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir) {
+    public void phonos$cancelUseActionIfTuner(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir) {
         if(player.getStackInHand(hand).getItem() instanceof NoteBlockTunerItem) cir.setReturnValue(ActionResult.PASS);
     }
 }

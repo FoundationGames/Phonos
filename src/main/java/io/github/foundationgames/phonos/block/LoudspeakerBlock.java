@@ -1,6 +1,6 @@
 package io.github.foundationgames.phonos.block;
 
-import io.github.foundationgames.phonos.client.ClientRecieverStorage;
+import io.github.foundationgames.phonos.client.ClientReceiverStorage;
 import io.github.foundationgames.phonos.item.ChannelTunerItem;
 import io.github.foundationgames.phonos.util.PhonosUtil;
 import io.github.foundationgames.phonos.world.RadioChannelState;
@@ -46,8 +46,8 @@ public class LoudspeakerBlock extends Block implements SoundPlayReceivable, Radi
         super.onStateReplaced(state, world, pos, newState, moved);
         if(world instanceof ServerWorld) {
             RadioChannelState pstate = PhonosUtil.getRadioState((ServerWorld)world);
-            if(state.isOf(this)) pstate.removeReciever(state.get(CHANNEL), pos);
-            if(newState.isOf(this)) pstate.addReciever(newState.get(CHANNEL), pos);
+            if(state.isOf(this)) pstate.removeReceiver(state.get(CHANNEL), pos);
+            if(newState.isOf(this)) pstate.addReceiver(newState.get(CHANNEL), pos);
         }
     }
 
@@ -66,7 +66,7 @@ public class LoudspeakerBlock extends Block implements SoundPlayReceivable, Radi
     public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
         super.randomTick(state, world, pos, random);
         RadioChannelState s = PhonosUtil.getRadioState(world);
-        if(!s.hasReciever(state.get(CHANNEL), pos)) s.addReciever(state.get(CHANNEL), pos);
+        if(!s.hasReceiver(state.get(CHANNEL), pos)) s.addReceiver(state.get(CHANNEL), pos);
     }
 
     @Override
@@ -83,7 +83,7 @@ public class LoudspeakerBlock extends Block implements SoundPlayReceivable, Radi
     @Override
     @Environment(EnvType.CLIENT)
     public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
-        if(ClientRecieverStorage.isChannelPlaying(state.get(CHANNEL))) noteParticle(world, pos);
+        if(ClientReceiverStorage.isChannelPlaying(state.get(CHANNEL))) noteParticle(world, pos);
     }
 
     protected void noteParticle(World world, BlockPos pos) {

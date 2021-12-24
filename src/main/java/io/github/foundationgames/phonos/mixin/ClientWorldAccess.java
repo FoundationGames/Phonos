@@ -12,5 +12,5 @@ import java.util.Map;
 @Mixin(ClientWorld.class)
 public interface ClientWorldAccess {
     @Accessor(value = "worldRenderer")
-    WorldRenderer getWorldRenderer();
+    WorldRenderer phonos$getWorldRenderer();
 }
