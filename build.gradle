@@ -1,20 +1,17 @@
 plugins {
-	id 'fabric-loom' version '0.8-SNAPSHOT'
+	id 'fabric-loom' version '0.10-SNAPSHOT'
 	id 'maven-publish'
 }
 
-sourceCompatibility = JavaVersion.VERSION_16
-targetCompatibility = JavaVersion.VERSION_16
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
 
 archivesBaseName = project.archives_base_name
 version = project.mod_version
 group = project.maven_group
 
 repositories {
-	maven {
-		name = "CottonMC"
-		url = "https://server.bbkr.space/artifactory/libs-release"
-	}
+	maven { url = "https://server.bbkr.space/artifactory/libs-release" }
 	maven { url = "https://storage.googleapis.com/devan-maven/" }
 }
 
@@ -34,10 +31,6 @@ dependencies {
 	// LibGui because yes
 	modImplementation "io.github.cottonmc:LibGui:${project.libgui_version}"
 	include "io.github.cottonmc:LibGui:${project.libgui_version}"
-
-	//patchouli
-	//modImplementation "vazkii.patchouli:Patchouli:1.16.4-48-FABRIC"
-	//not 1.17 compatible
 
 	// PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
 	// You may need to force-disable transitiveness on them.

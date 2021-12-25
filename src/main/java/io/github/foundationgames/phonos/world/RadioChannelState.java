@@ -116,7 +116,7 @@ public class RadioChannelState extends PersistentState {
     }
 
     public static void sendPlayerJoinPackets(ServerPlayerEntity player) {
-        RadioChannelState state = PhonosUtil.getRadioState(player.getServerWorld());
+        RadioChannelState state = PhonosUtil.getRadioState(player.getWorld());
         for (int channel : state.blockStorage.keySet()) {
             PayloadPackets.sendReceiversUpdate(player, ReceiverStorageOperation.CLEAR, channel, new long[]{}, new int[] {});
         }

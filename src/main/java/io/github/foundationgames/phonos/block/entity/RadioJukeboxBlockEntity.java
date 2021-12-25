@@ -5,6 +5,7 @@ import io.github.foundationgames.phonos.Phonos;
 import io.github.foundationgames.phonos.block.PhonosBlocks;
 import io.github.foundationgames.phonos.block.RadioJukeboxBlock;
 import io.github.foundationgames.phonos.item.CustomMusicDiscItem;
+import io.github.foundationgames.phonos.network.PayloadPackets;
 import io.github.foundationgames.phonos.screen.RadioJukeboxGuiDescription;
 import io.github.foundationgames.phonos.util.PhonosUtil;
 import io.github.foundationgames.phonos.world.RadioChannelState;
@@ -13,7 +14,6 @@ import it.unimi.dsi.fastutil.ints.Int2ByteMap;
 import it.unimi.dsi.fastutil.ints.Int2ByteOpenHashMap;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
@@ -28,7 +28,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.MusicDiscItem;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -40,12 +43,13 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class RadioJukeboxBlockEntity extends BlockEntity implements ExtendedScreenHandlerFactory, SidedInventory, BlockEntityClientSerializable {
+public class RadioJukeboxBlockEntity extends BlockEntity implements ExtendedScreenHandlerFactory, SidedInventory {
     private final DefaultedList<ItemStack> items = DefaultedList.ofSize(6, ItemStack.EMPTY);
     public float pitch = 1.0f;
     public boolean doShuffle = false;
@@ -196,7 +200,7 @@ public class RadioJukeboxBlockEntity extends BlockEntity implements ExtendedScre
     }
 
     @Override
-    public NbtCompound writeNbt(NbtCompound nbt) {
+    public void writeNbt(NbtCompound nbt) {
         super.writeNbt(nbt);
         nbt.putFloat("Pitch", pitch);
         nbt.putBoolean("DoShuffle", doShuffle);
@@ -214,7 +218,6 @@ public class RadioJukeboxBlockEntity extends BlockEntity implements ExtendedScre
         playingMusic.putInt("Track", playingSong);
         playingMusic.putInt("Progress", songProgress);
         nbt.put("PlayingMusic", playingMusic);
-        return nbt;
     }
 
     public boolean isPlaying() {
@@ -274,6 +277,12 @@ public class RadioJukeboxBlockEntity extends BlockEntity implements ExtendedScre
             setDuration(i, fdiscs.get(i).getSecond());
         }
         if(!world.isClient()) sync();
+    }
+
+    private void sync() {
+        if (world instanceof ServerWorld sWorld) {
+            sWorld.getPlayers(player -> player.getBlockPos().isWithinDistance(this.getPos(), 1000)).forEach(player -> player.networkHandler.sendPacket(this.toUpdatePacket()));
+        }
     }
 
     public int getDuration(int slot) {
@@ -382,14 +391,10 @@ public class RadioJukeboxBlockEntity extends BlockEntity implements ExtendedScre
 
     // --------------------------------------------------------------------
 
+    @Nullable
     @Override
-    public void fromClientTag(NbtCompound NbtCompound) {
-        this.readNbt(NbtCompound);
-    }
-
-    @Override
-    public NbtCompound toClientTag(NbtCompound NbtCompound) {
-        return this.writeNbt(NbtCompound);
+    public Packet<ClientPlayPacketListener> toUpdatePacket() {
+        return BlockEntityUpdateS2CPacket.create(this, BlockEntity::createNbt);
     }
 
     @Override
@@ -458,6 +463,7 @@ public class RadioJukeboxBlockEntity extends BlockEntity implements ExtendedScre
 
     @Override
     public ScreenHandler createMenu(int syncId, PlayerInventory inv, PlayerEntity player) {
+        sync();
         return new RadioJukeboxGuiDescription(syncId, inv, ScreenHandlerContext.create(world, pos), this);
     }
 

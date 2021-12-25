@@ -10,9 +10,9 @@ import java.util.Optional;
 import java.util.Random;
 
 public class OxidizableLoudspeakerBlock extends LoudspeakerBlock implements Oxidizable {
-    private final OxidizationLevel stage;
+    private final OxidationLevel stage;
 
-    public OxidizableLoudspeakerBlock(OxidizationLevel stage, Settings settings) {
+    public OxidizableLoudspeakerBlock(OxidationLevel stage, Settings settings) {
         super(settings);
         this.stage = stage;
     }
@@ -32,7 +32,7 @@ public class OxidizableLoudspeakerBlock extends LoudspeakerBlock implements Oxid
     }
 
     @Override
-    public OxidizationLevel getDegradationLevel() {
+    public OxidationLevel getDegradationLevel() {
         return this.stage;
     }
 }
