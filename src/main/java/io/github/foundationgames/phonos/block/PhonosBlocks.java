@@ -14,14 +14,16 @@ import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.registry.Registry;
 
 public class PhonosBlocks {
+    private static final AbstractBlock.Settings BOOMBOX_SETTINGS = FabricBlockSettings.copy(Blocks.JUKEBOX).sounds(BoomboxBlock.SOUNDS).strength(0F, 5F);
 
     public static final Block LOUDSPEAKER = register(new LoudspeakerBlock(FabricBlockSettings.copy(Blocks.JUKEBOX)), "loudspeaker");
     public static final Block RADIO_JUKEBOX = register(new RadioJukeboxBlock(FabricBlockSettings.copy(Blocks.JUKEBOX)), "radio_jukebox");
     public static final Block RADIO_NOTE_BLOCK = register(new RadioNoteBlock(FabricBlockSettings.copy(Blocks.JUKEBOX)), "radio_note_block");
-    public static final Block BOOMBOX = Registry.register(Registry.BLOCK, Phonos.id("boombox"), new BoomboxBlock(FabricBlockSettings.copy(Blocks.JUKEBOX).sounds(BoomboxBlock.SOUNDS).strength(0F, 5F)));
+    public static final Block BOOMBOX = Registry.register(Registry.BLOCK, Phonos.id("boombox"), new BoomboxBlock(BOOMBOX_SETTINGS));
 
     public static final Block GOURD_SPEAKER = registerExtra(new LoudspeakerBlock(AbstractBlock.Settings.of(Material.WOOD, MapColor.ORANGE).strength(1.0F).sounds(BlockSoundGroup.WOOD)), "gourd_speaker");
     public static final Block SPEAK_O_LANTERN = registerExtra(new LoudspeakerBlock(AbstractBlock.Settings.of(Material.WOOD, MapColor.ORANGE).strength(1.0F).sounds(BlockSoundGroup.WOOD).luminance(state -> 15)), "speak_o_lantern");
+    public static final Block FESTIVE_BOOMBOX = Registry.register(Registry.BLOCK, Phonos.id("festive_boombox"), new BoomboxBlock(BOOMBOX_SETTINGS));
     public static final Block TINY_POTATO_SPEAKER = registerExtra(new PotatoSpeakerBlock(AbstractBlock.Settings.of(Material.WOOD, MapColor.CLEAR).strength(0.3F).sounds(BlockSoundGroup.WOOD)), "tiny_potato_speaker");
     public static final Block OXIDIZED_COPPER_SPEAKER = new OxidizableLoudspeakerBlock(Oxidizable.OxidizationLevel.OXIDIZED, FabricBlockSettings.copy(Blocks.OXIDIZED_COPPER));
     public static final Block WEATHERED_COPPER_SPEAKER = new OxidizableLoudspeakerBlock(Oxidizable.OxidizationLevel.WEATHERED, FabricBlockSettings.copy(Blocks.WEATHERED_COPPER));

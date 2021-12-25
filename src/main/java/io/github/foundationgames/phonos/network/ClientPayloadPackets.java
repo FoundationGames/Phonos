@@ -1,6 +1,7 @@
 package io.github.foundationgames.phonos.network;
 
 import io.github.foundationgames.phonos.Phonos;
+import io.github.foundationgames.phonos.PhonosClient;
 import io.github.foundationgames.phonos.client.ClientReceiverStorage;
 import io.github.foundationgames.phonos.mixin.ClientWorldAccess;
 import io.github.foundationgames.phonos.mixin.WorldRendererAccess;

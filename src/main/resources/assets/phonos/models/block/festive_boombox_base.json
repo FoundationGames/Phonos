@@ -1,0 +1,7 @@
+{
+	"parent": "phonos:block/template_boombox",
+	"textures": {
+		"side": "phonos:block/festive_boombox_side",
+		"top_bottom": "phonos:block/festive_boombox_top_bottom"
+	}
+}

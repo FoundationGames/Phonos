@@ -5,9 +5,11 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.client.sound.SoundManager;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
@@ -15,6 +17,7 @@ import net.minecraft.util.math.BlockPos;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +54,23 @@ public class ClientReceiverStorage {
     public static void clear() {
         blockStorage.clear();
         entityStorage.clear();
+    }
+
+    public static void garbageCollectEntities() {
+        Set<Entity> removed = new HashSet<>();
+        for (int channel : entityStorage.keySet()) {
+            removed.clear();
+            for (var entity : entityStorage.get(channel)) {
+                if (entity.isRemoved()) removed.add(entity);
+            }
+            for (var entity : removed) {
+                entityStorage.get(channel).remove(entity);
+            }
+        }
+    }
+
+    public static void tick(ClientWorld world) {
+        garbageCollectEntities();
     }
 
     public static void playSound(SoundEvent sound, int channel, float volume, float pitch) {
@@ -108,7 +128,9 @@ public class ClientReceiverStorage {
         playSoundCallbacks.add(consumer);
     }
 
-    public static void init() {}
+    public static void init() {
+        ClientTickEvents.END_WORLD_TICK.register(ClientReceiverStorage::tick);
+    }
 
     @FunctionalInterface
     public interface SoundConsumer {

@@ -19,7 +19,7 @@ public enum PhonosUtil {;
             var state = new RadioChannelState(world);
             state.readNbt(tag);
             return state;
-        }, () -> new RadioChannelState(world), "radio_channel_state");
+        }, () -> new RadioChannelState(world), RadioChannelState.ID);
     }
 
     public static <T> T create(Supplier<T> creator) {

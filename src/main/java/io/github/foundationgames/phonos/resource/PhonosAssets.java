@@ -27,15 +27,9 @@ public class PhonosAssets {
                 Phonos.id("item/channel_tuner")
         );
         
-        // BOOMBOX ITEM
-        JModel bbModel = new JModel().parent("phonos:block/template_boombox").textures(JModel.textures().var("display", "phonos:block/boombox_display"));
-        for (int i = 0; i < 20; i++) {
-            bbModel.addOverride(JModel.override(JModel.condition().parameter("radio_channel", (float)i / 19), Phonos.id("block/boombox_tuned_"+i)));
-        }
-        pack.addModel(
-                bbModel,
-                Phonos.id("item/boombox")
-        );
+        // BOOMBOX ITEMS
+        addBoomboxItem(pack, "boombox");
+        addBoomboxItem(pack, "festive_boombox");
 
         // REDSTONE CHIP
         addGeneratedItem(pack, "redstone_chip");
@@ -128,15 +122,14 @@ public class PhonosAssets {
             addCopperSpeakerModels(pack, "weathered_", i);
             addCopperSpeakerModels(pack, "oxidized_", i);
             addTinyPotatoSpeakerModel(pack, i);
+            addBoomboxModels(pack, "boombox", i);
+            addBoomboxModels(pack, "festive_boombox", i);
             pack.addModel(new JModel().parent("phonos:block/radio_note_block_base").textures(new JTextures()
                     .var("side", "phonos:block/radio_note_block_side")
                     .var("overlay", "phonos:block/radio_note_block_overlay")
                     .var("bottom", "phonos:block/radio_note_block_bottom")
                     .var("top", "phonos:block/speaker_top_"+i)
             ), Phonos.id("block/radio_note_block_tuned_"+i));
-            pack.addModel(new JModel().parent("phonos:block/template_boombox").textures(new JTextures()
-                    .var("display", "phonos:block/boombox_display_"+i)
-            ), Phonos.id("block/boombox_tuned_"+i));
         }
 
         // TUNABLE BLOCKSTATES
@@ -171,14 +164,8 @@ public class PhonosAssets {
         }
         pack.addBlockState(new JState().add(jukeboxVar), Phonos.id("radio_jukebox"));
 
-        var boomboxVar = JState.variant();
-        for (int i = 0; i < 20; i++) {
-            boomboxVar.put("facing=north,channel="+i, JState.model(Phonos.id("block/boombox_tuned_"+i)).y(0));
-            boomboxVar.put("facing=south,channel="+i, JState.model(Phonos.id("block/boombox_tuned_"+i)).y(180));
-            boomboxVar.put("facing=east,channel="+i, JState.model(Phonos.id("block/boombox_tuned_"+i)).y(90));
-            boomboxVar.put("facing=west,channel="+i, JState.model(Phonos.id("block/boombox_tuned_"+i)).y(270));
-        }
-        pack.addBlockState(new JState().add(boomboxVar), Phonos.id("boombox"));
+        addBoomboxBlockState(pack, "boombox");
+        addBoomboxBlockState(pack, "festive_boombox");
 
         // ITEM MODELS FOR SPEAKERS
         addSidedBlockModel(
@@ -223,6 +210,17 @@ public class PhonosAssets {
         pack.addModel(new JModel().parent("item/generated").textures(JModel.textures().var("layer0", "phonos:item/"+item)), Phonos.id("item/"+item));
     }
 
+    public static void addBoomboxItem(RuntimeResourcePack pack, String boomboxName) {
+        JModel bbModel = new JModel().parent("phonos:block/"+boomboxName+"_base").textures(JModel.textures().var("display", "phonos:block/"+boomboxName+"_display"));
+        for (int i = 0; i < 20; i++) {
+            bbModel.addOverride(JModel.override(JModel.condition().parameter("radio_channel", (float)i / 19), Phonos.id("block/"+boomboxName+"_tuned_"+i)));
+        }
+        pack.addModel(
+                bbModel,
+                Phonos.id("item/"+boomboxName)
+        );
+    }
+
     public static void addSidedBlockModel(RuntimeResourcePack pack, String path, Identifier bottom, Identifier side, Identifier top) {
         pack.addModel(
                 new JModel()
@@ -262,6 +260,12 @@ public class PhonosAssets {
         }
     }
 
+    public static void addBoomboxModels(RuntimeResourcePack pack, String boomboxName, int iter) {
+        pack.addModel(new JModel().parent("phonos:block/"+boomboxName+"_base").textures(new JTextures()
+                .var("display", "phonos:block/"+boomboxName+"_display_"+iter)
+        ), Phonos.id("block/"+boomboxName+"_tuned_"+iter));
+    }
+
     public static void addTinyPotatoSpeakerModel(RuntimeResourcePack pack, int iter) {
         if (iter == 0) {
             pack.addModel(new JModel().parent("phonos:block/tiny_potato_speaker_base").textures(JModel.textures()
@@ -281,6 +285,17 @@ public class PhonosAssets {
             variants.put("channel="+i, new JBlockModel(Phonos.id(prefix+i)));
         }
         pack.addBlockState(new JState().add(variants), Phonos.id(path));
+    }
+
+    public static void addBoomboxBlockState(RuntimeResourcePack pack, String boomboxName) {
+        var variant = JState.variant();
+        for (int i = 0; i < 20; i++) {
+            variant.put("facing=north,channel="+i, JState.model(Phonos.id("block/"+boomboxName+"_tuned_"+i)).y(0));
+            variant.put("facing=south,channel="+i, JState.model(Phonos.id("block/"+boomboxName+"_tuned_"+i)).y(180));
+            variant.put("facing=east,channel="+i, JState.model(Phonos.id("block/"+boomboxName+"_tuned_"+i)).y(90));
+            variant.put("facing=west,channel="+i, JState.model(Phonos.id("block/"+boomboxName+"_tuned_"+i)).y(270));
+        }
+        pack.addBlockState(new JState().add(variant), Phonos.id(boomboxName));
     }
 
     public static void addBlockItem(RuntimeResourcePack pack, String path, String parent) {

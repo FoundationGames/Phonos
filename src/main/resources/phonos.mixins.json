@@ -4,11 +4,11 @@
   "package": "io.github.foundationgames.phonos.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "EntityMixin",
     "HoneycombItemMixin",
     "LivingEntityMixin",
     "NoteBlockMixin",
     "OxidizableMixin",
+    "PersistentStateManagerAccess",
     "PlayerManagerMixin",
     "ServerPlayerEntityMixin",
     "StructurePoolAccess",

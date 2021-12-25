@@ -3,13 +3,17 @@ package io.github.foundationgames.phonos;
 import io.github.foundationgames.phonos.block.PhonosBlocks;
 import io.github.foundationgames.phonos.block.entity.RadioJukeboxBlockEntity;
 import io.github.foundationgames.phonos.item.PhonosItems;
+import io.github.foundationgames.phonos.mixin.PersistentStateManagerAccess;
 import io.github.foundationgames.phonos.network.PayloadPackets;
 import io.github.foundationgames.phonos.resource.PhonosData;
 import io.github.foundationgames.phonos.screen.CustomMusicDiscGuiDescription;
 import io.github.foundationgames.phonos.screen.RadioJukeboxGuiDescription;
+import io.github.foundationgames.phonos.util.PhonosUtil;
 import io.github.foundationgames.phonos.village.TechnicianVillagerProfession;
+import io.github.foundationgames.phonos.world.RadioChannelState;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -44,20 +48,20 @@ public class Phonos implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        //LOG.info("Registering Common Packets...");
         PayloadPackets.initCommon();
-        //LOG.info("Success!");
-        //LOG.info("Registering Blocks and Items...");
+
         PhonosBlocks.init();
         PhonosItems.init();
-        //LOG.info("Success!");
-        //LOG.info("Registering Villager Profession...");
         TechnicianVillagerProfession.init();
-        //LOG.info("Success!");
-        //LOG.info("Creating Datapack...");
+
         PhonosData.registerData();
-        //LOG.info("Success!");
-        //LOG.info("Finished loading Phonos Common");
+
+        ServerTickEvents.END_WORLD_TICK.register(world -> {
+            var pStates = world.getPersistentStateManager();
+            if (((PersistentStateManagerAccess)pStates).phonos$getLoadedStates().containsKey(RadioChannelState.ID)) {
+                PhonosUtil.getRadioState(world).tick();
+            }
+        });
     }
 
     public static Identifier id(String path) {

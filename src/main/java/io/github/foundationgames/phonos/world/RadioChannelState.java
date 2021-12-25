@@ -14,10 +14,13 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.PersistentState;
 
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class RadioChannelState extends PersistentState {
+    public static final String ID = "radio_channel_state";
+
     private final Int2ObjectMap<LinkedHashSet<Long>> blockStorage = new Int2ObjectOpenHashMap<>();
     private final Int2ObjectMap<LinkedHashSet<Entity>> entityStorage = new Int2ObjectOpenHashMap<>();
     private final ServerWorld world;
@@ -48,6 +51,7 @@ public class RadioChannelState extends PersistentState {
             long[] la = blockStorage.get(k).stream().mapToLong(l -> l).toArray();
             tag.putLongArray(Integer.toString(k), la);
         }
+
         return tag;
     }
 
@@ -83,12 +87,22 @@ public class RadioChannelState extends PersistentState {
         this.setDirty(true);
     }
 
-    public void purgeEntityReceiver(Entity ent) {
+    // Does not sync to client, as client will also garbage collect on its own
+    public void garbageCollectEntities() {
+        Set<Entity> removed = new HashSet<>();
         for (int channel : entityStorage.keySet()) {
-            if (entityStorage.get(channel).contains(ent)) {
-                removeEntityReceiver(channel, ent);
+            removed.clear();
+            for (var entity : entityStorage.get(channel)) {
+                if (entity.isRemoved()) removed.add(entity);
+            }
+            for (var entity : removed) {
+                entityStorage.get(channel).remove(entity);
             }
         }
+    }
+
+    public void tick() {
+        garbageCollectEntities();
     }
     
     public boolean hasReceiver(int channel, BlockPos pos) {

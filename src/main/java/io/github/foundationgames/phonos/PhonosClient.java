@@ -38,6 +38,7 @@ public class PhonosClient implements ClientModInitializer {
         PhonosAssets.init();
         // Phonos.LOG.info("Success! \n");
 
+        ClientReceiverStorage.init();
         ClientReceiverStorage.registerPlaySoundCallback(((sound, blocks, entities, channel, volume, pitch, stoppable) -> {
             if(!stoppable) {
                 BlockPos.Mutable m = new BlockPos.Mutable();
@@ -73,6 +74,7 @@ public class PhonosClient implements ClientModInitializer {
         FabricModelPredicateProviderRegistry.register(PhonosItems.CHANNEL_TUNER, new Identifier("tuned_channel"), (stack, world, entity, seed) -> (float)stack.getOrCreateSubNbt("TunerData").getInt("Channel") / 19);
         FabricModelPredicateProviderRegistry.register(PhonosItems.NOTE_BLOCK_TUNER, new Identifier("tuner_mode"), (stack, world, entity, seed) -> (float)stack.getOrCreateSubNbt("TunerData").getInt("Mode") / 2);
         FabricModelPredicateProviderRegistry.register(PhonosItems.BOOMBOX, new Identifier("radio_channel"), (stack, world, entity, seed) -> (float)stack.getOrCreateSubNbt("RadioData").getInt("Channel") / 19);
+        FabricModelPredicateProviderRegistry.register(PhonosItems.FESTIVE_BOOMBOX, new Identifier("radio_channel"), (stack, world, entity, seed) -> (float)stack.getOrCreateSubNbt("RadioData").getInt("Channel") / 19);
         // Phonos.LOG.info("Success!");
 
         // Phonos.LOG.info("Registering Color Providers...");
@@ -92,6 +94,7 @@ public class PhonosClient implements ClientModInitializer {
         // Phonos.LOG.info("Putting to render layers...");
         BlockRenderLayerMap.INSTANCE.putBlock(PhonosBlocks.RADIO_NOTE_BLOCK, RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(PhonosBlocks.BOOMBOX, RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(PhonosBlocks.FESTIVE_BOOMBOX, RenderLayer.getCutout());
         // Phonos.LOG.info("Success!");
 
         // Phonos.LOG.info("Registering GUI Screens...");

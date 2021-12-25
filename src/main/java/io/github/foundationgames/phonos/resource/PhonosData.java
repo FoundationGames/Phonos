@@ -101,6 +101,10 @@ public class PhonosData {
                 "speak_o_lantern", 1,
                 "$loudspeaker", "jack_o_lantern"
         );
+        shapeless(pack, "festive_boombox",
+                "festive_boombox", 1,
+                "sweet_berries", "$boombox", "sweet_berries"
+        );
         shapeless(pack, "tiny_potato_speaker",
                 "tiny_potato_speaker", 1,
                 "$loudspeaker", "potato", "#flowers"

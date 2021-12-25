@@ -2,7 +2,6 @@ package io.github.foundationgames.phonos.block;
 
 import io.github.foundationgames.phonos.item.BoomboxItem;
 import io.github.foundationgames.phonos.item.ChannelTunerItem;
-import io.github.foundationgames.phonos.item.PhonosItems;
 import io.github.foundationgames.phonos.util.PhonosUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -83,7 +82,12 @@ public class BoomboxBlock extends LoudspeakerBlock {
 
         if (!player.isCreative()) {
             int channel = state.get(CHANNEL);
-            var stack = PhonosItems.BOOMBOX.createStack(channel);
+            var stack = new ItemStack(this);
+
+            if (this.asItem() instanceof BoomboxItem item) {
+                stack = item.createStack(channel);
+            }
+
             var item = new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 0.2, pos.getZ() + 0.5, stack);
 
             world.spawnEntity(item);
@@ -92,7 +96,10 @@ public class BoomboxBlock extends LoudspeakerBlock {
 
     @Override
     public ItemStack getPickStack(BlockView world, BlockPos pos, BlockState state) {
-        return PhonosItems.BOOMBOX.createStack(state.get(CHANNEL));
+        if (this.asItem() instanceof BoomboxItem item) {
+            item.createStack(state.get(CHANNEL));
+        }
+        return super.getPickStack(world, pos, state);
     }
 
     @Override
