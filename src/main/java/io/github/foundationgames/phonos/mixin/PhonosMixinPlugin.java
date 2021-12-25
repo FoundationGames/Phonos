@@ -30,7 +30,7 @@ public class PhonosMixinPlugin implements IMixinConfigPlugin {
     @Override
     public void preApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {
         tryMapInsertion(mixinClassName, "io.github.foundationgames.phonos.mixin.OxidizableMixin", "method_34740", targetClass,
-                "io/github/foundationgames/sandwichable/block/PhonosBlocks", "OXIDIZABLES"
+                "io/github/foundationgames/phonos/block/PhonosBlocks", "OXIDIZABLES"
         );
         tryMapInsertion(mixinClassName, "io.github.foundationgames.phonos.mixin.HoneycombItemMixin", "method_34723", targetClass,
                 "io/github/foundationgames/phonos/block/PhonosBlocks", "WAXABLES"

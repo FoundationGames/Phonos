@@ -47,19 +47,20 @@ public enum TechnicianVillagerProfession {;
                         new BasicTradeFactory(i(Items.EMERALD, 8), i(PhonosItems.CHANNEL_TUNER), 3, 4, 0.0f),
                         new BasicTradeFactory(i(Items.EMERALD, 12), i(PhonosItems.NOTE_BLOCK_TUNER), 2, 5, 0.0f),
                         new BasicTradeFactory(i(Items.EMERALD, 8), i(PhonosItems.BOOMBOX), 2, 5, 0.0f),
-                        new BasicTradeFactory(i(PhonosBlocks.LOUDSPEAKER), i(Items.EMERALD, 5), 4, 5, 0.0f),
+                        new BasicTradeFactory(i(PhonosBlocks.LOUDSPEAKER), i(Items.EMERALD, 4), 4, 5, 0.0f),
                         new BasicTradeFactory(i(Items.EMERALD, 4), i(Blocks.NOTE_BLOCK), 2, 5, 0.0f)
                 },
                 3, new TradeOffers.Factory[] {
-                        new BasicTradeFactory(i(Blocks.PUMPKIN), i(Items.EMERALD, 5), i(PhonosBlocks.GOURD_SPEAKER),5, 4, 0.0f),
-                        new BasicTradeFactory((e, r) -> i(TRADABLE_MUSIC_DISCS.get(r.nextInt(TRADABLE_MUSIC_DISCS.size()))), Optional.empty(), (e, r) -> i(Items.EMERALD, 8 + r.nextInt(6)), 2, 5, 0.06f),
-                        new BasicTradeFactory(i(Blocks.NOTE_BLOCK, 4), i(Items.EMERALD, 8), i(PhonosBlocks.RADIO_NOTE_BLOCK, 4),5, 4, 0.0f)
+                        new BasicTradeFactory(i(Blocks.PUMPKIN), i(Items.EMERALD, 4), i(PhonosBlocks.GOURD_SPEAKER),10, 4, 0.0f),
+                        new BasicTradeFactory(i(Blocks.NOTE_BLOCK, 4), i(Items.EMERALD, 5), i(PhonosBlocks.RADIO_NOTE_BLOCK, 4),10, 4, 0.0f),
+                        new BasicTradeFactory(i(PhonosBlocks.BOOMBOX, 1), i(Items.EMERALD, 1), i(PhonosBlocks.FESTIVE_BOOMBOX, 1),10, 4, 0.0f)
                 },
                 4, new TradeOffers.Factory[] {
-                        new BasicTradeFactory(i(Blocks.JUKEBOX, 1), i(Items.EMERALD, 6), i(PhonosBlocks.RADIO_JUKEBOX, 1), 1, 7, 0.02f),
-                        new BasicTradeFactory(i(Items.EMERALD, 3), i(Blocks.REDSTONE_TORCH, 2),6, 3, 0.0f)
+                        new BasicTradeFactory(i(Blocks.JUKEBOX, 1), i(Items.EMERALD, 4), i(PhonosBlocks.RADIO_JUKEBOX, 1), 10, 7, 0.02f),
+                        new BasicTradeFactory(i(Items.EMERALD, 2), i(Blocks.REDSTONE_TORCH, 6),20, 3, 0.03f)
                 },
                 5, new TradeOffers.Factory[] {
+                        new BasicTradeFactory((e, r) -> i(Items.EMERALD, 30 + r.nextInt(20)), Optional.empty(), (e, r) -> i(TRADABLE_MUSIC_DISCS.get(r.nextInt(TRADABLE_MUSIC_DISCS.size()))), 1, 5, 0.001f),
                         new BasicTradeFactory(i(Items.POTATO, 1), i(Items.EMERALD, 7), i(PhonosBlocks.TINY_POTATO_SPEAKER, 1), 3, 10, 0.0f)
                 }
         )));
