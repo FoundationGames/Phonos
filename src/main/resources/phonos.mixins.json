@@ -2,7 +2,7 @@
   "required": true,
   "minVersion": "0.8",
   "package": "io.github.foundationgames.phonos.mixin",
-  "compatibilityLevel": "JAVA_16",
+  "compatibilityLevel": "JAVA_17",
   "plugin": "io.github.foundationgames.phonos.mixin.PhonosMixinPlugin",
   "mixins": [
     "HoneycombItemMixin",
