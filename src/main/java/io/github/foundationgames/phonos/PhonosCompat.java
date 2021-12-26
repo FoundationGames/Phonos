@@ -12,7 +12,7 @@ import net.minecraft.util.registry.Registry;
 public class PhonosCompat {
     public static TechnicianVillagerProfession.BasicTradeFactory getPatchouliBookTrade() {
         if(FabricLoader.getInstance().isModLoaded("patchouli")) {
-            return new TechnicianVillagerProfession.BasicTradeFactory(i(Items.EMERALD, 3), PhonosUtil.create(() -> {
+            return new TechnicianVillagerProfession.BasicTradeFactory(i(Items.EMERALD, 1), PhonosUtil.create(() -> {
                 ItemStack i = i(Registry.ITEM.get(new Identifier("patchouli:guide_book")));
                 i.getOrCreateNbt().putString("patchouli:book", "phonos:phonos_guidebook");
                 return i;
