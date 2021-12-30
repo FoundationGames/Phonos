@@ -72,6 +72,7 @@ public class MultiPositionedSoundInstance extends AbstractSoundInstance implemen
             if(l.isWithinDistance(player.getEyePos(), 15*(volume/2))) near = true;
         }
         for(Entity e : entities) {
+            if(e == null) continue;
             double d = e.squaredDistanceTo(player.getEyePos());
             if(d < 950*(volume/2)) {
                 if(bd < 0 || d < bd) {

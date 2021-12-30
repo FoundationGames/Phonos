@@ -61,7 +61,7 @@ public class ClientReceiverStorage {
         for (int channel : entityStorage.keySet()) {
             removed.clear();
             for (var entity : entityStorage.get(channel)) {
-                if (entity.isRemoved()) removed.add(entity);
+                if (entity != null && entity.isRemoved()) removed.add(entity);
             }
             for (var entity : removed) {
                 entityStorage.get(channel).remove(entity);
