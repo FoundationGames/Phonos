@@ -42,11 +42,15 @@ public class ClientReceiverStorage {
     }
 
     public static void addEntityReceiver(int channel, Entity ent) {
+        if (ent == null) return;
+
         entityStorage.putIfAbsent(channel, new LinkedHashSet<>());
         entityStorage.get(channel).add(ent);
     }
 
     public static void removeEntityReceiver(int channel, Entity ent) {
+        if (ent == null) return;
+
         entityStorage.putIfAbsent(channel, new LinkedHashSet<>());
         entityStorage.get(channel).remove(ent);
     }
@@ -61,6 +65,8 @@ public class ClientReceiverStorage {
         for (int channel : entityStorage.keySet()) {
             removed.clear();
             for (var entity : entityStorage.get(channel)) {
+                if (entity == null) continue;
+
                 if (entity.isRemoved()) removed.add(entity);
             }
             for (var entity : removed) {
