@@ -76,7 +76,7 @@ public class LoudspeakerBlock extends Block implements SoundPlayReceivable, Radi
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void onRecievedSoundClient(ClientWorld world, BlockState state, BlockPos pos, int channel, float volume, float pitch) {
+    public void onReceivedSoundClient(ClientWorld world, BlockState state, BlockPos pos, int channel, float volume, float pitch) {
         noteParticle(world, pos);
     }
 

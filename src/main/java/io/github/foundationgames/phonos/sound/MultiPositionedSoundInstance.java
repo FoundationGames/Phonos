@@ -62,7 +62,7 @@ public class MultiPositionedSoundInstance extends AbstractSoundInstance implemen
         double bd = -1;
         Vec3d bp = null;
         for(BlockPos l : blocks) {
-            double d = l.getSquaredDistance(player.getEyePos(), false);
+            double d = l.getSquaredDistance(player.getEyePos());
             if(d < 950*(volume/2)) {
                 if(bd < 0 || d < bd) {
                     bd = d;

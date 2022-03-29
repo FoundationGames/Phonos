@@ -101,7 +101,11 @@ public class RadioJukeboxBlock extends BlockWithEntity implements RadioChannelBl
 
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-        return checkType(type, PhonosBlocks.RADIO_JUKEBOX_ENTITY, RadioJukeboxBlockEntity::tick);
+        return typeCheck(type, PhonosBlocks.RADIO_JUKEBOX_ENTITY, RadioJukeboxBlockEntity::tick);
+    }
+
+    public static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> typeCheck(BlockEntityType<A> givenType, BlockEntityType<E> expectedType, BlockEntityTicker<? super E> ticker) {
+        return checkType(givenType, expectedType, ticker);
     }
 
     @Override

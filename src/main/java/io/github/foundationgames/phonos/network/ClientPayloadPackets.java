@@ -2,6 +2,7 @@ package io.github.foundationgames.phonos.network;
 
 import io.github.foundationgames.phonos.Phonos;
 import io.github.foundationgames.phonos.PhonosClient;
+import io.github.foundationgames.phonos.block.entity.PlayerPianoBlockEntity;
 import io.github.foundationgames.phonos.client.ClientReceiverStorage;
 import io.github.foundationgames.phonos.mixin.ClientWorldAccess;
 import io.github.foundationgames.phonos.mixin.WorldRendererAccess;
@@ -98,6 +99,16 @@ public final class ClientPayloadPackets {
                 for(int i : entities) {
                     if(operation == ReceiverStorageOperation.ADD) ClientReceiverStorage.addEntityReceiver(channel, client.world.getEntityById(i));
                     else if(operation == ReceiverStorageOperation.REMOVE) ClientReceiverStorage.removeEntityReceiver(channel, client.world.getEntityById(i));
+                }
+            });
+        });
+
+        ClientPlayNetworking.registerGlobalReceiver(Phonos.id("piano_key_press"), (client, handler, buf, sender) -> {
+            var pos = buf.readBlockPos();
+            int key = buf.readInt();
+            client.execute(() -> {
+                if (client.world.getBlockEntity(pos) instanceof PlayerPianoBlockEntity piano) {
+                    piano.keyboard.press(key);
                 }
             });
         });

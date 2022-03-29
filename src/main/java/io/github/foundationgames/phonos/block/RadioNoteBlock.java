@@ -35,15 +35,7 @@ public class RadioNoteBlock extends Block implements RadioChannelBlock {
 
     public RadioNoteBlock(AbstractBlock.Settings settings) {
         super(settings);
-        this.setDefaultState(getDefaultState()/*.with(INSTRUMENT, Instrument.HARP)*/.with(NOTE, 0).with(POWERED, false).with(CHANNEL, 0));
-    }
-
-    public BlockState getPlacementState(ItemPlacementContext ctx) {
-        return this.getDefaultState()/*.with(INSTRUMENT, Instrument.fromBlockState(ctx.getWorld().getBlockState(ctx.getBlockPos().down())))*/;
-    }
-
-    public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState newState, WorldAccess world, BlockPos pos, BlockPos posFrom) {
-        return /*direction == Direction.DOWN ? state.with(INSTRUMENT, Instrument.fromBlockState(newState)) : */super.getStateForNeighborUpdate(state, direction, newState, world, pos, posFrom);
+        this.setDefaultState(getDefaultState().with(NOTE, 0).with(POWERED, false).with(CHANNEL, 0));
     }
 
     public void neighborUpdate(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos, boolean notify) {
@@ -59,7 +51,7 @@ public class RadioNoteBlock extends Block implements RadioChannelBlock {
     private void playNote(World world, BlockPos pos) {
         if(!world.isClient()) {
             RadioChannelState pstate = PhonosUtil.getRadioState((ServerWorld)world);
-            pstate.playSound(pos, Instrument.fromBlockState(world.getBlockState(pos.down())).getSound(), world.getBlockState(pos).get(CHANNEL), 1.8f, (float)Math.pow(2.0D, (double)(world.getBlockState(pos).get(NOTE) - 12) / 12.0D), false);
+            pstate.playSound(pos, Instrument.fromBlockState(world.getBlockState(pos.down())).getSound(), world.getBlockState(pos).get(CHANNEL), 1.8f, PhonosUtil.pitchFromNote(world.getBlockState(pos).get(NOTE)), false);
         }
     }
 

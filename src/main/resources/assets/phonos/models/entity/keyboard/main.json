@@ -1,0 +1,791 @@
+{
+    "texture": {
+        "width": 8,
+        "height": 8
+    },
+    "bones": {
+        "l_dummy_key": {
+            "transform": {
+                "origin": [
+                    0,
+                    -0.5,
+                    5
+                ]
+            },
+            "cuboids": [
+                {
+                    "name": "key",
+                    "offset": [
+                        0,
+                        -0.5,
+                        -7.5
+                    ],
+                    "dimensions": [
+                        1.5,
+                        1,
+                        2.5
+                    ],
+                    "uv": [
+                        0,
+                        0
+                    ]
+                }
+            ],
+            "children": {}
+        },
+        "key0": {
+            "transform": {
+                "origin": [
+                    -1,
+                    -0.5,
+                    5
+                ]
+            },
+            "cuboids": [
+                {
+                    "name": "key",
+                    "offset": [
+                        2,
+                        -1,
+                        -6.5
+                    ],
+                    "dimensions": [
+                        1,
+                        1,
+                        1.5
+                    ],
+                    "uv": [
+                        0,
+                        4
+                    ]
+                }
+            ],
+            "children": {}
+        },
+        "key1": {
+            "transform": {
+                "origin": [
+                    -1.5,
+                    -0.5,
+                    5
+                ]
+            },
+            "cuboids": [
+                {
+                    "name": "key",
+                    "offset": [
+                        3,
+                        -0.5,
+                        -7.5
+                    ],
+                    "dimensions": [
+                        1.5,
+                        1,
+                        2.5
+                    ],
+                    "uv": [
+                        0,
+                        0
+                    ]
+                }
+            ],
+            "children": {}
+        },
+        "key2": {
+            "transform": {
+                "origin": [
+                    -2.5,
+                    -0.5,
+                    5
+                ]
+            },
+            "cuboids": [
+                {
+                    "name": "key",
+                    "offset": [
+                        5,
+                        -1,
+                        -6.5
+                    ],
+                    "dimensions": [
+                        1,
+                        1,
+                        1.5
+                    ],
+                    "uv": [
+                        0,
+                        4
+                    ]
+                }
+            ],
+            "children": {}
+        },
+        "key3": {
+            "transform": {
+                "origin": [
+                    -3,
+                    -0.5,
+                    5
+                ]
+            },
+            "cuboids": [
+                {
+                    "name": "key",
+                    "offset": [
+                        6,
+                        -0.5,
+                        -7.5
+                    ],
+                    "dimensions": [
+                        1.5,
+                        1,
+                        2.5
+                    ],
+                    "uv": [
+                        0,
+                        0
+                    ]
+                }
+            ],
+            "children": {}
+        },
+        "key4": {
+            "transform": {
+                "origin": [
+                    -4,
+                    -0.5,
+                    5
+                ]
+            },
+            "cuboids": [
+                {
+                    "name": "key",
+                    "offset": [
+                        8,
+                        -1,
+                        -6.5
+                    ],
+                    "dimensions": [
+                        1,
+                        1,
+                        1.5
+                    ],
+                    "uv": [
+                        0,
+                        4
+                    ]
+                }
+            ],
+            "children": {}
+        },
+        "key5": {
+            "transform": {
+                "origin": [
+                    -4.5,
+                    -0.5,
+                    5
+                ]
+            },
+            "cuboids": [
+                {
+                    "name": "key",
+                    "offset": [
+                        9,
+                        -0.5,
+                        -7.5
+                    ],
+                    "dimensions": [
+                        1.5,
+                        1,
+                        2.5
+                    ],
+                    "uv": [
+                        0,
+                        0
+                    ]
+                }
+            ],
+            "children": {}
+        },
+        "key6": {
+            "transform": {
+                "origin": [
+                    -6,
+                    -0.5,
+                    5
+                ]
+            },
+            "cuboids": [
+                {
+                    "name": "key",
+                    "offset": [
+                        12,
+                        -0.5,
+                        -7.5
+                    ],
+                    "dimensions": [
+                        1.5,
+                        1,
+                        2.5
+                    ],
+                    "uv": [
+                        0,
+                        0
+                    ]
+                }
+            ],
+            "children": {}
+        },
+        "key7": {
+            "transform": {
+                "origin": [
+                    -7,
+                    -0.5,
+                    5
+                ]
+            },
+            "cuboids": [
+                {
+                    "name": "key",
+                    "offset": [
+                        14,
+                        -1,
+                        -6.5
+                    ],
+                    "dimensions": [
+                        1,
+                        1,
+                        1.5
+                    ],
+                    "uv": [
+                        0,
+                        4
+                    ]
+                }
+            ],
+            "children": {}
+        },
+        "key8": {
+            "transform": {
+                "origin": [
+                    -7.5,
+                    -0.5,
+                    5
+                ]
+            },
+            "cuboids": [
+                {
+                    "name": "key",
+                    "offset": [
+                        15,
+                        -0.5,
+                        -7.5
+                    ],
+                    "dimensions": [
+                        1.5,
+                        1,
+                        2.5
+                    ],
+                    "uv": [
+                        0,
+                        0
+                    ]
+                }
+            ],
+            "children": {}
+        },
+        "key9": {
+            "transform": {
+                "origin": [
+                    -8.5,
+                    -0.5,
+                    5
+                ]
+            },
+            "cuboids": [
+                {
+                    "name": "key",
+                    "offset": [
+                        17,
+                        -1,
+                        -6.5
+                    ],
+                    "dimensions": [
+                        1,
+                        1,
+                        1.5
+                    ],
+                    "uv": [
+                        0,
+                        4
+                    ]
+                }
+            ],
+            "children": {}
+        },
+        "key10": {
+            "transform": {
+                "origin": [
+                    -9,
+                    -0.5,
+                    5
+                ]
+            },
+            "cuboids": [
+                {
+                    "name": "key",
+                    "offset": [
+                        18,
+                        -0.5,
+                        -7.5
+                    ],
+                    "dimensions": [
+                        1.5,
+                        1,
+                        2.5
+                    ],
+                    "uv": [
+                        0,
+                        0
+                    ]
+                }
+            ],
+            "children": {}
+        },
+        "key11": {
+            "transform": {
+                "origin": [
+                    -10.5,
+                    -0.5,
+                    5
+                ]
+            },
+            "cuboids": [
+                {
+                    "name": "key",
+                    "offset": [
+                        21,
+                        -0.5,
+                        -7.5
+                    ],
+                    "dimensions": [
+                        1.5,
+                        1,
+                        2.5
+                    ],
+                    "uv": [
+                        0,
+                        0
+                    ]
+                }
+            ],
+            "children": {}
+        },
+        "key12": {
+            "transform": {
+                "origin": [
+                    -11.5,
+                    -0.5,
+                    5
+                ]
+            },
+            "cuboids": [
+                {
+                    "name": "key",
+                    "offset": [
+                        23,
+                        -1,
+                        -6.5
+                    ],
+                    "dimensions": [
+                        1,
+                        1,
+                        1.5
+                    ],
+                    "uv": [
+                        0,
+                        4
+                    ]
+                }
+            ],
+            "children": {}
+        },
+        "key13": {
+            "transform": {
+                "origin": [
+                    -12,
+                    -0.5,
+                    5
+                ]
+            },
+            "cuboids": [
+                {
+                    "name": "key",
+                    "offset": [
+                        24,
+                        -0.5,
+                        -7.5
+                    ],
+                    "dimensions": [
+                        1.5,
+                        1,
+                        2.5
+                    ],
+                    "uv": [
+                        0,
+                        0
+                    ]
+                }
+            ],
+            "children": {}
+        },
+        "key14": {
+            "transform": {
+                "origin": [
+                    -13,
+                    -0.5,
+                    5
+                ]
+            },
+            "cuboids": [
+                {
+                    "name": "key",
+                    "offset": [
+                        26,
+                        -1,
+                        -6.5
+                    ],
+                    "dimensions": [
+                        1,
+                        1,
+                        1.5
+                    ],
+                    "uv": [
+                        0,
+                        4
+                    ]
+                }
+            ],
+            "children": {}
+        },
+        "key15": {
+            "transform": {
+                "origin": [
+                    -13.5,
+                    -0.5,
+                    5
+                ]
+            },
+            "cuboids": [
+                {
+                    "name": "key",
+                    "offset": [
+                        27,
+                        -0.5,
+                        -7.5
+                    ],
+                    "dimensions": [
+                        1.5,
+                        1,
+                        2.5
+                    ],
+                    "uv": [
+                        0,
+                        0
+                    ]
+                }
+            ],
+            "children": {}
+        },
+        "key16": {
+            "transform": {
+                "origin": [
+                    -14.5,
+                    -0.5,
+                    5
+                ]
+            },
+            "cuboids": [
+                {
+                    "name": "key",
+                    "offset": [
+                        29,
+                        -1,
+                        -6.5
+                    ],
+                    "dimensions": [
+                        1,
+                        1,
+                        1.5
+                    ],
+                    "uv": [
+                        0,
+                        4
+                    ]
+                }
+            ],
+            "children": {}
+        },
+        "key17": {
+            "transform": {
+                "origin": [
+                    -15,
+                    -0.5,
+                    5
+                ]
+            },
+            "cuboids": [
+                {
+                    "name": "key",
+                    "offset": [
+                        30,
+                        -0.5,
+                        -7.5
+                    ],
+                    "dimensions": [
+                        1.5,
+                        1,
+                        2.5
+                    ],
+                    "uv": [
+                        0,
+                        0
+                    ]
+                }
+            ],
+            "children": {}
+        },
+        "key18": {
+            "transform": {
+                "origin": [
+                    -16.5,
+                    -0.5,
+                    5
+                ]
+            },
+            "cuboids": [
+                {
+                    "name": "key",
+                    "offset": [
+                        33,
+                        -0.5,
+                        -7.5
+                    ],
+                    "dimensions": [
+                        1.5,
+                        1,
+                        2.5
+                    ],
+                    "uv": [
+                        0,
+                        0
+                    ]
+                }
+            ],
+            "children": {}
+        },
+        "key19": {
+            "transform": {
+                "origin": [
+                    -17.25,
+                    -0.5,
+                    5
+                ]
+            },
+            "cuboids": [
+                {
+                    "name": "key",
+                    "offset": [
+                        34.75,
+                        -1,
+                        -6.5
+                    ],
+                    "dimensions": [
+                        1,
+                        1,
+                        1.5
+                    ],
+                    "uv": [
+                        0,
+                        4
+                    ]
+                }
+            ],
+            "children": {}
+        },
+        "key20": {
+            "transform": {
+                "origin": [
+                    -18,
+                    -0.5,
+                    5
+                ]
+            },
+            "cuboids": [
+                {
+                    "name": "key",
+                    "offset": [
+                        36,
+                        -0.5,
+                        -7.5
+                    ],
+                    "dimensions": [
+                        1.5,
+                        1,
+                        2.5
+                    ],
+                    "uv": [
+                        0,
+                        0
+                    ]
+                }
+            ],
+            "children": {}
+        },
+        "key21": {
+            "transform": {
+                "origin": [
+                    -18.75,
+                    -0.5,
+                    5
+                ]
+            },
+            "cuboids": [
+                {
+                    "name": "key",
+                    "offset": [
+                        37.75,
+                        -1,
+                        -6.5
+                    ],
+                    "dimensions": [
+                        1,
+                        1,
+                        1.5
+                    ],
+                    "uv": [
+                        0,
+                        4
+                    ]
+                }
+            ],
+            "children": {}
+        },
+        "key22": {
+            "transform": {
+                "origin": [
+                    -19.5,
+                    -0.5,
+                    5
+                ]
+            },
+            "cuboids": [
+                {
+                    "name": "key",
+                    "offset": [
+                        39,
+                        -0.5,
+                        -7.5
+                    ],
+                    "dimensions": [
+                        1.5,
+                        1,
+                        2.5
+                    ],
+                    "uv": [
+                        0,
+                        0
+                    ]
+                }
+            ],
+            "children": {}
+        },
+        "key23": {
+            "transform": {
+                "origin": [
+                    -21,
+                    -0.5,
+                    5
+                ]
+            },
+            "cuboids": [
+                {
+                    "name": "key",
+                    "offset": [
+                        42,
+                        -0.5,
+                        -7.5
+                    ],
+                    "dimensions": [
+                        1.5,
+                        1,
+                        2.5
+                    ],
+                    "uv": [
+                        0,
+                        0
+                    ]
+                }
+            ],
+            "children": {}
+        },
+        "key24": {
+            "transform": {
+                "origin": [
+                    -21.75,
+                    -0.5,
+                    5
+                ]
+            },
+            "cuboids": [
+                {
+                    "name": "key",
+                    "offset": [
+                        43.75,
+                        -1,
+                        -6.5
+                    ],
+                    "dimensions": [
+                        1,
+                        1,
+                        1.5
+                    ],
+                    "uv": [
+                        0,
+                        4
+                    ]
+                }
+            ],
+            "children": {}
+        },
+        "r_dummy_key": {
+            "transform": {
+                "origin": [
+                    -22.5,
+                    -0.5,
+                    5
+                ]
+            },
+            "cuboids": [
+                {
+                    "name": "key",
+                    "offset": [
+                        45,
+                        -0.5,
+                        -7.5
+                    ],
+                    "dimensions": [
+                        1.5,
+                        1,
+                        2.5
+                    ],
+                    "uv": [
+                        0,
+                        0
+                    ]
+                }
+            ],
+            "children": {}
+        }
+    }
+}

@@ -1,6 +1,7 @@
 package io.github.foundationgames.phonos.network;
 
 import io.github.foundationgames.phonos.Phonos;
+import io.github.foundationgames.phonos.block.entity.PlayerPianoBlockEntity;
 import io.github.foundationgames.phonos.block.entity.RadioJukeboxBlockEntity;
 import io.github.foundationgames.phonos.screen.CustomMusicDiscGuiDescription;
 import io.netty.buffer.Unpooled;
@@ -64,5 +65,12 @@ public final class PayloadPackets {
         buf.writeLongArray(positions);
         buf.writeIntArray(entities);
         ServerPlayNetworking.send(player, Phonos.id("update_receivers"), buf);
+    }
+
+    public static void sendPianoKeyPress(ServerPlayerEntity player, PlayerPianoBlockEntity piano, int key) {
+        PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+        buf.writeBlockPos(piano.getPos());
+        buf.writeInt(key);
+        ServerPlayNetworking.send(player, Phonos.id("piano_key_press"), buf);
     }
 }

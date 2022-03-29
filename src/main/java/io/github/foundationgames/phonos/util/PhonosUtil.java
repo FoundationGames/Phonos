@@ -11,6 +11,7 @@ import net.minecraft.structure.pool.StructurePoolElement;
 import net.minecraft.structure.processor.StructureProcessorLists;
 import net.minecraft.util.Identifier;
 
+import java.util.Collection;
 import java.util.function.Supplier;
 
 public enum PhonosUtil {;
@@ -41,5 +42,38 @@ public enum PhonosUtil {;
             }
             ((StructurePoolAccess)pool).phonos$getElementCounts().add(Pair.of(element, weight));
         }
+    }
+
+    public static float pitchFromNote(int note) {
+        return (float) Math.pow(2, (double)(note - 12) / 12);
+    }
+    public static int noteFromPitch(float pitch) {
+        return (int) Math.round(17.3123404907 * Math.log(pitch) + 12);
+    }
+
+    public static float[] arrFromList(Collection<Float> list) {
+        var result = new float[list.size()];
+        int i = 0;
+        for (Float f : list) {
+            result[i] = f;
+            i++;
+        }
+        return result;
+    }
+
+    public static float[] fromIntBytesArr(int[] arr) {
+        var result = new float[arr.length];
+        for (int i = 0; i < arr.length; i++) {
+            result[i] = Float.intBitsToFloat(arr[i]);
+        }
+        return result;
+    }
+
+    public static int[] toIntBytesArr(float[] arr) {
+        var result = new int[arr.length];
+        for (int i = 0; i < arr.length; i++) {
+            result[i] = Float.floatToIntBits(arr[i]);
+        }
+        return result;
     }
 }

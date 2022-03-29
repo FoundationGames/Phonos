@@ -167,6 +167,9 @@ public class PhonosAssets {
         addBoomboxBlockState(pack, "boombox");
         addBoomboxBlockState(pack, "festive_boombox");
 
+        addPianoBlockState(pack, "");
+        addPianoBlockState(pack, "player_");
+
         // ITEM MODELS FOR SPEAKERS
         addSidedBlockModel(
                 pack,
@@ -219,6 +222,17 @@ public class PhonosAssets {
                 bbModel,
                 Phonos.id("item/"+boomboxName)
         );
+    }
+
+    public static void addPianoBlockState(RuntimeResourcePack pack, String prefix) {
+        var pianoVar = JState.variant();
+        for (int i = 0; i < 20; i++) {
+            pianoVar.put("facing=north", JState.model(Phonos.id("block/"+prefix+"piano")).y(0));
+            pianoVar.put("facing=south", JState.model(Phonos.id("block/"+prefix+"piano")).y(180));
+            pianoVar.put("facing=east", JState.model(Phonos.id("block/"+prefix+"piano")).y(90));
+            pianoVar.put("facing=west", JState.model(Phonos.id("block/"+prefix+"piano")).y(270));
+        }
+        pack.addBlockState(new JState().add(pianoVar), Phonos.id(prefix+"piano"));
     }
 
     public static void addSidedBlockModel(RuntimeResourcePack pack, String path, Identifier bottom, Identifier side, Identifier top) {

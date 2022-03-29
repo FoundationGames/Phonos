@@ -1,9 +1,11 @@
 package io.github.foundationgames.phonos;
 
+import io.github.foundationgames.jsonem.JsonEM;
 import io.github.foundationgames.phonos.block.PhonosBlocks;
 import io.github.foundationgames.phonos.block.RadioNoteBlock;
 import io.github.foundationgames.phonos.block.SoundPlayReceivable;
 import io.github.foundationgames.phonos.client.ClientReceiverStorage;
+import io.github.foundationgames.phonos.client.render.block.PlayerPianoBlockEntityRenderer;
 import io.github.foundationgames.phonos.entity.SoundPlayEntityReceivable;
 import io.github.foundationgames.phonos.item.PhonosItems;
 import io.github.foundationgames.phonos.network.ClientPayloadPackets;
@@ -14,11 +16,13 @@ import io.github.foundationgames.phonos.screen.RadioJukeboxGuiDescription;
 import io.github.foundationgames.phonos.screen.RadioJukeboxScreen;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.entity.model.EntityModelLayer;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -28,6 +32,7 @@ import net.minecraft.util.math.BlockPos;
 import java.util.Random;
 
 public class PhonosClient implements ClientModInitializer {
+    public static final EntityModelLayer KEYBOARD_MODEL_LAYER = new EntityModelLayer(Phonos.id("keyboard"), "main");
     @Override
     public void onInitializeClient() {
         // Phonos.LOG.info("Registering Client Packets...");
@@ -51,7 +56,7 @@ public class PhonosClient implements ClientModInitializer {
                             m.set(l);
                             if(pos.isWithinDistance(m, 30)) {
                                 if(world.getBlockState(m).getBlock() instanceof SoundPlayReceivable) {
-                                    ((SoundPlayReceivable)world.getBlockState(m).getBlock()).onRecievedSoundClient(world, world.getBlockState(m), m.toImmutable(), channel, volume, pitch);
+                                    ((SoundPlayReceivable)world.getBlockState(m).getBlock()).onReceivedSoundClient(world, world.getBlockState(m), m.toImmutable(), channel, volume, pitch);
                                 }
                             }
                         }
@@ -77,6 +82,8 @@ public class PhonosClient implements ClientModInitializer {
         FabricModelPredicateProviderRegistry.register(PhonosItems.FESTIVE_BOOMBOX, new Identifier("radio_channel"), (stack, world, entity, seed) -> (float)stack.getOrCreateSubNbt("RadioData").getInt("Channel") / 19);
         // Phonos.LOG.info("Success!");
 
+        JsonEM.registerModelLayer(KEYBOARD_MODEL_LAYER);
+
         // Phonos.LOG.info("Registering Color Providers...");
         ColorProviderRegistry.BLOCK.register((state, world, pos, tintIndex) -> world != null && pos != null && state != null ? RadioNoteBlock.getColorFromNote(state.get(RadioNoteBlock.NOTE)) : 0xFFFFFF, PhonosBlocks.RADIO_NOTE_BLOCK);
         ColorProviderRegistry.ITEM.register((stack, tintIndex) -> {
@@ -96,6 +103,8 @@ public class PhonosClient implements ClientModInitializer {
         BlockRenderLayerMap.INSTANCE.putBlock(PhonosBlocks.BOOMBOX, RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(PhonosBlocks.FESTIVE_BOOMBOX, RenderLayer.getCutout());
         // Phonos.LOG.info("Success!");
+
+        BlockEntityRendererRegistry.register(PhonosBlocks.PLAYER_PIANO_ENTITY, PlayerPianoBlockEntityRenderer::new);
 
         // Phonos.LOG.info("Registering GUI Screens...");
         ScreenRegistry.<RadioJukeboxGuiDescription, RadioJukeboxScreen>register(Phonos.RADIO_JUKEBOX_HANDLER, (gui, inventory, title) -> new RadioJukeboxScreen(gui, inventory.player));

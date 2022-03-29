@@ -5,6 +5,7 @@ import net.minecraft.structure.pool.StructurePool;
 import net.minecraft.structure.pool.StructurePools;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
+import net.minecraft.util.registry.RegistryEntry;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -13,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(StructurePools.class)
 public class StructurePoolsMixin {
     @Inject(method = "register", at = @At("HEAD"), cancellable = true)
-    private static void phonos$addVillageStructures(StructurePool pool, CallbackInfoReturnable<StructurePool> cir) {
+    private static void phonos$addVillageStructures(StructurePool pool, CallbackInfoReturnable<RegistryEntry<StructurePool>> cir) {
         PhonosUtil.tryAddElementToPool(new Identifier("village/plains/houses"), pool, "phonos:village/plains/houses/plains_music_stage", StructurePool.Projection.RIGID, 4);
         PhonosUtil.tryAddElementToPool(new Identifier("village/desert/houses"), pool, "phonos:village/desert/houses/desert_music_stage", StructurePool.Projection.RIGID, 17);
         PhonosUtil.tryAddElementToPool(new Identifier("village/savanna/houses"), pool, "phonos:village/savanna/houses/savanna_music_stage", StructurePool.Projection.RIGID, 4);

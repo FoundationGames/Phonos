@@ -25,7 +25,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class Phonos implements ModInitializer {
-
     public static final Logger LOG = LogManager.getLogger("phonos");
 
     public static final ItemGroup PHONOS_ITEM_GROUP = FabricItemGroupBuilder.build(
