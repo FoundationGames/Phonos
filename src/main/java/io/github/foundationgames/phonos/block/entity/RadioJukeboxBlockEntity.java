@@ -49,7 +49,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class RadioJukeboxBlockEntity extends BlockEntity implements ExtendedScreenHandlerFactory, SidedInventory {
+public class RadioJukeboxBlockEntity extends BlockEntity implements ExtendedScreenHandlerFactory, SidedInventory, Syncing {
     private final DefaultedList<ItemStack> items = DefaultedList.ofSize(6, ItemStack.EMPTY);
     public float pitch = 1.0f;
     public boolean doShuffle = false;
@@ -220,6 +220,13 @@ public class RadioJukeboxBlockEntity extends BlockEntity implements ExtendedScre
         nbt.put("PlayingMusic", playingMusic);
     }
 
+    @Override
+    public NbtCompound toInitialChunkDataNbt() {
+        NbtCompound nbt = new NbtCompound();
+        this.writeNbt(nbt);
+        return nbt;
+    }
+
     public boolean isPlaying() {
         return isPlaying;
     }
@@ -277,12 +284,6 @@ public class RadioJukeboxBlockEntity extends BlockEntity implements ExtendedScre
             setDuration(i, fdiscs.get(i).getSecond());
         }
         if(!world.isClient()) sync();
-    }
-
-    private void sync() {
-        if (world instanceof ServerWorld sWorld) {
-            sWorld.getPlayers(player -> player.getBlockPos().isWithinDistance(this.getPos(), 1000)).forEach(player -> player.networkHandler.sendPacket(this.toUpdatePacket()));
-        }
     }
 
     public int getDuration(int slot) {
@@ -394,7 +395,7 @@ public class RadioJukeboxBlockEntity extends BlockEntity implements ExtendedScre
     @Nullable
     @Override
     public Packet<ClientPlayPacketListener> toUpdatePacket() {
-        return BlockEntityUpdateS2CPacket.create(this, BlockEntity::createNbt);
+        return BlockEntityUpdateS2CPacket.create(this);
     }
 
     @Override

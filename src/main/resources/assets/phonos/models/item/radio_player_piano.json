@@ -1,5 +1,5 @@
 {
-	"credit": "Made with Blockbench",
+	"parent": "phonos:item/piano",
 	"textures": {
 		"1": "phonos:block/boombox_display",
 		"2": "phonos:block/wood_texture_half",

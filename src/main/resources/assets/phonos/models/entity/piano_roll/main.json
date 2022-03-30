@@ -1,0 +1,89 @@
+{
+    "texture": {
+        "width": 16,
+        "height": 16
+    },
+    "bones": {
+        "roll": {
+            "transform": {
+                "rotation": [
+                    0,
+                    0.7853981633974483,
+                    0
+                ]
+            },
+            "cuboids": [
+                {
+                    "offset": [
+                        -1.25,
+                        -6,
+                        -1.25
+                    ],
+                    "dimensions": [
+                        2.5,
+                        4,
+                        2.5
+                    ],
+                    "uv": [
+                        4,
+                        4
+                    ]
+                }
+            ],
+            "children": {}
+        },
+        "stand": {
+            "cuboids": [
+                {
+                    "offset": [
+                        -1,
+                        -1,
+                        -1
+                    ],
+                    "dimensions": [
+                        2,
+                        1,
+                        2
+                    ],
+                    "uv": [
+                        0,
+                        0
+                    ]
+                },
+                {
+                    "offset": [
+                        -1,
+                        -8,
+                        -1
+                    ],
+                    "dimensions": [
+                        2,
+                        1,
+                        2
+                    ],
+                    "uv": [
+                        0,
+                        0
+                    ]
+                },
+                {
+                    "offset": [
+                        -0.5,
+                        -7,
+                        -0.5
+                    ],
+                    "dimensions": [
+                        1,
+                        6,
+                        1
+                    ],
+                    "uv": [
+                        0,
+                        3
+                    ]
+                }
+            ],
+            "children": {}
+        }
+    }
+}

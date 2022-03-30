@@ -130,6 +130,20 @@ public class PianoBlock extends HorizontalFacingBlock {
     }
 
     @Override
+    public ItemStack getPickStack(BlockView world, BlockPos pos, BlockState state) {
+        var neighborPos = pos.offset(this.side.neighborDirection(state.get(FACING)));
+        var neighborState = world.getBlockState(neighborPos);
+        var selfStack = super.getPickStack(world, pos, state);
+        var neighborStack = neighborState.getBlock().getPickStack(world, neighborPos, neighborState);
+
+        if (neighborState.getBlock() instanceof PianoBlock && selfStack == null && neighborStack != null) {
+            return neighborStack;
+        }
+
+        return selfStack;
+    }
+
+    @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         return switch (state.get(FACING)) {
             case SOUTH -> SOUTH_SHAPE;

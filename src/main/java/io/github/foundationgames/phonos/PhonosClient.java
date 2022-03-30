@@ -33,15 +33,13 @@ import java.util.Random;
 
 public class PhonosClient implements ClientModInitializer {
     public static final EntityModelLayer KEYBOARD_MODEL_LAYER = new EntityModelLayer(Phonos.id("keyboard"), "main");
+    public static final EntityModelLayer PIANO_ROLL_MODEL_LAYER = new EntityModelLayer(Phonos.id("piano_roll"), "main");
+
     @Override
     public void onInitializeClient() {
-        // Phonos.LOG.info("Registering Client Packets...");
         ClientPayloadPackets.initClient();
-        // Phonos.LOG.info("Success! \n");
 
-        // Phonos.LOG.info("Registering Assets...");
         PhonosAssets.init();
-        // Phonos.LOG.info("Success! \n");
 
         ClientReceiverStorage.init();
         ClientReceiverStorage.registerPlaySoundCallback(((sound, blocks, entities, channel, volume, pitch, stoppable) -> {
@@ -75,16 +73,14 @@ public class PhonosClient implements ClientModInitializer {
             }
         }));
 
-        // Phonos.LOG.info("Registering Model Predicates...");
         FabricModelPredicateProviderRegistry.register(PhonosItems.CHANNEL_TUNER, new Identifier("tuned_channel"), (stack, world, entity, seed) -> (float)stack.getOrCreateSubNbt("TunerData").getInt("Channel") / 19);
         FabricModelPredicateProviderRegistry.register(PhonosItems.NOTE_BLOCK_TUNER, new Identifier("tuner_mode"), (stack, world, entity, seed) -> (float)stack.getOrCreateSubNbt("TunerData").getInt("Mode") / 2);
         FabricModelPredicateProviderRegistry.register(PhonosItems.BOOMBOX, new Identifier("radio_channel"), (stack, world, entity, seed) -> (float)stack.getOrCreateSubNbt("RadioData").getInt("Channel") / 19);
         FabricModelPredicateProviderRegistry.register(PhonosItems.FESTIVE_BOOMBOX, new Identifier("radio_channel"), (stack, world, entity, seed) -> (float)stack.getOrCreateSubNbt("RadioData").getInt("Channel") / 19);
-        // Phonos.LOG.info("Success!");
 
         JsonEM.registerModelLayer(KEYBOARD_MODEL_LAYER);
+        JsonEM.registerModelLayer(PIANO_ROLL_MODEL_LAYER);
 
-        // Phonos.LOG.info("Registering Color Providers...");
         ColorProviderRegistry.BLOCK.register((state, world, pos, tintIndex) -> world != null && pos != null && state != null ? RadioNoteBlock.getColorFromNote(state.get(RadioNoteBlock.NOTE)) : 0xFFFFFF, PhonosBlocks.RADIO_NOTE_BLOCK);
         ColorProviderRegistry.ITEM.register((stack, tintIndex) -> {
             int note = stack.getOrCreateSubNbt("TunerData").getInt("Note");
@@ -96,20 +92,15 @@ public class PhonosClient implements ClientModInitializer {
             if(seed != null) color = new Random(seed(seed)).nextInt(0xFFFFFF);
             return tintIndex > 0 ? -1 : color;
         }, PhonosItems.CUSTOM_MUSIC_DISC);
-        // Phonos.LOG.info("Success!");
 
-        // Phonos.LOG.info("Putting to render layers...");
         BlockRenderLayerMap.INSTANCE.putBlock(PhonosBlocks.RADIO_NOTE_BLOCK, RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(PhonosBlocks.BOOMBOX, RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(PhonosBlocks.FESTIVE_BOOMBOX, RenderLayer.getCutout());
-        // Phonos.LOG.info("Success!");
 
         BlockEntityRendererRegistry.register(PhonosBlocks.PLAYER_PIANO_ENTITY, PlayerPianoBlockEntityRenderer::new);
 
-        // Phonos.LOG.info("Registering GUI Screens...");
         ScreenRegistry.<RadioJukeboxGuiDescription, RadioJukeboxScreen>register(Phonos.RADIO_JUKEBOX_HANDLER, (gui, inventory, title) -> new RadioJukeboxScreen(gui, inventory.player));
         ScreenRegistry.<CustomMusicDiscGuiDescription, CustomMusicDiscScreen>register(Phonos.CUSTOM_DISC_HANDLER, (gui, inventory, title) -> new CustomMusicDiscScreen(gui, inventory.player));
-        // Phonos.LOG.info("Success!");
     }
 
     private static long seed(String s) {

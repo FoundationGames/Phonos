@@ -1,13 +1,17 @@
 package io.github.foundationgames.phonos.client.model;
 
+import io.github.foundationgames.phonos.Phonos;
 import io.github.foundationgames.phonos.util.piano.PianoKeyboard;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.Identifier;
 
 public class PianoKeyboardModel extends Model {
+    public static final Identifier TEXTURE = Phonos.id("textures/entity/keyboard.png");
+
     private final ModelPart leftDummy;
     private final ModelPart rightDummy;
     private final ModelPart[] keys = new ModelPart[25];

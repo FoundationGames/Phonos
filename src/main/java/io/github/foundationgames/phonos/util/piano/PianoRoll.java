@@ -3,6 +3,7 @@ package io.github.foundationgames.phonos.util.piano;
 import io.github.foundationgames.phonos.util.PhonosUtil;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -33,17 +34,23 @@ public class PianoRoll {
         return nbt;
     }
 
-    public static PianoRoll fromNbt(NbtCompound nbt) {
-        var stageList = nbt.getList("stages", 10);
-        var stages = new ArrayList<Stage>();
+    public static @Nullable PianoRoll fromNbt(@Nullable NbtCompound nbt) {
+        if (nbt != null) {
+            if (!nbt.contains("stages")) return null;
 
-        for (var el : stageList) {
-            if (el instanceof NbtCompound com) {
-                stages.add(Stage.fromNbt(com));
+            var stageList = nbt.getList("stages", 10);
+            var stages = new ArrayList<Stage>();
+
+            for (var el : stageList) {
+                if (el instanceof NbtCompound com) {
+                    stages.add(Stage.fromNbt(com));
+                }
             }
+
+            return new PianoRoll(stages);
         }
 
-        return new PianoRoll(stages);
+        return null;
     }
 
     public static class Player {
@@ -90,7 +97,9 @@ public class PianoRoll {
         }
 
         public void tick() {
-            this.currentDelay++;
+            if (this.currentPitches.size() > 0) {
+                this.currentDelay++;
+            }
         }
 
         public void applyNote(float pitch) {
@@ -101,7 +110,7 @@ public class PianoRoll {
             this.currentPitches.add(pitch);
         }
 
-        public PianoRoll buildPlayable(Consumer<Float> player) {
+        public PianoRoll build() {
             if (currentPitches.size() > 0) {
                 pushStage();
             }

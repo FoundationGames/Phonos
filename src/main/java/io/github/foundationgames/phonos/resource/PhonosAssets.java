@@ -34,6 +34,10 @@ public class PhonosAssets {
         // REDSTONE CHIP
         addGeneratedItem(pack, "redstone_chip");
 
+        // PIANO ROLLS
+        addGeneratedItem(pack, "empty_piano_roll");
+        addGeneratedItem(pack, "piano_roll");
+
         // NOTE BLOCK TUNER
         pack.addModel(
                 new JModel()

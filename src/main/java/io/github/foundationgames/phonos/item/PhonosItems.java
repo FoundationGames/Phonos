@@ -11,6 +11,8 @@ public class PhonosItems {
     public static final Item CHANNEL_TUNER = register(new ChannelTunerItem(new Item.Settings().group(Phonos.PHONOS_ITEM_GROUP).maxCount(1)), "channel_tuner");
     public static final Item NOTE_BLOCK_TUNER = register(new NoteBlockTunerItem(new Item.Settings().group(Phonos.PHONOS_ITEM_GROUP).maxCount(1)), "note_block_tuner");
     public static final Item REDSTONE_CHIP = register(new Item(new Item.Settings().group(Phonos.PHONOS_ITEM_GROUP)), "redstone_chip");
+    public static final Item EMPTY_PIANO_ROLL = register(new Item(new Item.Settings().maxCount(1).group(Phonos.PHONOS_ITEM_GROUP)), "empty_piano_roll");
+    public static final Item PIANO_ROLL = register(new PianoRollItem(new Item.Settings().rarity(Rarity.RARE).maxCount(1).group(Phonos.PHONOS_ITEM_GROUP)), "piano_roll");
     public static final Item CUSTOM_MUSIC_DISC = register(new CustomMusicDiscItem(new Item.Settings().group(Phonos.PHONOS_ITEM_GROUP).maxCount(1).rarity(Rarity.RARE)), "custom_music_disc");
     public static final BoomboxItem FESTIVE_BOOMBOX = register(new BoomboxItem(PhonosBlocks.FESTIVE_BOOMBOX, new Item.Settings().group(Phonos.PHONOS_EXTRAS_GROUP).maxCount(1)), "festive_boombox");
 
