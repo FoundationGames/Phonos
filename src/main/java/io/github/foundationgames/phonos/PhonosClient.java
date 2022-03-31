@@ -44,25 +44,24 @@ public class PhonosClient implements ClientModInitializer {
         ClientReceiverStorage.init();
         ClientReceiverStorage.registerPlaySoundCallback(((sound, blocks, entities, channel, volume, pitch, stoppable) -> {
             if(!stoppable) {
-                BlockPos.Mutable m = new BlockPos.Mutable();
                 PlayerEntity player = MinecraftClient.getInstance().player;
                 ClientWorld world = MinecraftClient.getInstance().world;
                 if(player != null && world != null) {
                     BlockPos pos = player.getBlockPos();
                     if(blocks != null) {
-                        for(BlockPos l : blocks) {
-                            m.set(l);
-                            if(pos.isWithinDistance(m, 30)) {
-                                if(world.getBlockState(m).getBlock() instanceof SoundPlayReceivable) {
-                                    ((SoundPlayReceivable)world.getBlockState(m).getBlock()).onReceivedSoundClient(world, world.getBlockState(m), m.toImmutable(), channel, volume, pitch);
+                        for(BlockPos receiver : blocks) {
+                            if(pos.isWithinDistance(receiver, 30)) {
+                                if(world.getBlockState(receiver).getBlock() instanceof SoundPlayReceivable) {
+                                    ((SoundPlayReceivable)world.getBlockState(receiver).getBlock()).onReceivedSoundClient(world, world.getBlockState(receiver), receiver, channel, volume, pitch);
                                 }
                             }
                         }
                     }
+                    BlockPos receiver;
                     if(entities != null) {
                         for(Entity e : entities) {
-                            m.set(e.getBlockPos());
-                            if(pos.isWithinDistance(m, 30)) {
+                            receiver = e.getBlockPos();
+                            if(pos.isWithinDistance(receiver, 30)) {
                                 if(e instanceof SoundPlayEntityReceivable) {
                                     ((SoundPlayEntityReceivable)e).onRecievedSoundClient(world, e, channel, volume, pitch);
                                 }
@@ -98,6 +97,7 @@ public class PhonosClient implements ClientModInitializer {
         BlockRenderLayerMap.INSTANCE.putBlock(PhonosBlocks.FESTIVE_BOOMBOX, RenderLayer.getCutout());
 
         BlockEntityRendererRegistry.register(PhonosBlocks.PLAYER_PIANO_ENTITY, PlayerPianoBlockEntityRenderer::new);
+        BlockEntityRendererRegistry.register(PhonosBlocks.RADIO_PLAYER_PIANO_ENTITY, PlayerPianoBlockEntityRenderer::new);
 
         ScreenRegistry.<RadioJukeboxGuiDescription, RadioJukeboxScreen>register(Phonos.RADIO_JUKEBOX_HANDLER, (gui, inventory, title) -> new RadioJukeboxScreen(gui, inventory.player));
         ScreenRegistry.<CustomMusicDiscGuiDescription, CustomMusicDiscScreen>register(Phonos.CUSTOM_DISC_HANDLER, (gui, inventory, title) -> new CustomMusicDiscScreen(gui, inventory.player));

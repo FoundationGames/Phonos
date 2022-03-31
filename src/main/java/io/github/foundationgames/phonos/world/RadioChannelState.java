@@ -1,5 +1,7 @@
 package io.github.foundationgames.phonos.world;
 
+import io.github.foundationgames.phonos.block.NotePlayReceivable;
+import io.github.foundationgames.phonos.block.SoundPlayReceivable;
 import io.github.foundationgames.phonos.network.PayloadPackets;
 import io.github.foundationgames.phonos.network.ReceiverStorageOperation;
 import io.github.foundationgames.phonos.util.PhonosUtil;
@@ -155,6 +157,18 @@ public class RadioChannelState extends PersistentState {
 
     public void playSound(BlockPos origin, Identifier sound, int channel, float volume, float pitch, boolean stoppable) {
         for(ServerPlayerEntity player : world.getPlayers()) PayloadPackets.sendRadioChannelSound(player, origin, sound, channel, volume, pitch, stoppable);
+    }
+
+    public void alertNotePlayed(int channel, float pitch) {
+        var pos = new BlockPos.Mutable();
+
+        for (long l : this.blockStorage.get(channel)) {
+            pos.set(l);
+
+            if (this.world.getBlockState(pos).getBlock() instanceof NotePlayReceivable receiver) {
+                receiver.onNotePlayed(this.world, pos, pitch);
+            }
+        }
     }
 
     public void tryStopSound(BlockPos origin, int channel) {

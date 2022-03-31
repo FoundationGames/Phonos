@@ -10,6 +10,4 @@ import net.minecraft.world.World;
 public interface SoundPlayReceivable {
     @Environment(EnvType.CLIENT)
     void onReceivedSoundClient(ClientWorld world, BlockState state, BlockPos pos, int channel, float volume, float pitch);
-
-    default void onReceivedNote(World world, BlockPos pos, BlockState state, float pitch) {}
 }

@@ -2,6 +2,7 @@ package io.github.foundationgames.phonos.block.entity;
 
 import io.github.foundationgames.phonos.block.PhonosBlocks;
 import io.github.foundationgames.phonos.block.PianoBlock;
+import io.github.foundationgames.phonos.block.RadioChannelBlock;
 import io.github.foundationgames.phonos.item.PianoRollItem;
 import io.github.foundationgames.phonos.network.PayloadPackets;
 import io.github.foundationgames.phonos.util.PhonosUtil;
@@ -9,13 +10,16 @@ import io.github.foundationgames.phonos.util.piano.PianoKeyboard;
 import io.github.foundationgames.phonos.util.piano.PianoRoll;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.Packet;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -31,6 +35,10 @@ public class PlayerPianoBlockEntity extends BlockEntity implements Syncing {
 
     public PlayerPianoBlockEntity(BlockPos pos, BlockState state) {
         super(PhonosBlocks.PLAYER_PIANO_ENTITY, pos, state);
+    }
+
+    protected PlayerPianoBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
     }
 
     public boolean rollTurning() {
@@ -93,7 +101,7 @@ public class PlayerPianoBlockEntity extends BlockEntity implements Syncing {
         if (state.getBlock() instanceof PianoBlock piano) {
             int key = MathHelper.clamp(PhonosUtil.noteFromPitch(pitch), 0, 24);
 
-            this.world.playSound(null, this.pos, piano.getInstrument(pitch, state, this.world, this.pos).getSound(), SoundCategory.RECORDS, 3.0F, pitch);
+            this.playSound(piano.getInstrument(pitch, state, this.world, this.pos).getSound(), pitch);
             this.keyboard.press(key);
 
             if (!world.isClient()) {
@@ -104,6 +112,10 @@ public class PlayerPianoBlockEntity extends BlockEntity implements Syncing {
                 });
             }
         }
+    }
+
+    protected void playSound(SoundEvent sound, float pitch) {
+        this.world.playSound(null, this.pos, sound, SoundCategory.RECORDS, 3.0F, pitch);
     }
 
     @Override
@@ -129,5 +141,18 @@ public class PlayerPianoBlockEntity extends BlockEntity implements Syncing {
     @Override
     public Packet<ClientPlayPacketListener> toUpdatePacket() {
         return BlockEntityUpdateS2CPacket.create(this);
+    }
+
+    public static class Radio extends PlayerPianoBlockEntity {
+        public Radio(BlockPos pos, BlockState state) {
+            super(PhonosBlocks.RADIO_PLAYER_PIANO_ENTITY, pos, state);
+        }
+
+        @Override
+        protected void playSound(SoundEvent sound, float pitch) {
+            if (this.getWorld() instanceof ServerWorld world && world.getBlockState(pos).getBlock() instanceof RadioChannelBlock radio) {
+                PhonosUtil.getRadioState(world).playSound(this.pos, sound, world.getBlockState(pos).get(radio.getChannelProperty()), 3.0f, pitch, false);
+            }
+        }
     }
 }

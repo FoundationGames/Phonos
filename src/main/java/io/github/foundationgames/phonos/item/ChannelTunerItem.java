@@ -1,5 +1,6 @@
 package io.github.foundationgames.phonos.item;
 
+import io.github.foundationgames.phonos.block.PianoBlock;
 import io.github.foundationgames.phonos.block.RadioChannelBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -7,6 +8,7 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.state.property.IntProperty;
+import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
@@ -29,13 +31,21 @@ public class ChannelTunerItem extends Item {
 
     @Override
     public ActionResult useOnBlock(ItemUsageContext ctx) {
-        if(ctx.getWorld().getBlockState(ctx.getBlockPos()).getBlock() instanceof RadioChannelBlock) {
-            RadioChannelBlock b = (RadioChannelBlock)ctx.getWorld().getBlockState(ctx.getBlockPos()).getBlock();
-            IntProperty property = b.getChannelProperty();
-            int s = ctx.getStack().getOrCreateSubNbt("TunerData").getInt("Channel");
-            s = Math.min(20, Math.max(s, 0));
-            ctx.getWorld().setBlockState(ctx.getBlockPos(), ctx.getWorld().getBlockState(ctx.getBlockPos()).with(property, s));
-            return ActionResult.success(ctx.getWorld().isClient());
+        var world = ctx.getWorld();
+        var pos = ctx.getBlockPos();
+        var state = world.getBlockState(pos);
+
+        if (!(state.getBlock() instanceof RadioChannelBlock) && state.getBlock() instanceof PianoBlock piano) {
+            pos = pos.offset(piano.side.neighborDirection(state.get(Properties.HORIZONTAL_FACING)));
+            state = world.getBlockState(pos);
+        }
+
+        if(state.getBlock() instanceof RadioChannelBlock radio) {
+            IntProperty property = radio.getChannelProperty();
+            int channel = ctx.getStack().getOrCreateSubNbt("TunerData").getInt("Channel");
+            channel = Math.min(20, Math.max(channel, 0));
+            world.setBlockState(pos, state.with(property, channel));
+            return ActionResult.success(world.isClient());
         }
         return super.useOnBlock(ctx);
     }

@@ -134,6 +134,9 @@ public class PhonosAssets {
                     .var("bottom", "phonos:block/radio_note_block_bottom")
                     .var("top", "phonos:block/speaker_top_"+i)
             ), Phonos.id("block/radio_note_block_tuned_"+i));
+            pack.addModel(new JModel().parent("phonos:block/radio_player_piano_base").textures(new JTextures()
+                    .var("display", "phonos:block/boombox_display_"+i)
+            ), Phonos.id("block/radio_player_piano_tuned_"+i));
         }
 
         // TUNABLE BLOCKSTATES
@@ -167,6 +170,15 @@ public class PhonosAssets {
             jukeboxVar.put("playing=false,channel="+i, JState.model(Phonos.id("block/radio_jukebox_off_tuned_"+i)));
         }
         pack.addBlockState(new JState().add(jukeboxVar), Phonos.id("radio_jukebox"));
+
+        var radioPianoVar = JState.variant();
+        for (int i = 0; i < 20; i++) {
+            radioPianoVar.put("facing=north,channel="+i, JState.model(Phonos.id("block/radio_player_piano_tuned_"+i)).y(0));
+            radioPianoVar.put("facing=south,channel="+i, JState.model(Phonos.id("block/radio_player_piano_tuned_"+i)).y(180));
+            radioPianoVar.put("facing=east,channel="+i, JState.model(Phonos.id("block/radio_player_piano_tuned_"+i)).y(90));
+            radioPianoVar.put("facing=west,channel="+i, JState.model(Phonos.id("block/radio_player_piano_tuned_"+i)).y(270));
+        }
+        pack.addBlockState(new JState().add(radioPianoVar), Phonos.id("radio_player_piano"));
 
         addBoomboxBlockState(pack, "boombox");
         addBoomboxBlockState(pack, "festive_boombox");
@@ -230,12 +242,10 @@ public class PhonosAssets {
 
     public static void addPianoBlockState(RuntimeResourcePack pack, String prefix) {
         var pianoVar = JState.variant();
-        for (int i = 0; i < 20; i++) {
-            pianoVar.put("facing=north", JState.model(Phonos.id("block/"+prefix+"piano")).y(0));
-            pianoVar.put("facing=south", JState.model(Phonos.id("block/"+prefix+"piano")).y(180));
-            pianoVar.put("facing=east", JState.model(Phonos.id("block/"+prefix+"piano")).y(90));
-            pianoVar.put("facing=west", JState.model(Phonos.id("block/"+prefix+"piano")).y(270));
-        }
+        pianoVar.put("facing=north", JState.model(Phonos.id("block/"+prefix+"piano")).y(0));
+        pianoVar.put("facing=south", JState.model(Phonos.id("block/"+prefix+"piano")).y(180));
+        pianoVar.put("facing=east", JState.model(Phonos.id("block/"+prefix+"piano")).y(90));
+        pianoVar.put("facing=west", JState.model(Phonos.id("block/"+prefix+"piano")).y(270));
         pack.addBlockState(new JState().add(pianoVar), Phonos.id(prefix+"piano"));
     }
 

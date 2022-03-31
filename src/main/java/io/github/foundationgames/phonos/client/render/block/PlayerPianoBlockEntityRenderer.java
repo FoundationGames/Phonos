@@ -11,7 +11,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.Vec3f;
 
-public class PlayerPianoBlockEntityRenderer implements BlockEntityRenderer<PlayerPianoBlockEntity> {
+public class PlayerPianoBlockEntityRenderer<T extends PlayerPianoBlockEntity> implements BlockEntityRenderer<T> {
     private final PianoKeyboardModel keyboardModel;
     private final PianoRollModel rollModel;
 
@@ -21,7 +21,7 @@ public class PlayerPianoBlockEntityRenderer implements BlockEntityRenderer<Playe
     }
 
     @Override
-    public void render(PlayerPianoBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
+    public void render(T entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
         this.keyboardModel.setFrom(entity.keyboard, tickDelta);
 
         matrices.push();

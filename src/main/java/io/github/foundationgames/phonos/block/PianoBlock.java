@@ -30,14 +30,13 @@ public class PianoBlock extends HorizontalFacingBlock {
             .cuboid(0, 0, 7, 16, 16, 15)
             .cuboid(0, 16, 6, 16, 18, 16)
             .cuboid(0, 6, 2, 16, 8, 7);
-            //.cuboid(0, 6, 2, 16, 8, 7);
 
     public static final VoxelShape NORTH_SHAPE = SHAPE.toShape(Direction.NORTH);
     public static final VoxelShape SOUTH_SHAPE = SHAPE.toShape(Direction.SOUTH);
     public static final VoxelShape EAST_SHAPE = SHAPE.toShape(Direction.EAST);
     public static final VoxelShape WEST_SHAPE = SHAPE.toShape(Direction.WEST);
 
-    protected final Side side;
+    public final Side side;
     protected final @Nullable Block neighbor;
 
     public PianoBlock(Settings settings, Side side, @Nullable Block neighbor) {

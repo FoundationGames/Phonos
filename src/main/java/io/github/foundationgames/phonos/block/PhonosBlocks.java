@@ -23,6 +23,7 @@ public class PhonosBlocks {
     public static final Block BOOMBOX = Registry.register(Registry.BLOCK, Phonos.id("boombox"), new BoomboxBlock(BOOMBOX_SETTINGS));
     public static final Block PIANO = Registry.register(Registry.BLOCK, Phonos.id("piano"), new PianoBlock(FabricBlockSettings.copy(Blocks.JUKEBOX), PianoBlock.Side.RIGHT, null));
     public static final Block PLAYER_PIANO = register(new PlayerPianoBlock(FabricBlockSettings.copy(Blocks.JUKEBOX), PIANO), "player_piano");
+    public static final Block RADIO_PLAYER_PIANO = register(new RadioPlayerPianoBlock(FabricBlockSettings.copy(Blocks.JUKEBOX), PIANO), "radio_player_piano");
 
     public static final Block GOURD_SPEAKER = registerExtra(new LoudspeakerBlock(AbstractBlock.Settings.of(Material.WOOD, MapColor.ORANGE).strength(1.0F).sounds(BlockSoundGroup.WOOD)), "gourd_speaker");
     public static final Block SPEAK_O_LANTERN = registerExtra(new LoudspeakerBlock(AbstractBlock.Settings.of(Material.WOOD, MapColor.ORANGE).strength(1.0F).sounds(BlockSoundGroup.WOOD).luminance(state -> 15)), "speak_o_lantern");
@@ -39,6 +40,7 @@ public class PhonosBlocks {
 
     public static BlockEntityType<RadioJukeboxBlockEntity> RADIO_JUKEBOX_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, Phonos.id("radio_jukebox"), FabricBlockEntityTypeBuilder.create(RadioJukeboxBlockEntity::new, RADIO_JUKEBOX).build(null));
     public static BlockEntityType<PlayerPianoBlockEntity> PLAYER_PIANO_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, Phonos.id("player_piano"), FabricBlockEntityTypeBuilder.create(PlayerPianoBlockEntity::new, PLAYER_PIANO).build(null));
+    public static BlockEntityType<PlayerPianoBlockEntity.Radio> RADIO_PLAYER_PIANO_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, Phonos.id("radio_player_piano"), FabricBlockEntityTypeBuilder.create(PlayerPianoBlockEntity.Radio::new, RADIO_PLAYER_PIANO).build(null));
 
     /**
      * See {@link io.github.foundationgames.phonos.mixin.PhonosMixinPlugin}

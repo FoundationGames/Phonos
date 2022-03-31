@@ -52,29 +52,34 @@ public class PlayerPianoBlock extends PianoBlock implements BlockEntityProvider 
 
         var holding = player.getStackInHand(hand);
 
-        if (world.getBlockEntity(pos) instanceof PlayerPianoBlockEntity piano) {
+        if (hit.getSide() != Direction.UP && world.getBlockEntity(pos) instanceof PlayerPianoBlockEntity piano) {
             var taken = piano.takeItem();
 
             if (!taken.isEmpty()) {
                 if (!world.isClient()) {
-                    var entity = new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 1.1, pos.getZ() + 0.5, taken);
+                    var entity = new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 1.2, pos.getZ() + 0.5, taken);
                     world.spawnEntity(entity);
                 }
 
                 return ActionResult.SUCCESS;
             }
 
-            if (!world.isClient()) {
-                piano.setItem(holding.copy());
-
-                if (!player.isCreative()) {
+            if (holding.getItem() instanceof PianoRollItem) {
+                if (!world.isClient()) {
+                    piano.setItem(holding.copy());
                     holding.decrement(1);
                 }
+
+                return ActionResult.SUCCESS;
             }
 
-            return ActionResult.SUCCESS;
+            return this.onUseOther(state, world, pos, player, hand, hit);
         }
 
+        return ActionResult.PASS;
+    }
+
+    protected ActionResult onUseOther(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         return ActionResult.PASS;
     }
 

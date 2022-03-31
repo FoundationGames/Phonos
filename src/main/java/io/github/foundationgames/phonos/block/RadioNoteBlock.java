@@ -28,7 +28,6 @@ import net.minecraft.world.WorldAccess;
 import java.awt.*;
 
 public class RadioNoteBlock extends Block implements RadioChannelBlock {
-    //public static final EnumProperty<Instrument> INSTRUMENT = Properties.INSTRUMENT; ~~ instrument is gone ~~
     public static final BooleanProperty POWERED = Properties.POWERED;
     public static final IntProperty NOTE = Properties.NOTE;
     public static final IntProperty CHANNEL = IntProperty.of("channel", 0, 19);
