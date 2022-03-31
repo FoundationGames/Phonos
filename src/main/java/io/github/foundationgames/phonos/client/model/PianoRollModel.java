@@ -10,6 +10,7 @@ import net.minecraft.util.Identifier;
 
 public class PianoRollModel extends Model {
     public static final Identifier TEXTURE = Phonos.id("textures/entity/piano_roll.png");
+    public static final Identifier TEXTURE_EMPTY = Phonos.id("textures/entity/empty_piano_roll.png");
 
     private final ModelPart stand;
     private final ModelPart roll;

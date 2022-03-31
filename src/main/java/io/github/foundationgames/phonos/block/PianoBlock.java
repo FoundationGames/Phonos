@@ -75,7 +75,7 @@ public class PianoBlock extends HorizontalFacingBlock {
             var neighborPos = pos.offset(this.side.neighborDirection(state.get(FACING)));
 
             if (world.getBlockState(neighborPos).getBlock() instanceof PianoBlock piano && piano.side == this.side.opposite()) {
-                world.breakBlock(neighborPos, false);
+                world.breakBlock(neighborPos, true);
             }
         } else {
             if (newState.get(POWERED)) {

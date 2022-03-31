@@ -6,6 +6,7 @@ import io.github.foundationgames.phonos.block.RadioNoteBlock;
 import io.github.foundationgames.phonos.block.SoundPlayReceivable;
 import io.github.foundationgames.phonos.client.ClientReceiverStorage;
 import io.github.foundationgames.phonos.client.render.block.PlayerPianoBlockEntityRenderer;
+import io.github.foundationgames.phonos.client.render.block.RadioRecorderBlockEntityRenderer;
 import io.github.foundationgames.phonos.entity.SoundPlayEntityReceivable;
 import io.github.foundationgames.phonos.item.PhonosItems;
 import io.github.foundationgames.phonos.network.ClientPayloadPackets;
@@ -95,9 +96,11 @@ public class PhonosClient implements ClientModInitializer {
         BlockRenderLayerMap.INSTANCE.putBlock(PhonosBlocks.RADIO_NOTE_BLOCK, RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(PhonosBlocks.BOOMBOX, RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(PhonosBlocks.FESTIVE_BOOMBOX, RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(PhonosBlocks.RADIO_RECORDER, RenderLayer.getTranslucent());
 
         BlockEntityRendererRegistry.register(PhonosBlocks.PLAYER_PIANO_ENTITY, PlayerPianoBlockEntityRenderer::new);
         BlockEntityRendererRegistry.register(PhonosBlocks.RADIO_PLAYER_PIANO_ENTITY, PlayerPianoBlockEntityRenderer::new);
+        BlockEntityRendererRegistry.register(PhonosBlocks.RADIO_RECORDER_ENTITY, RadioRecorderBlockEntityRenderer::new);
 
         ScreenRegistry.<RadioJukeboxGuiDescription, RadioJukeboxScreen>register(Phonos.RADIO_JUKEBOX_HANDLER, (gui, inventory, title) -> new RadioJukeboxScreen(gui, inventory.player));
         ScreenRegistry.<CustomMusicDiscGuiDescription, CustomMusicDiscScreen>register(Phonos.CUSTOM_DISC_HANDLER, (gui, inventory, title) -> new CustomMusicDiscScreen(gui, inventory.player));

@@ -90,7 +90,7 @@ public class PianoRoll {
         private final List<Stage> stages = new ArrayList<>();
 
         public void pushStage() {
-            this.stages.add(new Stage(PhonosUtil.arrFromList(currentPitches), currentDelay));
+            this.stages.add(new Stage(PhonosUtil.arrFromList(currentPitches), Math.max(currentDelay - 1, 0)));
 
             this.currentPitches.clear();
             this.currentDelay = 0;
@@ -108,6 +108,10 @@ public class PianoRoll {
             }
 
             this.currentPitches.add(pitch);
+        }
+
+        public int size() {
+            return this.stages.size();
         }
 
         public PianoRoll build() {

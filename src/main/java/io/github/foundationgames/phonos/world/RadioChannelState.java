@@ -165,7 +165,7 @@ public class RadioChannelState extends PersistentState {
         for (long l : this.blockStorage.get(channel)) {
             pos.set(l);
 
-            if (this.world.getBlockState(pos).getBlock() instanceof NotePlayReceivable receiver) {
+            if (this.world.isChunkLoaded(pos) && this.world.getBlockState(pos).getBlock() instanceof NotePlayReceivable receiver) {
                 receiver.onNotePlayed(this.world, pos, pitch);
             }
         }

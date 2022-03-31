@@ -151,7 +151,11 @@ public class PlayerPianoBlockEntity extends BlockEntity implements Syncing {
         @Override
         protected void playSound(SoundEvent sound, float pitch) {
             if (this.getWorld() instanceof ServerWorld world && world.getBlockState(pos).getBlock() instanceof RadioChannelBlock radio) {
-                PhonosUtil.getRadioState(world).playSound(this.pos, sound, world.getBlockState(pos).get(radio.getChannelProperty()), 3.0f, pitch, false);
+                var channels = PhonosUtil.getRadioState(world);
+                int channel = world.getBlockState(pos).get(radio.getChannelProperty());
+
+                channels.playSound(this.pos, sound, channel, 3.0f, pitch, false);
+                channels.alertNotePlayed(channel, pitch);
             }
         }
     }

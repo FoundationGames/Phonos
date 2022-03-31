@@ -1,6 +1,7 @@
 package io.github.foundationgames.phonos.block;
 
 import io.github.foundationgames.phonos.block.entity.PlayerPianoBlockEntity;
+import io.github.foundationgames.phonos.block.entity.RadioRecorderBlockEntity;
 import io.github.foundationgames.phonos.item.PianoRollItem;
 import io.github.foundationgames.phonos.util.PhonosUtil;
 import net.minecraft.block.Block;
@@ -88,6 +89,18 @@ public class PlayerPianoBlock extends PianoBlock implements BlockEntityProvider 
         if (world.getBlockEntity(pos) instanceof PlayerPianoBlockEntity pianoEntity) {
             pianoEntity.togglePianoRoll();
         }
+    }
+
+    @Override
+    public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
+        if (!newState.isOf(this) && world.getBlockEntity(pos) instanceof PlayerPianoBlockEntity piano) {
+            var stack = piano.takeItem();
+            if (!stack.isEmpty()) {
+                world.spawnEntity(new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, stack));
+            }
+        }
+
+        super.onStateReplaced(state, world, pos, newState, moved);
     }
 
     @Nullable

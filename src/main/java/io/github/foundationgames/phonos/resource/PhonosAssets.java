@@ -121,6 +121,7 @@ public class PhonosAssets {
                     Phonos.id("block/radio_jukebox_side_on"),
                     Phonos.id("block/speaker_top_"+i)
             );
+
             addCopperSpeakerModels(pack, "", i);
             addCopperSpeakerModels(pack, "exposed_", i);
             addCopperSpeakerModels(pack, "weathered_", i);
@@ -128,15 +129,24 @@ public class PhonosAssets {
             addTinyPotatoSpeakerModel(pack, i);
             addBoomboxModels(pack, "boombox", i);
             addBoomboxModels(pack, "festive_boombox", i);
+
             pack.addModel(new JModel().parent("phonos:block/radio_note_block_base").textures(new JTextures()
                     .var("side", "phonos:block/radio_note_block_side")
                     .var("overlay", "phonos:block/radio_note_block_overlay")
                     .var("bottom", "phonos:block/radio_note_block_bottom")
                     .var("top", "phonos:block/speaker_top_"+i)
             ), Phonos.id("block/radio_note_block_tuned_"+i));
+
             pack.addModel(new JModel().parent("phonos:block/radio_player_piano_base").textures(new JTextures()
                     .var("display", "phonos:block/boombox_display_"+i)
             ), Phonos.id("block/radio_player_piano_tuned_"+i));
+
+            pack.addModel(new JModel().parent("phonos:block/radio_recorder_off_base").textures(new JTextures()
+                    .var("top", "phonos:block/speaker_top_"+i)
+            ), Phonos.id("block/radio_recorder_off_tuned_"+i));
+            pack.addModel(new JModel().parent("phonos:block/radio_recorder_on_base").textures(new JTextures()
+                    .var("top", "phonos:block/speaker_top_"+i)
+            ), Phonos.id("block/radio_recorder_on_tuned_"+i));
         }
 
         // TUNABLE BLOCKSTATES
@@ -180,6 +190,13 @@ public class PhonosAssets {
         }
         pack.addBlockState(new JState().add(radioPianoVar), Phonos.id("radio_player_piano"));
 
+        var recorderVar = JState.variant();
+        for (int i = 0; i < 20; i++) {
+            recorderVar.put("powered=false,channel="+i, JState.model(Phonos.id("block/radio_recorder_off_tuned_"+i)));
+            recorderVar.put("powered=true,channel="+i, JState.model(Phonos.id("block/radio_recorder_on_tuned_"+i)));
+        }
+        pack.addBlockState(new JState().add(recorderVar), Phonos.id("radio_recorder"));
+
         addBoomboxBlockState(pack, "boombox");
         addBoomboxBlockState(pack, "festive_boombox");
 
@@ -221,6 +238,9 @@ public class PhonosAssets {
                 .var("bottom", "phonos:block/radio_note_block_bottom")
                 .var("top", "phonos:block/speaker_top")
         ), Phonos.id("item/radio_note_block"));
+        pack.addModel(new JModel().parent("phonos:block/radio_recorder_off_base").textures(new JTextures()
+                .var("top", "phonos:block/speaker_top")
+        ), Phonos.id("item/radio_recorder"));
 
         RRPCallback.AFTER_VANILLA.register(l -> l.add(pack));
     }

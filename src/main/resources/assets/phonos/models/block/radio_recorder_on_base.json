@@ -1,4 +1,5 @@
 {
+	"parent": "minecraft:block/block",
 	"textures": {
 		"0": "phonos:block/radio_recorder_side_on",
 		"2": "phonos:block/radio_note_block_bottom",
