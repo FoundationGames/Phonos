@@ -11,7 +11,7 @@ import net.devtech.arrp.json.recipe.*;
 import net.minecraft.util.Identifier;
 
 public class PhonosData {
-    public static final RuntimeResourcePack PHONOS_DATA = RuntimeResourcePack.create("phonos:data");
+    public static final RuntimeResourcePack PHONOS_DATA = RuntimeResourcePack.create("phonos_data");
 
     public static void registerData() {
         RuntimeResourcePack pack = PHONOS_DATA;
@@ -57,6 +57,33 @@ public class PhonosData {
                 "radio_jukebox", 1,
                 "#planks", "iron_ingot", "$redstone_chip", "#stone_crafting_materials", "diamond"
         );
+        shaped(pack, "player_piano",
+                new String[]{
+                        "AAA",
+                        "BCB",
+                        "DED"
+                },
+                "player_piano", 1,
+                "#wooden_slabs", "bone_meal", "polished_blackstone_button", "$radio_note_block", "#planks"
+        );
+        shaped(pack, "radio_recorder",
+                new String[]{
+                        "ABA",
+                        "ACA",
+                        "ADA"
+                },
+                "radio_recorder", 1,
+                "#planks", "$redstone_chip", "iron_nugget", "$loudspeaker"
+        );
+        shaped(pack, "empty_piano_roll",
+                new String[]{
+                        "A",
+                        "B",
+                        "C"
+                },
+                "empty_piano_roll", 1,
+                "stick", "paper", "iron_nugget"
+        );
         shaped(pack, "boombox",
                 new String[]{
                         " C ",
@@ -93,6 +120,10 @@ public class PhonosData {
                 "copper_ingot", "$redstone_chip", "#stone_crafting_materials", "iron_ingot"
         );
 
+        shapeless(pack, "radio_player_piano",
+                "radio_player_piano", 1,
+                "$player_piano", "$redstone_chip"
+        );
         shapeless(pack, "gourd_speaker",
                 "gourd_speaker", 1,
                 "$loudspeaker", "carved_pumpkin"
@@ -130,6 +161,9 @@ public class PhonosData {
         defaultLoot(pack, Phonos.id("loudspeaker"));
         defaultLoot(pack, Phonos.id("radio_note_block"));
         defaultLoot(pack, Phonos.id("radio_jukebox"));
+        defaultLoot(pack, Phonos.id("player_piano"));
+        defaultLoot(pack, Phonos.id("radio_player_piano"));
+        defaultLoot(pack, Phonos.id("radio_recorder"));
         defaultLoot(pack, Phonos.id("gourd_speaker"));
         defaultLoot(pack, Phonos.id("speak_o_lantern"));
         defaultLoot(pack, Phonos.id("tiny_potato_speaker"));

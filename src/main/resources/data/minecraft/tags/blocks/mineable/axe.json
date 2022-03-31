@@ -4,6 +4,10 @@
         "phonos:loudspeaker",
         "phonos:radio_jukebox",
         "phonos:radio_note_block",
+        "phonos:piano",
+        "phonos:player_piano",
+        "phonos:radio_player_piano",
+        "phonos:radio_recorder",
         "phonos:gourd_speaker",
         "phonos:speak_o_lantern",
         "phonos:tiny_potato_speaker"

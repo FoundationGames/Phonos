@@ -11,7 +11,7 @@ import net.devtech.arrp.json.models.JTextures;
 import net.minecraft.util.Identifier;
 
 public class PhonosAssets {
-    public static final RuntimeResourcePack PHONOS_ASSETS = RuntimeResourcePack.create("phonos:assets");
+    public static final RuntimeResourcePack PHONOS_ASSETS = RuntimeResourcePack.create("phonos_assets");
 
     public static void init() {
         RuntimeResourcePack pack = PHONOS_ASSETS;
