@@ -42,9 +42,11 @@ public class PianoRollItem extends Item {
     @Override
     public void appendStacks(ItemGroup group, DefaultedList<ItemStack> stacks) {
         if (group == this.getGroup() || group == ItemGroup.SEARCH) {
-            var chopsticks = this.create(BuiltinPianoRolls.CHOPSTICKS);
-            chopsticks.setCustomName(new TranslatableText(getTranslationKey() + ".chopsticks").styled(style -> style.withItalic(false)));
-            stacks.add(chopsticks);
+            BuiltinPianoRolls.forEach((name, roll) -> {
+                var stack = this.create(roll);
+                stack.setCustomName(new TranslatableText(getTranslationKey() + "." + name).styled(style -> style.withItalic(false)));
+                stacks.add(stack);
+            });
         }
     }
 
