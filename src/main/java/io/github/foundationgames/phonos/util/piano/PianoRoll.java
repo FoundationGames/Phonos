@@ -24,12 +24,22 @@ public class PianoRoll {
         return new Player(new ArrayDeque<>(stages), player);
     }
 
+    public int duration() {
+        int dur = 0;
+        for (var stage : this.stages) {
+            dur += 1 + stage.delay;
+        }
+
+        return dur;
+    }
+
     public NbtCompound toNbt() {
         var nbt = new NbtCompound();
         var stageList = new NbtList();
 
         this.stages.forEach(s -> stageList.add(s.toNbt()));
         nbt.put("stages", stageList);
+        nbt.putInt("duration", this.duration());
 
         return nbt;
     }

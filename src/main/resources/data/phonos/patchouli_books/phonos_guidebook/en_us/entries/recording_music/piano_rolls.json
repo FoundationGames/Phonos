@@ -1,0 +1,34 @@
+{
+  "name": "Piano Rolls",
+  "category": "phonos:recording_music",
+  "icon": "phonos:piano_roll",
+  "sortnum": 0,
+  "pages": [
+    {
+      "type": "spotlight",
+      "item": "phonos:empty_piano_roll",
+      "title": "Piano Rolls",
+      "link_recipe": false,
+      "text": "To get started recording your own music, craft an Empty Piano Roll and Radio Recorder. Place the roll into the recorder and power it with redstone. Activate a radio note block contraption on the same channel, and un-power the recorder when done to receive your piano roll."
+    },
+    {
+      "type": "image",
+      "images": [
+        "phonos:textures/gui/gallery/recorder_powered.png",
+        "phonos:textures/gui/gallery/recorder_note_blocks.png",
+        "phonos:textures/gui/gallery/recorder_finished.png"
+      ],
+      "title": "Gallery",
+      "border": true,
+      "text": "The steps to record your own piano roll."
+    },
+    {
+      "type": "crafting",
+      "recipe": "phonos:empty_piano_roll"
+    },
+    {
+      "type": "crafting",
+      "recipe": "phonos:radio_recorder"
+    }
+  ]
+}

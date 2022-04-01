@@ -1,0 +1,32 @@
+{
+  "name": "Player Pianos",
+  "category": "phonos:recording_music",
+  "icon": "phonos:player_piano",
+  "sortnum": 1,
+  "pages": [
+    {
+      "type": "spotlight",
+      "item": "phonos:player_piano",
+      "title": "Player Pianos",
+      "link_recipe": false,
+      "text": "Once you have created your own song, craft a Player Piano. Your piano roll can be placed into this block, and when powered the piano will play your song. A radio version of this block can be made to broadcast your song to loudspeakers. You can even try to play the piano yourself."
+    },
+    {
+      "type": "image",
+      "images": [
+        "phonos:textures/gui/gallery/radio_player_piano.png"
+      ],
+      "title": "Gallery",
+      "border": true,
+      "text": "A Radio Player Piano playing a song."
+    },
+    {
+      "type": "crafting",
+      "recipe": "phonos:player_piano"
+    },
+    {
+      "type": "crafting",
+      "recipe": "phonos:radio_player_piano"
+    }
+  ]
+}

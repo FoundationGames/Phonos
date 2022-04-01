@@ -42,5 +42,6 @@
     "message.phonos.mode_0_title": "Apply",
     "message.phonos.mode_1_title": "Copy",
     "message.phonos.mode_2_title": "Adjust",
+    "tooltip.phonos.duration": "Duration: %s:%s",
     "entity.minecraft.villager.technician": "Technician"
 }

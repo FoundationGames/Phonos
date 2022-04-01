@@ -83,10 +83,10 @@ public class RadioNoteBlock extends Block implements RadioChannelBlock {
     }
 
     public boolean onSyncedBlockEvent(BlockState state, World world, BlockPos pos, int type, int data) {
-        int i = state.get(NOTE);
-        float f = (float)Math.pow(2.0D, (double)(i - 12) / 12.0D);
-        world.playSound(null, pos, Instrument.fromBlockState(world.getBlockState(pos.down())).getSound(), SoundCategory.RECORDS, 3.0F, f);
-        world.addParticle(ParticleTypes.NOTE, (double)pos.getX() + 0.5D, (double)pos.getY() + 1.2D, (double)pos.getZ() + 0.5D, (double)i / 24.0D, 0.0D, 0.0D);
+        int note = state.get(NOTE);
+        float pitch = PhonosUtil.pitchFromNote(note);
+        world.playSound(null, pos, Instrument.fromBlockState(world.getBlockState(pos.down())).getSound(), SoundCategory.RECORDS, 3.0F, pitch);
+        world.addParticle(ParticleTypes.NOTE, (double)pos.getX() + 0.5D, (double)pos.getY() + 1.2D, (double)pos.getZ() + 0.5D, (double)note / 24.0D, 0.0D, 0.0D);
         return true;
     }
 
