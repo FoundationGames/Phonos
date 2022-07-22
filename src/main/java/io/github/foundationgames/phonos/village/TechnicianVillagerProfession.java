@@ -16,6 +16,7 @@ import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.village.TradeOffer;
 import net.minecraft.village.TradeOffers;
@@ -24,14 +25,13 @@ import net.minecraft.world.poi.PointOfInterestType;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 import java.util.function.BiFunction;
 
 public enum TechnicianVillagerProfession {;
 
     public static final PointOfInterestType TECHNICIAN_WORKSTATION = PointOfInterestHelper.register(Phonos.id("technician_job_site"), 1, 1, PhonosBlocks.RADIO_JUKEBOX);
 
-    public static final VillagerProfession TECHNICIAN_PROFESSION = VillagerProfessionBuilder.create().id(Phonos.id("technician")).workSound(SoundEvents.BLOCK_DISPENSER_FAIL).workstation(TECHNICIAN_WORKSTATION).build();
+    public static final VillagerProfession TECHNICIAN_PROFESSION = VillagerProfessionBuilder.create().id(Phonos.id("technician")).workSound(SoundEvents.BLOCK_DISPENSER_FAIL).workstation(Registry.POINT_OF_INTEREST_TYPE.getKey(TECHNICIAN_WORKSTATION).orElseThrow()).build();
 
     private static final List<Item> TRADABLE_MUSIC_DISCS = Lists.newArrayList(Items.MUSIC_DISC_11, Items.MUSIC_DISC_13, Items.MUSIC_DISC_BLOCKS, Items.MUSIC_DISC_CAT, Items.MUSIC_DISC_CHIRP, Items.MUSIC_DISC_FAR, Items.MUSIC_DISC_MALL, Items.MUSIC_DISC_MELLOHI, Items.MUSIC_DISC_STAL, Items.MUSIC_DISC_STRAD, Items.MUSIC_DISC_WAIT, Items.MUSIC_DISC_WARD);
 

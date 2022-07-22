@@ -20,7 +20,7 @@ import net.minecraft.item.MusicDiscItem;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 public class RadioJukeboxGuiDescription extends SyncedGuiDescription {
@@ -49,7 +49,7 @@ public class RadioJukeboxGuiDescription extends SyncedGuiDescription {
         //WText utitle = new WText(new TranslatableText("container.phonos.radio_jukebox.title"), 0x252525);
         //utitle.setSize(51, 15);
         //root.add(utitle, 0, 3);
-        WLabel title = new WLabel(new TranslatableText("container.phonos.radio_jukebox.title"), 0x252525);
+        WLabel title = new WLabel(Text.translatable("container.phonos.radio_jukebox.title"), 0x252525);
         title.setSize(51, 15);
         root.add(title, 0, 3);
 
