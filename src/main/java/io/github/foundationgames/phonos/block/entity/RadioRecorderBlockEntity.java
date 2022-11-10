@@ -63,7 +63,7 @@ public class RadioRecorderBlockEntity extends BlockEntity implements Syncing {
     }
 
     public static void tick(World world, BlockPos pos, BlockState state, RadioRecorderBlockEntity self) {
-        boolean powered = world.getBlockState(pos).get(Properties.POWERED);
+        boolean powered = state.get(Properties.POWERED);
 
         if (powered != self.powered) {
             self.powered = powered;

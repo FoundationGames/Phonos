@@ -70,6 +70,8 @@ public class ClientReceiverStorage {
                 if (entity.isRemoved()) removed.add(entity);
             }
             for (var entity : removed) {
+		if (entity == null) continue;
+		
                 entityStorage.get(channel).remove(entity);
             }
         }
