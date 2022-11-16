@@ -8,6 +8,7 @@ import io.github.foundationgames.phonos.block.entity.RadioJukeboxBlockEntity;
 import io.github.foundationgames.phonos.block.entity.RadioRecorderBlockEntity;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
+import net.fabricmc.fabric.api.registry.OxidizableBlocksRegistry;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.BlockItem;
@@ -45,9 +46,6 @@ public class PhonosBlocks {
     public static BlockEntityType<PlayerPianoBlockEntity.Radio> RADIO_PLAYER_PIANO_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, Phonos.id("radio_player_piano"), FabricBlockEntityTypeBuilder.create(PlayerPianoBlockEntity.Radio::new, RADIO_PLAYER_PIANO).build(null));
     public static BlockEntityType<RadioRecorderBlockEntity> RADIO_RECORDER_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, Phonos.id("radio_recorder"), FabricBlockEntityTypeBuilder.create(RadioRecorderBlockEntity::new, RADIO_RECORDER).build(null));
 
-    /**
-     * See {@link io.github.foundationgames.phonos.mixin.PhonosMixinPlugin}
-     */
     public static final BiMap<Block, Block> OXIDIZABLES = ImmutableBiMap.<Block, Block>builder().put(COPPER_SPEAKER, EXPOSED_COPPER_SPEAKER).put(EXPOSED_COPPER_SPEAKER, WEATHERED_COPPER_SPEAKER).put(WEATHERED_COPPER_SPEAKER, OXIDIZED_COPPER_SPEAKER).build();
     public static final BiMap<Block, Block> WAXABLES = ImmutableBiMap.<Block, Block>builder().put(COPPER_SPEAKER, WAXED_COPPER_SPEAKER).put(EXPOSED_COPPER_SPEAKER, WAXED_EXPOSED_COPPER_SPEAKER).put(WEATHERED_COPPER_SPEAKER, WAXED_WEATHERED_COPPER_SPEAKER).put(OXIDIZED_COPPER_SPEAKER, WAXED_OXIDIZED_COPPER_SPEAKER).build();
 
@@ -62,6 +60,9 @@ public class PhonosBlocks {
     }
 
     public static void init() {
+        OXIDIZABLES.forEach(OxidizableBlocksRegistry::registerOxidizableBlockPair);
+        WAXABLES.forEach(OxidizableBlocksRegistry::registerWaxableBlockPair);
+        
         registerExtra(COPPER_SPEAKER, "copper_speaker");
         registerExtra(EXPOSED_COPPER_SPEAKER, "exposed_copper_speaker");
         registerExtra(WEATHERED_COPPER_SPEAKER, "weathered_copper_speaker");
