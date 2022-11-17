@@ -2,6 +2,7 @@ package io.github.foundationgames.phonos.sound;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.sound.AbstractSoundInstance;
+import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.client.sound.TickableSoundInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.sound.SoundCategory;
@@ -27,7 +28,7 @@ public class MultiPositionedSoundInstance extends AbstractSoundInstance implemen
     }
 
     public MultiPositionedSoundInstance(Set<BlockPos> blocks, Set<Entity> entities, Identifier sound, float volume, float pitch) {
-        super(sound, SoundCategory.RECORDS);
+        super(sound, SoundCategory.RECORDS, SoundInstance.createRandom());
         this.volume = volume;
         this.pitch = pitch;
         this.blocks = blocks;

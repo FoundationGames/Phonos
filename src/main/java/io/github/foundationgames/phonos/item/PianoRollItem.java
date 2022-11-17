@@ -7,7 +7,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
@@ -44,7 +43,7 @@ public class PianoRollItem extends Item {
         if (group == this.getGroup() || group == ItemGroup.SEARCH) {
             BuiltinPianoRolls.forEach((name, roll) -> {
                 var stack = this.create(roll);
-                stack.setCustomName(new TranslatableText(getTranslationKey() + "." + name).styled(style -> style.withItalic(false)));
+                stack.setCustomName(Text.translatable(getTranslationKey() + "." + name).styled(style -> style.withItalic(false)));
                 stacks.add(stack);
             });
         }
@@ -56,7 +55,7 @@ public class PianoRollItem extends Item {
         int sec = (int) Math.floor((double) duration / 20);
         int min = (int) Math.floor((double) sec / 60);
         sec = sec % 60;
-        tooltip.add(new TranslatableText("tooltip.phonos.duration", String.format("%02d", min), String.format("%02d", sec)).formatted(Formatting.GRAY));
+        tooltip.add(Text.translatable("tooltip.phonos.duration", String.format("%02d", min), String.format("%02d", sec)).formatted(Formatting.GRAY));
 
         super.appendTooltip(stack, world, tooltip, context);
     }

@@ -12,8 +12,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
@@ -40,31 +39,31 @@ public class CustomMusicDiscGuiDescription extends SyncedGuiDescription {
         this.soundField = soundIdField;
         root.add(soundIdField, 0, 1, 24, 7);
 
-        WLabel comparatorLabel = new WLabel(new LiteralText(""));
+        WLabel comparatorLabel = new WLabel(Text.literal(""));
         root.add(comparatorLabel, 8, 4, 20, 7);
 
         WSlider comparatorOutField = new WSlider(1, 15, Axis.HORIZONTAL);
         comparatorOutField.setValue(stack.getOrCreateSubNbt("MusicData").getInt("ComparatorSignal"));
         comparatorOutField.setDraggingFinishedListener(i -> {
             this.comparatorOutput = i;
-            comparatorLabel.setText(new LiteralText(Integer.toString(i)));
+            comparatorLabel.setText(Text.literal(Integer.toString(i)));
         });
         root.add(comparatorOutField, 0, 4, 18, 4);
 
         WButton confirmSoundButton = new WButton();
-        confirmSoundButton.setLabel(new TranslatableText("button.phonos.set_sound_id"));
+        confirmSoundButton.setLabel(Text.translatable("button.phonos.set_sound_id"));
         confirmSoundButton.setOnClick(() -> setStackSoundId(soundIdField.getText()));
         root.add(confirmSoundButton, 25, 1, 8, 1);
 
         WButton confirmComparatorButton = new WButton();
-        confirmComparatorButton.setLabel(new TranslatableText("button.phonos.set_comparator_signal"));
+        confirmComparatorButton.setLabel(Text.translatable("button.phonos.set_comparator_signal"));
         confirmComparatorButton.setOnClick(() -> {
             setDiscComparatorSignal(comparatorOutField.getValue());
             success("log.phonos.comparator_signal_success");
         });
         root.add(confirmComparatorButton, 19, 4, 14, 7);
 
-        WLabel errorLabel = new WLabel(new LiteralText(""));
+        WLabel errorLabel = new WLabel(Text.literal(""));
         this.errorLabel = errorLabel;
         root.add(errorLabel, 0, 7);
 
@@ -112,9 +111,9 @@ public class CustomMusicDiscGuiDescription extends SyncedGuiDescription {
     }
 
     private void error(String errorKey) {
-        this.errorLabel.setText(new TranslatableText(errorKey).formatted(Formatting.RED));
+        this.errorLabel.setText(Text.translatable(errorKey).formatted(Formatting.RED));
     }
     private void success(String successKey) {
-        this.errorLabel.setText(new TranslatableText(successKey).formatted(Formatting.DARK_GREEN));
+        this.errorLabel.setText(Text.translatable(successKey).formatted(Formatting.DARK_GREEN));
     }
 }

@@ -1,15 +1,12 @@
 package io.github.foundationgames.phonos.block;
 
-import io.github.foundationgames.phonos.Phonos;
 import io.github.foundationgames.phonos.block.entity.RadioJukeboxBlockEntity;
 import io.github.foundationgames.phonos.item.ChannelTunerItem;
 import io.github.foundationgames.phonos.util.PhonosUtil;
 import io.github.foundationgames.phonos.world.RadioChannelState;
-import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.*;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.MusicDiscItem;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
@@ -21,7 +18,6 @@ import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
 public class RadioJukeboxBlock extends BlockWithEntity implements RadioChannelBlock {

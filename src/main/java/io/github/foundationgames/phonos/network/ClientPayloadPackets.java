@@ -1,7 +1,6 @@
 package io.github.foundationgames.phonos.network;
 
 import io.github.foundationgames.phonos.Phonos;
-import io.github.foundationgames.phonos.PhonosClient;
 import io.github.foundationgames.phonos.block.entity.PlayerPianoBlockEntity;
 import io.github.foundationgames.phonos.client.ClientReceiverStorage;
 import io.github.foundationgames.phonos.mixin.ClientWorldAccess;
@@ -13,11 +12,9 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
@@ -61,16 +58,16 @@ public final class ClientPayloadPackets {
                     ClientWorld world = (ClientWorld)client.player.getEntityWorld();
                     Map<BlockPos, SoundInstance> songs = ((WorldRendererAccess)(((ClientWorldAccess)world).phonos$getWorldRenderer())).phonos$getPlayingSongs();
                     SoundInstance soundI = null;
-                    if(sound != null) soundI = new PositionedSoundInstance(sound, SoundCategory.RECORDS, 1.8f, 1.0f, false, 0, SoundInstance.AttenuationType.LINEAR, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, false);
+                    if(sound != null) soundI = new PositionedSoundInstance(sound, SoundCategory.RECORDS, 1.8f, 1.0f, SoundInstance.createRandom(), false, 0, SoundInstance.AttenuationType.LINEAR, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, false);
                     MinecraftClient.getInstance().getSoundManager().play(soundI);
                     Text subtitle = null;
                     if(soundI != null) try { // also lets try to read the subtitle from the item
                         subtitle = soundI.getSoundSet(MinecraftClient.getInstance().getSoundManager()).getSubtitle();
                         if(subtitle == null) throw new Exception(); // fail if subtitle is null
                     } catch (Exception e) { // if it fails, lets just make it a "custom music disc"
-                        subtitle = new TranslatableText("item.phonos.custom_music_disc");
+                        subtitle = Text.translatable("item.phonos.custom_music_disc");
                     }
-                    if(subtitle != null) MinecraftClient.getInstance().inGameHud.setOverlayMessage(new TranslatableText("record.nowPlaying", subtitle), true);
+                    if(subtitle != null) MinecraftClient.getInstance().inGameHud.setOverlayMessage(Text.translatable("record.nowPlaying", subtitle), true);
                     songs.put(pos, soundI);
                 }
             });

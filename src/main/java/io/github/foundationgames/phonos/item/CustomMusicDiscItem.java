@@ -19,7 +19,6 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.stat.Stats;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.*;
 import net.minecraft.util.collection.DefaultedList;
@@ -41,7 +40,7 @@ public class CustomMusicDiscItem extends Item {
         if (state.isOf(Blocks.JUKEBOX) && !state.get(JukeboxBlock.HAS_RECORD)) {
             ItemStack stack = context.getStack();
             if (!world.isClient) {
-                ((JukeboxBlock)Blocks.JUKEBOX).setRecord(world, pos, state, stack);
+                ((JukeboxBlock)Blocks.JUKEBOX).setRecord(context.getPlayer(), world, pos, state, stack);
                 for(ServerPlayerEntity player : ((ServerWorld)world).getPlayers()) {
                     Identifier soundId = Identifier.tryParse(stack.getOrCreateSubNbt("MusicData").getString("SoundId"));
                     PayloadPackets.sendJukeboxIdSound(player, soundId, pos);
@@ -82,7 +81,7 @@ public class CustomMusicDiscItem extends Item {
     @Override
     public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
         super.appendTooltip(stack, world, tooltip, context);
-        tooltip.add(new LiteralText(stack.getOrCreateSubNbt("MusicData").getString("SoundId")).formatted(Formatting.BLUE));
+        tooltip.add(Text.literal(stack.getOrCreateSubNbt("MusicData").getString("SoundId")).formatted(Formatting.BLUE));
     }
 
     public static class DiscGuiFactory implements ExtendedScreenHandlerFactory {
@@ -99,7 +98,7 @@ public class CustomMusicDiscItem extends Item {
 
         @Override
         public Text getDisplayName() {
-            return new LiteralText("");
+            return Text.literal("");
         }
 
         @Override
