@@ -1,7 +1,0 @@
-{
-	"parent": "phonos:block/template_boombox",
-	"textures": {
-		"side": "phonos:block/boombox_side",
-		"top_bottom": "phonos:block/boombox_top_bottom"
-	}
-}

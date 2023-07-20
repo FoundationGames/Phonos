@@ -1,0 +1,12 @@
+{
+	"parent": "block/cube",
+	"textures": {
+		"particle": "phonos:block/loudspeaker",
+		"north": "phonos:block/loudspeaker",
+		"south": "phonos:block/loudspeaker_back",
+		"east": "phonos:block/loudspeaker_east",
+		"west": "phonos:block/loudspeaker_west",
+		"up": "phonos:block/speaker_wood",
+		"down": "phonos:block/stone_base"
+	}
+}

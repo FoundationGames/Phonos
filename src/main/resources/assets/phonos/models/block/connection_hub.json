@@ -1,0 +1,21 @@
+{
+	"parent": "block/block",
+	"textures": {
+		"0": "phonos:block/connection_hub",
+		"particle": "phonos:block/connection_hub"
+	},
+	"elements": [
+		{
+			"from": [4, 0, 4],
+			"to": [12, 4, 12],
+			"faces": {
+				"north": {"uv": [8, 12, 16, 16], "texture": "#0"},
+				"east": {"uv": [8, 12, 16, 16], "texture": "#0"},
+				"south": {"uv": [8, 12, 16, 16], "texture": "#0"},
+				"west": {"uv": [8, 12, 16, 16], "texture": "#0"},
+				"up": {"uv": [8, 8, 0, 0], "texture": "#0"},
+				"down": {"uv": [8, 8, 0, 16], "texture": "#0", "cullface": "down"}
+			}
+		}
+	]
+}

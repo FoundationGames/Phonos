@@ -1,0 +1,1 @@
+{	"parent": "block/cube_bottom_top",	"textures": {		"particle": "phonos:block/electronic_note_block_side",		"side": "phonos:block/electronic_note_block_side",		"up": "phonos:block/speaker_wood",		"down": "phonos:block/stone_base"	}}

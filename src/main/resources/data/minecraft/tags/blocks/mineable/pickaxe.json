@@ -1,13 +1,5 @@
 {
     "replace": false,
     "values": [
-        "phonos:copper_speaker",
-        "phonos:exposed_copper_speaker",
-        "phonos:weathered_copper_speaker",
-        "phonos:oxidized_copper_speaker",
-        "phonos:waxed_copper_speaker",
-        "phonos:waxed_exposed_copper_speaker",
-        "phonos:waxed_weathered_copper_speaker",
-        "phonos:waxed_oxidized_copper_speaker"
     ]
 }

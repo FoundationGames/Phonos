@@ -1,19 +1,7 @@
 package io.github.foundationgames.phonos.util.piano;
 
-import io.github.foundationgames.phonos.util.PhonosUtil;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Consumer;
-
 public class PianoRoll {
+    /*
     private final List<Stage> stages;
 
     public PianoRoll(List<Stage> stages) {
@@ -145,4 +133,6 @@ public class PianoRoll {
             return new Stage(PhonosUtil.fromIntBytesArr(nbt.getIntArray("pitches")), nbt.getInt("delay"));
         }
     }
+
+     */
 }

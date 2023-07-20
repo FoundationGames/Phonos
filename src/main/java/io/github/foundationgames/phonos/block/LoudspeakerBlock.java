@@ -1,118 +1,142 @@
 package io.github.foundationgames.phonos.block;
 
-import io.github.foundationgames.phonos.client.ClientReceiverStorage;
-import io.github.foundationgames.phonos.item.ChannelTunerItem;
 import io.github.foundationgames.phonos.util.PhonosUtil;
-import io.github.foundationgames.phonos.world.RadioChannelState;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import io.github.foundationgames.phonos.world.sound.block.BlockConnectionLayout;
+import io.github.foundationgames.phonos.world.sound.block.InputBlock;
+import io.github.foundationgames.phonos.world.sound.block.SoundDataHandler;
+import io.github.foundationgames.phonos.world.sound.data.NoteBlockSoundData;
+import io.github.foundationgames.phonos.world.sound.data.SoundData;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.world.ClientWorld;
+import net.minecraft.block.HorizontalFacingBlock;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.item.ItemUsageContext;
 import net.minecraft.particle.ParticleTypes;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
-import net.minecraft.state.property.IntProperty;
+import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.Random;
+public class LoudspeakerBlock extends HorizontalFacingBlock implements SoundDataHandler, InputBlock {
+    public static final BooleanProperty[] INPUTS = BlockProperties.pluggableInputs(4);
 
-public class LoudspeakerBlock extends Block implements SoundPlayReceivable, RadioChannelBlock {
-    public static final IntProperty CHANNEL = IntProperty.of("channel", 0, 19);
+    public final BlockConnectionLayout inputLayout = new BlockConnectionLayout()
+            .addPoint(1.5, -2.5, 8, Direction.SOUTH)
+            .addPoint(-1.5, -2.5, 8, Direction.SOUTH)
+            .addPoint(4.5, -2.5, 8, Direction.SOUTH)
+            .addPoint(-4.5, -2.5, 8, Direction.SOUTH);
 
     public LoudspeakerBlock(Settings settings) {
         super(settings);
-        this.setDefaultState(getDefaultState().with(CHANNEL, 0));
-    }
 
-    @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        if(player.getStackInHand(hand).getItem() instanceof ChannelTunerItem) return ActionResult.PASS;
-        if(hit.getSide() == Direction.UP) {
-            world.setBlockState(pos, state.cycle(CHANNEL));
-            return ActionResult.success(world.isClient());
-        }
-        return super.onUse(state, world, pos, player, hand, hit);
-    }
-
-    @Override
-    public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
-        super.onStateReplaced(state, world, pos, newState, moved);
-        if(world instanceof ServerWorld) {
-            RadioChannelState pstate = PhonosUtil.getRadioState((ServerWorld)world);
-            if(state.isOf(this)) pstate.removeReceiver(state.get(CHANNEL), pos);
-            if(newState.isOf(this)) pstate.addReceiver(newState.get(CHANNEL), pos);
-        }
-    }
-
-    @Override
-    public void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean notify) {
-        super.onBlockAdded(state, world, pos, oldState, notify);
-        if(!oldState.isOf(this)) this.onStateReplaced(oldState, world, pos, state, false);
-    }
-
-    @Override
-    public boolean hasRandomTicks(BlockState state) {
-        return true;
-    }
-
-    @Override
-    public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-        super.randomTick(state, world, pos, random);
-        RadioChannelState s = PhonosUtil.getRadioState(world);
-        if(!s.hasReceiver(state.get(CHANNEL), pos)) s.addReceiver(state.get(CHANNEL), pos);
+        setDefaultState(BlockProperties.withAll(getDefaultState(), INPUTS, false).with(FACING, Direction.NORTH));
     }
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(CHANNEL);
+        super.appendProperties(builder);
+        builder.add(FACING);
+        builder.add(INPUTS);
     }
 
     @Override
-    @Environment(EnvType.CLIENT)
-    public void onReceivedSoundClient(ClientWorld world, BlockState state, BlockPos pos, int channel, float volume, float pitch) {
-        noteParticle(world, pos);
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+        if (!world.isClient() && player.canModifyBlocks() && hit.getSide().equals(state.get(FACING).getOpposite())) {
+            if (!PhonosUtil.holdingAudioCable(player)) {
+                return tryRemoveConnection(state, world, pos, hit);
+            } else {
+                return ActionResult.PASS;
+            }
+        }
+
+        return ActionResult.success(hit.getSide().equals(state.get(FACING).getOpposite()));
+    }
+
+    @Nullable
+    @Override
+    public BlockState getPlacementState(ItemPlacementContext ctx) {
+        return getDefaultState().with(FACING, ctx.getHorizontalPlayerFacing().getOpposite());
     }
 
     @Override
-    @Environment(EnvType.CLIENT)
-    public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
-        if(ClientReceiverStorage.isChannelPlaying(state.get(CHANNEL))) noteParticle(world, pos);
-    }
+    public boolean canInputConnect(ItemUsageContext ctx) {
+        var world = ctx.getWorld();
+        var pos = ctx.getBlockPos();
+        var state = world.getBlockState(pos);
+        var facing = state.get(FACING);
 
-    protected void noteParticle(World world, BlockPos pos) {
-        double t = (double) world.getTime() / 80;
-        float c = (float)(t - Math.floor(t)) * 2;
-        if(!world.getBlockState(pos.north()).isSolidBlock(world, pos)) world.addParticle(ParticleTypes.NOTE,
-                (double)pos.getX() + 0.5D,
-                (double)pos.getY() + 0.35D,
-                (double)pos.getZ() - 0.1D,
-                c, 0.0D, 0.0D);
-        if(!world.getBlockState(pos.south()).isSolidBlock(world, pos)) world.addParticle(ParticleTypes.NOTE,
-                (double)pos.getX() + 0.5D,
-                (double)pos.getY() + 0.35D,
-                (double)pos.getZ() + 1.1D,
-                c, 0.0D, 0.0D);
-        if(!world.getBlockState(pos.east()).isSolidBlock(world, pos)) world.addParticle(ParticleTypes.NOTE,
-                (double)pos.getX() + 1.1D,
-                (double)pos.getY() + 0.35D,
-                (double)pos.getZ() + 0.5D,
-                c, 0.0D, 0.0D);
-        if(!world.getBlockState(pos.west()).isSolidBlock(world, pos)) world.addParticle(ParticleTypes.NOTE,
-                (double)pos.getX() - 0.1D,
-                (double)pos.getY() + 0.35D,
-                (double)pos.getZ() + 0.5D,
-                c, 0.0D, 0.0D);
+        if (ctx.getSide().getOpposite() == facing) {
+            int index = this.getInputLayout().getClosestIndexClicked(ctx.getHitPos(), pos, facing);
+
+            return !this.isInputPluggedIn(index, state, world, pos);
+        }
+
+        return false;
     }
 
     @Override
-    public IntProperty getChannelProperty() {
-        return CHANNEL;
+    public boolean playsSound(World world, BlockPos pos) {
+        return true;
+    }
+
+    @Override
+    public Direction getRotation(BlockState state) {
+        return state.get(FACING);
+    }
+
+    @Override
+    public void receiveSound(BlockState state, World world, BlockPos pos, SoundData sound) {
+        if (!world.isClient()) {
+            return;
+        }
+
+        if (MinecraftClient.getInstance().player.getPos().squaredDistanceTo(pos.getX(), pos.getY(), pos.getZ()) > 5000) {
+            return;
+        }
+
+        if (sound instanceof NoteBlockSoundData noteData) {
+            double note = noteData.note / 24D;
+            if (!world.getBlockState(pos.up()).isSolidBlock(world, pos.up())) {
+                world.addParticle(ParticleTypes.NOTE,
+                        pos.getX() + 0.5, pos.getY() + 1.1, pos.getZ() + 0.5,
+                        note, 0, 0);
+            } else {
+                var facing = state.get(FACING);
+                for (var dir : Direction.Type.HORIZONTAL) if (dir != facing.getOpposite()) {
+                    if (!world.getBlockState(pos.offset(dir)).isSolidBlock(world, pos.offset(dir))) {
+                        world.addParticle(ParticleTypes.NOTE,
+                                pos.getX() + 0.5 + dir.getVector().getX() * 0.6,
+                                pos.getY() + 0.35,
+                                pos.getZ() + 0.5 + dir.getVector().getZ() * 0.6,
+                                note, 0, 0);
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public boolean isInputPluggedIn(int inputIndex, BlockState state, World world, BlockPos pos) {
+        inputIndex = MathHelper.clamp(inputIndex, 0, 3);
+        return state.get(INPUTS[inputIndex]);
+    }
+
+    @Override
+    public void setInputPluggedIn(int inputIndex, boolean pluggedIn, BlockState state, World world, BlockPos pos) {
+        inputIndex = MathHelper.clamp(inputIndex, 0, 3);
+        world.setBlockState(pos, state.with(INPUTS[inputIndex], pluggedIn));
+    }
+
+    @Override
+    public BlockConnectionLayout getInputLayout() {
+        return this.inputLayout;
     }
 }

@@ -2,108 +2,78 @@ package io.github.foundationgames.phonos;
 
 import io.github.foundationgames.jsonem.JsonEM;
 import io.github.foundationgames.phonos.block.PhonosBlocks;
-import io.github.foundationgames.phonos.block.RadioNoteBlock;
-import io.github.foundationgames.phonos.block.SoundPlayReceivable;
-import io.github.foundationgames.phonos.client.ClientReceiverStorage;
-import io.github.foundationgames.phonos.client.render.block.PlayerPianoBlockEntityRenderer;
-import io.github.foundationgames.phonos.client.render.block.RadioRecorderBlockEntityRenderer;
-import io.github.foundationgames.phonos.entity.SoundPlayEntityReceivable;
+import io.github.foundationgames.phonos.client.render.block.CableOutputBlockEntityRenderer;
+import io.github.foundationgames.phonos.item.AudioCableItem;
 import io.github.foundationgames.phonos.item.PhonosItems;
 import io.github.foundationgames.phonos.network.ClientPayloadPackets;
-import io.github.foundationgames.phonos.resource.PhonosAssets;
-import io.github.foundationgames.phonos.screen.CustomMusicDiscGuiDescription;
-import io.github.foundationgames.phonos.screen.CustomMusicDiscScreen;
-import io.github.foundationgames.phonos.screen.RadioJukeboxGuiDescription;
-import io.github.foundationgames.phonos.screen.RadioJukeboxScreen;
+import io.github.foundationgames.phonos.sound.ClientSoundStorage;
+import io.github.foundationgames.phonos.sound.SoundStorage;
+import io.github.foundationgames.phonos.sound.emitter.SoundEmitter;
+import io.github.foundationgames.phonos.sound.emitter.SoundEmitterStorage;
+import io.github.foundationgames.phonos.util.PhonosUtil;
+import io.github.foundationgames.phonos.world.sound.data.SoundDataTypes;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
-import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientBlockEntityEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
-import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
-import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
 import net.minecraft.client.render.entity.model.EntityModelLayer;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-
-import java.util.Random;
+import net.minecraft.state.property.Properties;
 
 public class PhonosClient implements ClientModInitializer {
-    public static final EntityModelLayer KEYBOARD_MODEL_LAYER = new EntityModelLayer(Phonos.id("keyboard"), "main");
-    public static final EntityModelLayer PIANO_ROLL_MODEL_LAYER = new EntityModelLayer(Phonos.id("piano_roll"), "main");
+    public static final EntityModelLayer AUDIO_CABLE_END_LAYER = new EntityModelLayer(Phonos.id("audio_cable_end"), "main");
 
     @Override
     public void onInitializeClient() {
         ClientPayloadPackets.initClient();
+        ClientSoundStorage.initClient();
 
-        PhonosAssets.init();
+        JsonEM.registerModelLayer(AUDIO_CABLE_END_LAYER);
 
-        ClientReceiverStorage.init();
-        ClientReceiverStorage.registerPlaySoundCallback(((sound, blocks, entities, channel, volume, pitch, stoppable) -> {
-            if(!stoppable) {
-                PlayerEntity player = MinecraftClient.getInstance().player;
-                ClientWorld world = MinecraftClient.getInstance().world;
-                if(player != null && world != null) {
-                    BlockPos pos = player.getBlockPos();
-                    if(blocks != null) {
-                        for(BlockPos receiver : blocks) {
-                            if(pos.isWithinDistance(receiver, 30)) {
-                                if(world.getBlockState(receiver).getBlock() instanceof SoundPlayReceivable) {
-                                    ((SoundPlayReceivable)world.getBlockState(receiver).getBlock()).onReceivedSoundClient(world, world.getBlockState(receiver), receiver, channel, volume, pitch);
-                                }
-                            }
-                        }
-                    }
-                    BlockPos receiver;
-                    if(entities != null) {
-                        for(Entity e : entities) {
-                            receiver = e.getBlockPos();
-                            if(pos.isWithinDistance(receiver, 30)) {
-                                if(e instanceof SoundPlayEntityReceivable) {
-                                    ((SoundPlayEntityReceivable)e).onRecievedSoundClient(world, e, channel, volume, pitch);
-                                }
-                            }
-                        }
-                    }
-                }
+        BlockRenderLayerMap.INSTANCE.putBlock(PhonosBlocks.ELECTRONIC_NOTE_BLOCK, RenderLayer.getCutout());
+
+        BlockEntityRendererFactories.register(PhonosBlocks.ELECTRONIC_NOTE_BLOCK_ENTITY, CableOutputBlockEntityRenderer::new);
+        BlockEntityRendererFactories.register(PhonosBlocks.ELECTRONIC_JUKEBOX_ENTITY, CableOutputBlockEntityRenderer::new);
+        BlockEntityRendererFactories.register(PhonosBlocks.CONNECTION_HUB_ENTITY, CableOutputBlockEntityRenderer::new);
+
+        ColorProviderRegistry.BLOCK.register((state, world, pos, tintIndex) ->
+                world != null && pos != null && state != null ?
+                        PhonosUtil.getColorFromNote(state.get(Properties.NOTE)) : 0xFFFFFF,
+                PhonosBlocks.ELECTRONIC_NOTE_BLOCK);
+
+        ColorProviderRegistry.ITEM.register((stack, tintIndex) -> {
+            if (tintIndex == 0 && stack.getItem() instanceof AudioCableItem aud && aud.color != null) {
+                return PhonosUtil.DYE_COLORS.getInt(aud.color);
             }
-        }));
 
-        FabricModelPredicateProviderRegistry.register(PhonosItems.CHANNEL_TUNER, new Identifier("tuned_channel"), (stack, world, entity, seed) -> (float)stack.getOrCreateSubNbt("TunerData").getInt("Channel") / 19);
-        FabricModelPredicateProviderRegistry.register(PhonosItems.NOTE_BLOCK_TUNER, new Identifier("tuner_mode"), (stack, world, entity, seed) -> (float)stack.getOrCreateSubNbt("TunerData").getInt("Mode") / 2);
-        FabricModelPredicateProviderRegistry.register(PhonosItems.BOOMBOX, new Identifier("radio_channel"), (stack, world, entity, seed) -> (float)stack.getOrCreateSubNbt("RadioData").getInt("Channel") / 19);
-        FabricModelPredicateProviderRegistry.register(PhonosItems.FESTIVE_BOOMBOX, new Identifier("radio_channel"), (stack, world, entity, seed) -> (float)stack.getOrCreateSubNbt("RadioData").getInt("Channel") / 19);
+            return 0xFFFFFF;
+        }, PhonosItems.ALL_AUDIO_CABLES);
 
-        JsonEM.registerModelLayer(KEYBOARD_MODEL_LAYER);
-        JsonEM.registerModelLayer(PIANO_ROLL_MODEL_LAYER);
+        ClientEntityEvents.ENTITY_LOAD.register((entity, world) -> {
+            if (entity == MinecraftClient.getInstance().player) {
+                SoundStorage.clientReset();
+                SoundEmitterStorage.clientReset();
+            }
+        });
 
-        ColorProviderRegistry.BLOCK.register((state, world, pos, tintIndex) -> world != null && pos != null && state != null ? RadioNoteBlock.getColorFromNote(state.get(RadioNoteBlock.NOTE)) : 0xFFFFFF, PhonosBlocks.RADIO_NOTE_BLOCK);
-        ColorProviderRegistry.ITEM.register((stack, tintIndex) -> {
-            int note = stack.getOrCreateSubNbt("TunerData").getInt("Note");
-            return tintIndex > 0 ? -1 : RadioNoteBlock.getColorFromNote(note);
-        }, PhonosItems.NOTE_BLOCK_TUNER);
-        ColorProviderRegistry.ITEM.register((stack, tintIndex) -> {
-            int color = 0;
-            String seed = stack.getOrCreateSubNbt("MusicData").getString("SoundId");
-            if(seed != null) color = new Random(seed(seed)).nextInt(0xFFFFFF);
-            return tintIndex > 0 ? -1 : color;
-        }, PhonosItems.CUSTOM_MUSIC_DISC);
+        ClientTickEvents.END_WORLD_TICK.register(world -> SoundStorage.getInstance(world).tick(world));
 
-        BlockRenderLayerMap.INSTANCE.putBlock(PhonosBlocks.RADIO_NOTE_BLOCK, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(PhonosBlocks.BOOMBOX, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(PhonosBlocks.FESTIVE_BOOMBOX, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(PhonosBlocks.RADIO_RECORDER, RenderLayer.getTranslucent());
+        ClientBlockEntityEvents.BLOCK_ENTITY_LOAD.register((be, world) -> {
+            if (be instanceof SoundEmitter p) {
+                SoundEmitterStorage.getInstance(world).addEmitter(p);
+            }
+        });
+        ClientBlockEntityEvents.BLOCK_ENTITY_UNLOAD.register((be, world) -> {
+            if (be instanceof SoundEmitter p) {
+                SoundEmitterStorage.getInstance(world).removeEmitter(p);
+            }
+        });
 
-        BlockEntityRendererRegistry.register(PhonosBlocks.PLAYER_PIANO_ENTITY, PlayerPianoBlockEntityRenderer::new);
-        BlockEntityRendererRegistry.register(PhonosBlocks.RADIO_PLAYER_PIANO_ENTITY, PlayerPianoBlockEntityRenderer::new);
-        BlockEntityRendererRegistry.register(PhonosBlocks.RADIO_RECORDER_ENTITY, RadioRecorderBlockEntityRenderer::new);
-
-        ScreenRegistry.<RadioJukeboxGuiDescription, RadioJukeboxScreen>register(Phonos.RADIO_JUKEBOX_HANDLER, (gui, inventory, title) -> new RadioJukeboxScreen(gui, inventory.player));
-        ScreenRegistry.<CustomMusicDiscGuiDescription, CustomMusicDiscScreen>register(Phonos.CUSTOM_DISC_HANDLER, (gui, inventory, title) -> new CustomMusicDiscScreen(gui, inventory.player));
+        //ScreenRegistry.<RadioJukeboxGuiDescription, RadioJukeboxScreen>register(Phonos.RADIO_JUKEBOX_HANDLER, (gui, inventory, title) -> new RadioJukeboxScreen(gui, inventory.player));
     }
 
     private static long seed(String s) {

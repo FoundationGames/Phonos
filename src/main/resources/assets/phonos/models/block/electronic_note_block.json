@@ -1,0 +1,9 @@
+{
+	"parent": "phonos:block/template_tinted_column",
+	"textures": {
+		"side": "phonos:block/electronic_note_block_side",
+		"top": "phonos:block/speaker_wood",
+		"bottom": "phonos:block/stone_base",
+		"overlay": "phonos:block/electronic_note_block_overlay"
+	}
+}

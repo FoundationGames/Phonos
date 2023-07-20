@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "phonos:item/audio_cable_body",
+    "layer1": "phonos:item/audio_cable_tip"
+  }
+}

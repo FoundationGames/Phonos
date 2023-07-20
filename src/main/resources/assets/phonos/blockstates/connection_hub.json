@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "facing=down": {"model": "phonos:block/connection_hub", "x": 180},
+    "facing=east": {"model": "phonos:block/connection_hub", "x": 90, "y": 90},
+    "facing=north": {"model": "phonos:block/connection_hub", "x": 90},
+    "facing=south": {"model": "phonos:block/connection_hub", "x": 90, "y": 180},
+    "facing=up": {"model": "phonos:block/connection_hub"},
+    "facing=west": {"model": "phonos:block/connection_hub", "x": 90, "y": 270}
+  }
+}

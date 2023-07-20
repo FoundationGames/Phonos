@@ -1,18 +1,7 @@
 package io.github.foundationgames.phonos.util.piano;
 
-import io.github.foundationgames.phonos.util.PhonosUtil;
-
-import java.sql.Date;
-import java.time.Instant;
-import java.time.Month;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.BiConsumer;
-
 public final class BuiltinPianoRolls {
+    /*
     private static final Map<String, PianoRoll> REGISTRY = new HashMap<>();
 
     private BuiltinPianoRolls() {}
@@ -128,4 +117,6 @@ public final class BuiltinPianoRolls {
             }, CHOPSTICKS_SPEED));
         }
     }
+
+     */
 }
