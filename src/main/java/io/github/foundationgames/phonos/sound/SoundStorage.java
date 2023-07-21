@@ -5,6 +5,7 @@ import io.github.foundationgames.phonos.sound.emitter.SoundEmitterTree;
 import io.github.foundationgames.phonos.world.sound.data.SoundData;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.World;
 
@@ -13,7 +14,7 @@ import java.util.Map;
 
 public abstract class SoundStorage {
     private static SoundStorage CLIENT;
-    private static final Map<ServerWorld, SoundStorage> SERVER = new HashMap<>();
+    private static final Map<RegistryKey<World>, SoundStorage> SERVER = new HashMap<>();
     private static final SoundStorage INVALID = new SoundStorage() {
         @Override
         public void play(World world, SoundData data, SoundEmitterTree tree) {
@@ -23,6 +24,11 @@ public abstract class SoundStorage {
         @Override
         public void stop(World world, long emitterId) {
             Phonos.LOG.error("Stopping " + Long.toHexString(emitterId) + " in an invalid world");
+        }
+
+        @Override
+        public void update(SoundEmitterTree.Delta delta) {
+            Phonos.LOG.error("Updating " + Long.toHexString(delta.rootId()) + " in an invalid world");
         }
 
         @Override
@@ -38,7 +44,9 @@ public abstract class SoundStorage {
 
     public abstract void play(World world, SoundData data, SoundEmitterTree tree);
 
-    public abstract void stop(World world, long soundUniqueId);
+    public abstract void stop(World world, long emitterId);
+
+    public abstract void update(SoundEmitterTree.Delta delta);
 
     public abstract void tick(World world);
 
@@ -54,7 +62,7 @@ public abstract class SoundStorage {
         }
 
         if (world instanceof ServerWorld sWorld) {
-            return SERVER.computeIfAbsent(sWorld, w -> new ServerSoundStorage());
+            return SERVER.computeIfAbsent(sWorld.getRegistryKey(), w -> new ServerSoundStorage());
         }
 
         return INVALID;

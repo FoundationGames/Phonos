@@ -1,6 +1,5 @@
 package io.github.foundationgames.phonos.block;
 
-import io.github.foundationgames.phonos.block.entity.ElectronicJukeboxBlockEntity;
 import io.github.foundationgames.phonos.block.entity.ElectronicNoteBlockEntity;
 import io.github.foundationgames.phonos.sound.SoundStorage;
 import io.github.foundationgames.phonos.sound.emitter.SoundEmitterTree;

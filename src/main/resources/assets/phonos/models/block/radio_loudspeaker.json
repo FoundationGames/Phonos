@@ -1,0 +1,62 @@
+{
+	"parent": "block/block",
+	"textures": {
+		"0": "phonos:block/radio_antenna",
+		"1": "phonos:block/loudspeaker",
+		"2": "phonos:block/loudspeaker_east",
+		"3": "phonos:block/loudspeaker_west",
+		"4": "phonos:block/stone_base",
+		"5": "phonos:block/radio_loudspeaker_back",
+		"6": "phonos:block/radio_loudspeaker_top",
+		"particle": "phonos:block/radio_antenna"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 0],
+			"to": [16, 16, 16],
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#1", "cullface": "north"},
+				"east": {"uv": [0, 0, 16, 16], "texture": "#2", "cullface": "east"},
+				"south": {"uv": [0, 0, 16, 16], "texture": "#5", "cullface": "south"},
+				"west": {"uv": [0, 0, 16, 16], "texture": "#3", "cullface": "west"},
+				"up": {"uv": [0, 0, 16, 16], "texture": "#6", "cullface": "up"},
+				"down": {"uv": [0, 0, 16, 16], "texture": "#4", "cullface": "down"}
+			}
+		},
+		{
+			"from": [7, 7.99, 8],
+			"to": [9, 16.99, 8],
+			"rotation": {"angle": 45, "axis": "y", "origin": [8, 7, 8]},
+			"faces": {
+				"north": {"uv": [7, 1, 9, 10], "texture": "#0"},
+				"east": {"uv": [0, 0, 0, 0], "texture": "#0"},
+				"south": {"uv": [7, 1, 9, 10], "texture": "#0"},
+				"west": {"uv": [0, 0, 0, 0], "texture": "#0"},
+				"up": {"uv": [0, 0, 0, 0], "texture": "#0"},
+				"down": {"uv": [0, 0, 0, 0], "texture": "#0"}
+			}
+		},
+		{
+			"from": [0, 16.99, -0.5],
+			"to": [16, 16.99, 15.5],
+			"rotation": {"angle": 22.5, "axis": "y", "origin": [8, 7, 8]},
+			"faces": {
+				"north": {"uv": [0, 0, 0, 0], "texture": "#0", "cullface": "up"},
+				"east": {"uv": [0, 0, 0, 0], "texture": "#0", "cullface": "up"},
+				"south": {"uv": [0, 0, 0, 0], "texture": "#0", "cullface": "up"},
+				"west": {"uv": [0, 0, 0, 0], "texture": "#0", "cullface": "up"},
+				"up": {"uv": [0, 0, 16, 16], "rotation": 180, "texture": "#0", "cullface": "up"},
+				"down": {"uv": [0, 0, 16, 16], "texture": "#0", "cullface": "up"}
+			}
+		},
+		{
+			"from": [8, 7.99, 7],
+			"to": [8, 16.99, 9],
+			"rotation": {"angle": 45, "axis": "y", "origin": [8, 7, 8]},
+			"faces": {
+				"east": {"uv": [7, 1, 9, 10], "texture": "#0", "cullface": "up"},
+				"west": {"uv": [7, 1, 9, 10], "texture": "#0", "cullface": "up"}
+			}
+		}
+	]
+}

@@ -32,6 +32,8 @@ public class ClientSoundStorage extends SoundStorage {
 
     @Override
     public void play(World world, SoundData data, SoundEmitterTree tree) {
+        tree.updateClient(world);
+
         var inst = provideSound(data, tree, world.getRandom());
         MinecraftClient.getInstance().getSoundManager().play(inst);
 
@@ -57,6 +59,15 @@ public class ClientSoundStorage extends SoundStorage {
     }
 
     @Override
+    public void update(SoundEmitterTree.Delta delta) {
+        for (var tree : activeEmitterTrees) {
+            if (tree.rootId == delta.rootId()) {
+                delta.apply(tree);
+            }
+        }
+    }
+
+    @Override
     public void tick(World world) {
         this.playingSounds.long2ObjectEntrySet().removeIf(e -> {
             if (!MinecraftClient.getInstance().getSoundManager().isPlaying(e.getValue())) {
@@ -67,7 +78,7 @@ public class ClientSoundStorage extends SoundStorage {
             return false;
         });
 
-        this.activeEmitterTrees.forEach(tree -> tree.update(world));
+        this.activeEmitterTrees.forEach(tree -> tree.updateClient(world));
     }
 
     public interface SoundInstanceFactory<S extends SoundData> {

@@ -24,6 +24,8 @@ public class MultiSourceSoundInstance extends AbstractSoundInstance implements T
         this.emitters = new AtomicReference<>(tree);
         this.volume = volume;
         this.pitch = pitch;
+
+        this.updatePosition();
     }
 
     @Override

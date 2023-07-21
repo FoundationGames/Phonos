@@ -9,7 +9,7 @@ import net.minecraft.world.World;
 public class ServerSoundStorage extends SoundStorage {
     @Override
     public void play(World world, SoundData data, SoundEmitterTree tree) {
-        tree.update(world);
+        tree.updateServer(world);
 
         if (world instanceof ServerWorld sWorld) for (var player : sWorld.getPlayers()) {
             PayloadPackets.sendSoundPlay(player, data, tree);
@@ -23,6 +23,10 @@ public class ServerSoundStorage extends SoundStorage {
         if (world instanceof ServerWorld sWorld) for (var player : sWorld.getPlayers()) {
             PayloadPackets.sendSoundStop(player, soundUniqueId);
         }
+    }
+
+    @Override
+    public void update(SoundEmitterTree.Delta delta) {
     }
 
     @Override

@@ -1,0 +1,63 @@
+{
+	"parent": "block/block",
+	"textures": {
+		"0": "phonos:block/radio_antenna",
+		"1": "phonos:block/radio_transceiver_front",
+		"2": "phonos:block/radio_transceiver_side",
+		"3": "phonos:block/radio_transceiver_top",
+		"4": "phonos:block/stone_base",
+		"particle": "phonos:block/radio_transceiver_top"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 0],
+			"to": [16, 7, 16],
+			"faces": {
+				"north": {"uv": [0, 9, 16, 16], "texture": "#1"},
+				"east": {"uv": [0, 9, 16, 16], "texture": "#2"},
+				"south": {"uv": [0, 9, 16, 16], "texture": "#2"},
+				"west": {"uv": [0, 9, 16, 16], "texture": "#2"},
+				"up": {"uv": [0, 0, 16, 16], "rotation": 180, "texture": "#3"},
+				"down": {"uv": [0, 0, 16, 16], "texture": "#4"}
+			}
+		},
+		{
+			"from": [8, 6.99, 10],
+			"to": [8, 15.99, 12],
+			"rotation": {"angle": 45, "axis": "y", "origin": [8, 6, 11]},
+			"faces": {
+				"east": {"uv": [7, 1, 9, 10], "texture": "#0"},
+				"west": {"uv": [7, 1, 9, 10], "texture": "#0"}
+			}
+		},
+		{
+			"from": [7, 6.99, 11],
+			"to": [9, 15.99, 11],
+			"rotation": {"angle": 45, "axis": "y", "origin": [8, 6, 11]},
+			"faces": {
+				"north": {"uv": [7, 1, 9, 10], "texture": "#0"},
+				"south": {"uv": [7, 1, 9, 10], "texture": "#0"}
+			}
+		},
+		{
+			"from": [0, 15.99, 2.5],
+			"to": [16, 15.99, 18.5],
+			"rotation": {"angle": 22.5, "axis": "y", "origin": [8, 6, 11]},
+			"faces": {
+				"up": {"uv": [0, 0, 16, 16], "rotation": 180, "texture": "#0"},
+				"down": {"uv": [0, 0, 16, 16], "texture": "#0"}
+			}
+		},
+		{
+			"from": [6, 7, 9],
+			"to": [10, 9, 13],
+			"faces": {
+				"north": {"uv": [6, 14, 10, 16], "rotation": 180, "texture": "#1"},
+				"east": {"uv": [10, 13, 6, 15], "texture": "#1"},
+				"south": {"uv": [6, 13, 10, 15], "texture": "#1"},
+				"west": {"uv": [10, 14, 6, 16], "rotation": 180, "texture": "#1"},
+				"up": {"uv": [6, 3, 10, 7], "rotation": 180, "texture": "#3"}
+			}
+		}
+	]
+}

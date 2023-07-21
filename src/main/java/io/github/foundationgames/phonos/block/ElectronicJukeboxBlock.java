@@ -52,16 +52,16 @@ public class ElectronicJukeboxBlock extends JukeboxBlock implements BlockEntityP
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         var side = hit.getSide();
-        if (side == Direction.UP) {
-            var stack = player.getStackInHand(hand);
-            if (!state.get(HAS_RECORD) && stack.getItem() instanceof MusicDiscItem) {
-                return this.useMusicDisc(world, pos, state, stack, player);
-            }
 
-            return super.onUse(state, world, pos, player, hand, hit);
-        }
         if (side == Direction.DOWN) {
             return ActionResult.PASS;
+        }
+
+        var stack = player.getStackInHand(hand);
+        if (!state.get(HAS_RECORD) && stack.getItem() instanceof MusicDiscItem) {
+            return this.useMusicDisc(world, pos, state, stack, player);
+        } else if (side == Direction.UP) {
+            return super.onUse(state, world, pos, player, hand, hit);
         }
 
         if (player.canModifyBlocks()) {

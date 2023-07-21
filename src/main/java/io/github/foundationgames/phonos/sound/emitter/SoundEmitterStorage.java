@@ -5,16 +5,23 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 public class SoundEmitterStorage {
     private static SoundEmitterStorage CLIENT;
-    private static final Map<ServerWorld, SoundEmitterStorage> SERVER = new HashMap<>();
-    private static final SoundEmitterStorage INVALID = new SoundEmitterStorage() {
+    private static final Map<RegistryKey<World>, SoundEmitterStorage> SERVER = new HashMap<>();
+
+    public static final List<Function<World, SoundEmitter>> DEFAULT_EMITTERS = new ArrayList<>();
+
+    private static final SoundEmitterStorage INVALID = new SoundEmitterStorage(null) {
         @Override
         public boolean isLoaded(long uniqueId) {
             Phonos.LOG.error("Tried to query emitter " + Long.toHexString(uniqueId) + " in invalid world");
@@ -40,6 +47,12 @@ public class SoundEmitterStorage {
 
     private final Long2ObjectMap<SoundEmitter> emitters = new Long2ObjectOpenHashMap<>();
 
+    protected SoundEmitterStorage(World world) {
+        if (world != null) for (var factory : DEFAULT_EMITTERS) {
+            this.addEmitter(factory.apply(world));
+        }
+    }
+
     public boolean isLoaded(long uniqueId) {
         return emitters.containsKey(uniqueId);
     }
@@ -64,7 +77,7 @@ public class SoundEmitterStorage {
         if (world.isClient()) {
             if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
                 if (CLIENT == null) {
-                    CLIENT = new SoundEmitterStorage();
+                    CLIENT = new SoundEmitterStorage(world);
                 }
 
                 return CLIENT;
@@ -72,7 +85,7 @@ public class SoundEmitterStorage {
         }
 
         if (world instanceof ServerWorld sWorld) {
-            return SERVER.computeIfAbsent(sWorld, w -> new SoundEmitterStorage());
+            return SERVER.computeIfAbsent(sWorld.getRegistryKey(), w -> new SoundEmitterStorage(world));
         }
 
         return INVALID;

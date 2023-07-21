@@ -11,8 +11,6 @@ version = "${project.mod_version}+${project.minecraft_version}"
 group = project.maven_group
 
 repositories {
-	maven { url = "https://server.bbkr.space/artifactory/libs-release" }
-	maven { url = "https://storage.googleapis.com/devan-maven/" }
 	maven { url "https://api.modrinth.com/maven" }
 }
 

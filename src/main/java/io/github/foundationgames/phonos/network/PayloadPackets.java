@@ -24,4 +24,10 @@ public final class PayloadPackets {
         buf.writeLong(sourceId);
         ServerPlayNetworking.send(player, Phonos.id("sound_stop"), buf);
     }
+
+    public static void sendSoundUpdate(ServerPlayerEntity player, SoundEmitterTree.Delta delta) {
+        var buf = new PacketByteBuf(Unpooled.buffer());
+        SoundEmitterTree.Delta.toPacket(buf, delta);
+        ServerPlayNetworking.send(player, Phonos.id("sound_update"), buf);
+    }
 }

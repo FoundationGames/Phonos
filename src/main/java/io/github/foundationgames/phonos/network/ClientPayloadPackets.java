@@ -23,5 +23,11 @@ public final class ClientPayloadPackets {
 
             client.execute(() -> SoundStorage.getInstance(client.world).stop(client.world, id));
         });
+
+        ClientPlayNetworking.registerGlobalReceiver(Phonos.id("sound_update"), (client, handler, buf, responseSender) -> {
+            SoundEmitterTree.Delta delta = SoundEmitterTree.Delta.fromPacket(buf);
+
+            client.execute(() -> SoundStorage.getInstance(client.world).update(delta));
+        });
     }
 }

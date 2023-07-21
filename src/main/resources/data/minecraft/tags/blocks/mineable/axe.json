@@ -4,6 +4,8 @@
         "phonos:loudspeaker",
         "phonos:electronic_note_block",
         "phonos:electronic_jukebox",
-        "phonos:connection_hub"
+        "phonos:connection_hub",
+        "phonos:radio_transceiver",
+        "phonos:radio_loudspeaker"
     ]
 }

@@ -4,6 +4,8 @@ import io.github.foundationgames.phonos.block.PhonosBlocks;
 import io.github.foundationgames.phonos.item.ItemGroupQueue;
 import io.github.foundationgames.phonos.item.PhonosItems;
 import io.github.foundationgames.phonos.network.PayloadPackets;
+import io.github.foundationgames.phonos.radio.RadioDevice;
+import io.github.foundationgames.phonos.radio.RadioStorage;
 import io.github.foundationgames.phonos.sound.SoundStorage;
 import io.github.foundationgames.phonos.sound.emitter.SoundEmitter;
 import io.github.foundationgames.phonos.sound.emitter.SoundEmitterStorage;
@@ -41,7 +43,8 @@ public class Phonos implements ModInitializer {
         SoundDataTypes.init();
         InputPlugPoint.init();
 
-        ServerLifecycleEvents.SERVER_STARTED.register(e -> {
+        ServerLifecycleEvents.SERVER_STARTING.register(e -> {
+            RadioStorage.serverReset();
             SoundStorage.serverReset();
             SoundEmitterStorage.serverReset();
         });
@@ -51,12 +54,20 @@ public class Phonos implements ModInitializer {
             if (be instanceof SoundEmitter p) {
                 SoundEmitterStorage.getInstance(world).addEmitter(p);
             }
+            if (be instanceof RadioDevice.Receiver rec) {
+                rec.setAndUpdateChannel(rec.getChannel());
+            }
         });
         ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.register((be, world) -> {
             if (be instanceof SoundEmitter p) {
                 SoundEmitterStorage.getInstance(world).removeEmitter(p);
             }
+            if (be instanceof RadioDevice.Receiver rec) {
+                rec.removeReceiver();
+            }
         });
+
+        RadioStorage.init();
     }
 
     public static Identifier id(String path) {

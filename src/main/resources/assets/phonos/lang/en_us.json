@@ -5,6 +5,8 @@
     "block.phonos.electronic_jukebox": "Electronic Jukebox",
     "block.phonos.electronic_note_block": "Electronic Note Block",
     "block.phonos.connection_hub": "Connection Hub",
+    "block.phonos.radio_transceiver": "Radio Transceiver",
+    "block.phonos.radio_loudspeaker": "Radio Loudspeaker",
 
     "item.phonos.audio_cable": "Audio Cable",
     "item.phonos.black_audio_cable": "Black Audio Cable",

@@ -12,4 +12,8 @@ public final class UniqueId {
     public static long ofBlock(BlockPos pos) {
         return new Random(pos.asLong() + 0xABCDEF).nextLong();
     }
+
+    public static long ofRadioChannel(int channel) {
+        return new Random(channel + 0xFADECAB).nextLong();
+    }
 }

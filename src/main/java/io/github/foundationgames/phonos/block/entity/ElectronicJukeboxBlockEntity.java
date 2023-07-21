@@ -1,6 +1,7 @@
 package io.github.foundationgames.phonos.block.entity;
 
 import io.github.foundationgames.phonos.block.PhonosBlocks;
+import io.github.foundationgames.phonos.network.PayloadPackets;
 import io.github.foundationgames.phonos.sound.SoundStorage;
 import io.github.foundationgames.phonos.sound.emitter.SoundEmitterTree;
 import io.github.foundationgames.phonos.sound.emitter.SoundSource;
@@ -20,6 +21,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.registry.Registries;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -43,6 +45,8 @@ public class ElectronicJukeboxBlockEntity extends JukeboxBlockEntity implements 
     private final BlockEntityType<?> type;
     private @Nullable NbtCompound pendingNbt = null;
     private final long emitterId;
+
+    private @Nullable SoundEmitterTree playingSound = null;
 
     public ElectronicJukeboxBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(pos, state);
@@ -68,9 +72,11 @@ public class ElectronicJukeboxBlockEntity extends JukeboxBlockEntity implements 
         this.world.updateNeighborsAlways(this.getPos(), this.getCachedState().getBlock());
 
         if (this.getStack().getItem() instanceof MusicDiscItem disc && !world.isClient()) {
+            this.playingSound = new SoundEmitterTree(this.emitterId);
+
             SoundStorage.getInstance(world).play(world, SoundEventSoundData.create(
                     emitterId, Registries.SOUND_EVENT.getEntry(disc.getSound()), 2, 1),
-                    new SoundEmitterTree(this.emitterId));
+                    this.playingSound);
             sync();
         }
 
@@ -84,6 +90,8 @@ public class ElectronicJukeboxBlockEntity extends JukeboxBlockEntity implements 
         this.world.updateNeighborsAlways(this.getPos(), this.getCachedState().getBlock());
 
         if (!world.isClient()) {
+            this.playingSound = null;
+
             SoundStorage.getInstance(world).stop(world, emitterId);
             sync();
         }
@@ -99,6 +107,14 @@ public class ElectronicJukeboxBlockEntity extends JukeboxBlockEntity implements 
 
         if (!world.isClient()) {
             super.tick(world, pos, state);
+
+            if (this.playingSound != null) {
+                var delta = this.playingSound.updateServer(world);
+
+                if (delta.hasChanges() && world instanceof ServerWorld sWorld) for (var player : sWorld.getPlayers()) {
+                    PayloadPackets.sendSoundUpdate(player, delta);
+                }
+            }
 
             if (this.outputs.purge(conn -> this.outputs.dropConnectionItem(world, conn, true))) {
                 sync();
