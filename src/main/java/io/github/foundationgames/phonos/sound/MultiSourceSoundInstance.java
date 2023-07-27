@@ -6,6 +6,7 @@ import net.minecraft.client.sound.AbstractSoundInstance;
 import net.minecraft.client.sound.TickableSoundInstance;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.random.Random;
 import org.joml.Vector3d;
 
@@ -19,13 +20,18 @@ public class MultiSourceSoundInstance extends AbstractSoundInstance implements T
     
     private boolean done;
 
-    public MultiSourceSoundInstance(SoundEmitterTree tree, SoundEvent sound, Random random, float volume, float pitch) {
-        super(sound.getId(), SoundCategory.MASTER, random);
+    protected MultiSourceSoundInstance(SoundEmitterTree tree, Identifier sound, Random random, float volume, float pitch) {
+        super(sound, SoundCategory.MASTER, random);
+
         this.emitters = new AtomicReference<>(tree);
         this.volume = volume;
         this.pitch = pitch;
 
         this.updatePosition();
+    }
+
+    public MultiSourceSoundInstance(SoundEmitterTree tree, SoundEvent sound, Random random, float volume, float pitch) {
+        this(tree, sound.getId(), random, volume, pitch);
     }
 
     @Override
@@ -66,11 +72,10 @@ public class MultiSourceSoundInstance extends AbstractSoundInstance implements T
 
             double dist = emPos.distance(camPos.x, camPos.y, camPos.z);
 
-            // This won't make sense unless you graph it
-            if (dist <= 1.888) {
-                weight = -0.05 * Math.pow(dist, 4) + 1;
+            if (dist <= 2.7014) {
+                weight = -0.03 * Math.pow(dist, 3) + 1;
             } else {
-                weight = 0.1 / (dist - 1.6138);
+                weight = Math.pow(5, -(dist - 2.14528));
             }
 
             pos.add(emPos.mul(weight));

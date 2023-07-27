@@ -11,8 +11,11 @@ import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Hand;
+import net.minecraft.util.WorldSavePath;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
@@ -23,6 +26,12 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 import java.awt.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.ByteBuffer;
+import java.nio.file.Path;
+import java.util.function.IntFunction;
 
 public enum PhonosUtil {;
     public static final float SQRT2DIV2 = (float) (Math.sqrt(2) / 2);
@@ -113,6 +122,55 @@ public enum PhonosUtil {;
     @SuppressWarnings("unchecked")
     public static <E extends BlockEntity & Ticking, G extends BlockEntity> BlockEntityTicker<G> blockEntityTicker(BlockEntityType<G> givenType, BlockEntityType<E> expectedType) {
         return expectedType == givenType ? (BlockEntityTicker<G>) (BlockEntityTicker<E>) Ticking::ticker : null;
+    }
+
+    public static void writeInt(OutputStream stream, int i) throws IOException {
+        stream.write(i);
+        stream.write(i >> 8);
+        stream.write(i >> 16);
+        stream.write(i >> 24);
+    }
+
+    public static int readInt(InputStream stream) throws IOException {
+        int r = 0;
+        r |= stream.read();
+        r |= stream.read() << 8;
+        r |= stream.read() << 16;
+        r |= stream.read() << 24;
+
+        return r;
+    }
+
+    public static Path getCustomSoundFolder(MinecraftServer server) {
+        return server.getSavePath(WorldSavePath.ROOT).resolve("phonos");
+    }
+
+    public static void writeBufferToPacket(PacketByteBuf packet, ByteBuffer buffer) {
+        int sizeCur = packet.writerIndex();
+        int size = 0;
+        packet.writeInt(0);
+        int bufferCur = buffer.position();
+        while (buffer.hasRemaining()) {
+            packet.writeByte(buffer.get());
+            size++;
+        }
+        buffer.position(bufferCur);
+        int afterSizeCur = packet.writerIndex();
+
+        packet.writerIndex(sizeCur);
+        packet.writeInt(size);
+        packet.writerIndex(afterSizeCur);
+    }
+
+    public static ByteBuffer readBufferFromPacket(PacketByteBuf packet, IntFunction<ByteBuffer> create) {
+        int size = packet.readInt();
+        var buffer = create.apply(size);
+        for (int i = 0; i < size; i++) {
+            buffer.put(packet.readByte());
+        }
+        buffer.rewind();
+
+        return buffer;
     }
 
     static {

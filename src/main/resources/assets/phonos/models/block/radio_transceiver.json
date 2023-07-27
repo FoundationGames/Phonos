@@ -2,8 +2,8 @@
 	"parent": "block/block",
 	"textures": {
 		"0": "phonos:block/radio_antenna",
-		"1": "phonos:block/radio_transceiver_front",
-		"2": "phonos:block/radio_transceiver_side",
+		"1": "phonos:block/wireless_hub_front",
+		"2": "phonos:block/wireless_hub_side",
 		"3": "phonos:block/radio_transceiver_top",
 		"4": "phonos:block/stone_base",
 		"particle": "phonos:block/radio_transceiver_top"

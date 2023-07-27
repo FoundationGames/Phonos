@@ -1,12 +1,22 @@
 {
     "itemGroup.phonos.phonos": "Phonos",
 
+    "container.phonos.satellite_station": "Satellite Station",
+    "button.phonos.satellite_station.upload": "Upload",
+    "hint.phonos.satellite_station.drag": "+ Drag and drop .ogg file to upload",
+
+    "status.phonos.satellite.ready_upload": "Ready to Upload!",
+    "status.phonos.satellite.mono_only": "Audio file must be mono only",
+    "status.phonos.satellite.invalid_format": "Invalid .ogg file! (Check log for details)",
+    "status.phonos.satellite.uploading": "Power the Satellite Station to play.",
+
     "block.phonos.loudspeaker": "Loudspeaker",
     "block.phonos.electronic_jukebox": "Electronic Jukebox",
     "block.phonos.electronic_note_block": "Electronic Note Block",
     "block.phonos.connection_hub": "Connection Hub",
     "block.phonos.radio_transceiver": "Radio Transceiver",
     "block.phonos.radio_loudspeaker": "Radio Loudspeaker",
+    "block.phonos.satellite_station": "Satellite Station",
 
     "item.phonos.audio_cable": "Audio Cable",
     "item.phonos.black_audio_cable": "Black Audio Cable",

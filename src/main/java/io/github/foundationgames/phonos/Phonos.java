@@ -7,8 +7,11 @@ import io.github.foundationgames.phonos.network.PayloadPackets;
 import io.github.foundationgames.phonos.radio.RadioDevice;
 import io.github.foundationgames.phonos.radio.RadioStorage;
 import io.github.foundationgames.phonos.sound.SoundStorage;
+import io.github.foundationgames.phonos.sound.custom.ServerCustomAudio;
 import io.github.foundationgames.phonos.sound.emitter.SoundEmitter;
 import io.github.foundationgames.phonos.sound.emitter.SoundEmitterStorage;
+import io.github.foundationgames.phonos.sound.stream.ServerOutgoingStreamHandler;
+import io.github.foundationgames.phonos.util.PhonosUtil;
 import io.github.foundationgames.phonos.world.sound.InputPlugPoint;
 import io.github.foundationgames.phonos.world.sound.data.SoundDataTypes;
 import net.fabricmc.api.ModInitializer;
@@ -16,16 +19,22 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerBlockEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.IOException;
+import java.nio.file.Files;
+
 public class Phonos implements ModInitializer {
     public static final Logger LOG = LogManager.getLogger("phonos");
 
     public static final ItemGroupQueue PHONOS_ITEMS = new ItemGroupQueue(id("phonos"));
+
+    public static final Identifier STREAMED_SOUND = Phonos.id("streamed");
 
     @Override
     public void onInitialize() {
@@ -47,8 +56,35 @@ public class Phonos implements ModInitializer {
             RadioStorage.serverReset();
             SoundStorage.serverReset();
             SoundEmitterStorage.serverReset();
+            ServerOutgoingStreamHandler.reset();
         });
+
+        ServerLifecycleEvents.SERVER_STARTED.register(e -> {
+            ServerCustomAudio.reset();
+            try {
+                var path = PhonosUtil.getCustomSoundFolder(e);
+                if (!Files.exists(path)) Files.createDirectory(path);
+
+                ServerCustomAudio.load(path);
+            } catch (IOException ex) {
+                Phonos.LOG.error("Error loading custom audio files", ex);
+            }
+        });
+        ServerLifecycleEvents.SERVER_STOPPED.register(e -> {
+            try {
+                var path = PhonosUtil.getCustomSoundFolder(e);
+                if (!Files.exists(path)) Files.createDirectory(path);
+
+                ServerCustomAudio.save(path);
+            } catch (IOException ex) {
+                Phonos.LOG.error("Error saving custom audio files", ex);
+            }
+        });
+        ServerPlayConnectionEvents.DISCONNECT.register((handler, server) ->
+                ServerCustomAudio.onPlayerDisconnect(handler.getPlayer()));
+
         ServerTickEvents.END_WORLD_TICK.register(world -> SoundStorage.getInstance(world).tick(world));
+        ServerTickEvents.START_SERVER_TICK.register(ServerOutgoingStreamHandler::tick);
 
         ServerBlockEntityEvents.BLOCK_ENTITY_LOAD.register((be, world) -> {
             if (be instanceof SoundEmitter p) {

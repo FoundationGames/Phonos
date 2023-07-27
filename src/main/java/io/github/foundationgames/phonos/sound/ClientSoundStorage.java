@@ -90,5 +90,7 @@ public class ClientSoundStorage extends SoundStorage {
                 new MultiSourceSoundInstance(list, data.sound.value(), random, data.volume, data.pitch));
         registerProvider(SoundDataTypes.NOTE_BLOCK, (data, list, random) ->
                 new MultiSourceSoundInstance(list, data.sound.value(), random, data.volume, data.pitch));
+        registerProvider(SoundDataTypes.STREAM, (data, list, random) ->
+                new StreamMultiSoundInstance(list, data.streamId, random, data.volume, data.pitch));
     }
 }

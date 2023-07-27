@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=east": {"model": "phonos:block/satellite_station", "y": 90},
+    "facing=north": {"model": "phonos:block/satellite_station"},
+    "facing=south": {"model": "phonos:block/satellite_station", "y": 180},
+    "facing=west": {"model": "phonos:block/satellite_station", "y": 270}
+  }
+}
