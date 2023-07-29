@@ -11,9 +11,6 @@ public class QueueAudioStream implements AudioStream {
 
     private AudioFormat format = new AudioFormat(20000, 8, 1, true, false);
 
-    private ByteBuffer stall = null;
-    private int signalDiv = 1;
-
     public QueueAudioStream() {
     }
 

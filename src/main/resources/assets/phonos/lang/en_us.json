@@ -1,14 +1,27 @@
 {
     "itemGroup.phonos.phonos": "Phonos",
 
+    "gamerule.phonosUploadLimitKB": "Satellite upload limit (KB)",
+
     "container.phonos.satellite_station": "Satellite Station",
-    "button.phonos.satellite_station.upload": "Upload",
+    "button.phonos.satellite_station.upload": "Launch",
     "hint.phonos.satellite_station.drag": "+ Drag and drop .ogg file to upload",
 
-    "status.phonos.satellite.ready_upload": "Ready to Upload!",
+    "status.phonos.satellite.ready_upload": "Ready to upload and launch!",
     "status.phonos.satellite.mono_only": "Audio file must be mono only",
     "status.phonos.satellite.invalid_format": "Invalid .ogg file! (Check log for details)",
     "status.phonos.satellite.uploading": "Power the Satellite Station to play.",
+
+    "error.phonos.satellite.upload_limit": "Too many satellites were in orbit! (Upload limit reached)",
+
+    "display.phonos.satellite_station.launch_ready": "READY",
+    "display.phonos.satellite_station.launching": "LAUNCH",
+    "display.phonos.satellite_station.in_orbit": "ORBIT",
+    "display.phonos.satellite_station.error": "ERROR",
+
+    "message.phonos.crash_satellite_station": "Crash the currently orbiting satellite?",
+    "message.phonos.satellite_launching": "Launch in progress!",
+    "message.phonos.no_satellite": "Place a satellite on the launch pad first!",
 
     "block.phonos.loudspeaker": "Loudspeaker",
     "block.phonos.electronic_jukebox": "Electronic Jukebox",
@@ -18,6 +31,7 @@
     "block.phonos.radio_loudspeaker": "Radio Loudspeaker",
     "block.phonos.satellite_station": "Satellite Station",
 
+    "item.phonos.satellite": "Satellite",
     "item.phonos.audio_cable": "Audio Cable",
     "item.phonos.black_audio_cable": "Black Audio Cable",
     "item.phonos.blue_audio_cable": "Blue Audio Cable",

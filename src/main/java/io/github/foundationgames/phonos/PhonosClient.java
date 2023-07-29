@@ -5,6 +5,7 @@ import io.github.foundationgames.phonos.block.PhonosBlocks;
 import io.github.foundationgames.phonos.client.render.block.CableOutputBlockEntityRenderer;
 import io.github.foundationgames.phonos.client.render.block.RadioLoudspeakerBlockEntityRenderer;
 import io.github.foundationgames.phonos.client.render.block.RadioTransceiverBlockEntityRenderer;
+import io.github.foundationgames.phonos.client.render.block.SatelliteStationBlockEntityRenderer;
 import io.github.foundationgames.phonos.item.AudioCableItem;
 import io.github.foundationgames.phonos.item.PhonosItems;
 import io.github.foundationgames.phonos.network.ClientPayloadPackets;
@@ -32,6 +33,7 @@ import net.minecraft.state.property.Properties;
 
 public class PhonosClient implements ClientModInitializer {
     public static final EntityModelLayer AUDIO_CABLE_END_LAYER = new EntityModelLayer(Phonos.id("audio_cable_end"), "main");
+    public static final EntityModelLayer SATELLITE_LAYER = new EntityModelLayer(Phonos.id("satellite"), "main");
 
     @Override
     public void onInitializeClient() {
@@ -39,6 +41,7 @@ public class PhonosClient implements ClientModInitializer {
         ClientSoundStorage.initClient();
 
         JsonEM.registerModelLayer(AUDIO_CABLE_END_LAYER);
+        JsonEM.registerModelLayer(SATELLITE_LAYER);
 
         BlockRenderLayerMap.INSTANCE.putBlock(PhonosBlocks.ELECTRONIC_NOTE_BLOCK, RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(PhonosBlocks.RADIO_TRANSCEIVER, RenderLayer.getCutout());
@@ -49,7 +52,7 @@ public class PhonosClient implements ClientModInitializer {
         BlockEntityRendererFactories.register(PhonosBlocks.CONNECTION_HUB_ENTITY, CableOutputBlockEntityRenderer::new);
         BlockEntityRendererFactories.register(PhonosBlocks.RADIO_TRANSCEIVER_ENTITY, RadioTransceiverBlockEntityRenderer::new);
         BlockEntityRendererFactories.register(PhonosBlocks.RADIO_LOUDSPEAKER_ENTITY, RadioLoudspeakerBlockEntityRenderer::new);
-        BlockEntityRendererFactories.register(PhonosBlocks.SATELLITE_STATION_ENTITY, CableOutputBlockEntityRenderer::new);
+        BlockEntityRendererFactories.register(PhonosBlocks.SATELLITE_STATION_ENTITY, SatelliteStationBlockEntityRenderer::new);
 
         ColorProviderRegistry.BLOCK.register((state, world, pos, tintIndex) ->
                 world != null && pos != null && state != null ?
@@ -97,13 +100,5 @@ public class PhonosClient implements ClientModInitializer {
         });
 
         //ScreenRegistry.<RadioJukeboxGuiDescription, RadioJukeboxScreen>register(Phonos.RADIO_JUKEBOX_HANDLER, (gui, inventory, title) -> new RadioJukeboxScreen(gui, inventory.player));
-    }
-
-    private static long seed(String s) {
-        if(s == null) return 0;
-        long l = 0;
-        for(char c : s.toCharArray())
-            l = 31L * l + c;
-        return l;
     }
 }

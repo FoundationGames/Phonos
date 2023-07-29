@@ -7,6 +7,7 @@ import net.minecraft.registry.Registry;
 import net.minecraft.util.DyeColor;
 
 public class PhonosItems {
+    public static final Item SATELLITE = register(new Item(new Item.Settings()), "satellite");
     public static final Item AUDIO_CABLE = register(new AudioCableItem(null, new Item.Settings()), "audio_cable");
     public static final Item WHITE_AUDIO_CABLE = register(new AudioCableItem(DyeColor.WHITE, new Item.Settings()), "white_audio_cable");
     public static final Item ORANGE_AUDIO_CABLE = register(new AudioCableItem(DyeColor.ORANGE, new Item.Settings()), "orange_audio_cable");

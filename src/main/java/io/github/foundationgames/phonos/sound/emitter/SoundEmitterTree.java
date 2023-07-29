@@ -203,7 +203,10 @@ public class SoundEmitterTree {
                 if (idx < tree.levels.size()) {
                     tree.levels.set(idx, entry.getValue());
                 } else {
-                    tree.levels.add(idx, entry.getValue());
+                    while (tree.levels.size() < idx - 1) {
+                        tree.levels.add(new Level(new LongArrayList(), new LongArrayList()));
+                    }
+                    tree.levels.add(entry.getValue());
                 }
             }
         }

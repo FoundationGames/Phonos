@@ -21,7 +21,7 @@ public class MultiSourceSoundInstance extends AbstractSoundInstance implements T
     private boolean done;
 
     protected MultiSourceSoundInstance(SoundEmitterTree tree, Identifier sound, Random random, float volume, float pitch) {
-        super(sound, SoundCategory.MASTER, random);
+        super(sound, SoundCategory.RECORDS, random);
 
         this.emitters = new AtomicReference<>(tree);
         this.volume = volume;

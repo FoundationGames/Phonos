@@ -2,7 +2,8 @@ package io.github.foundationgames.phonos.network;
 
 import io.github.foundationgames.phonos.Phonos;
 import io.github.foundationgames.phonos.block.entity.SatelliteStationBlockEntity;
-import io.github.foundationgames.phonos.client.screen.SatelliteStationScreen;
+import io.github.foundationgames.phonos.client.screen.CrashSatelliteStationScreen;
+import io.github.foundationgames.phonos.client.screen.LaunchSatelliteStationScreen;
 import io.github.foundationgames.phonos.sound.SoundStorage;
 import io.github.foundationgames.phonos.sound.custom.ClientCustomAudioUploader;
 import io.github.foundationgames.phonos.sound.emitter.SoundEmitterTree;
@@ -41,10 +42,15 @@ public final class ClientPayloadPackets {
 
         ClientPlayNetworking.registerGlobalReceiver(Phonos.id("open_satellite_station_screen"), (client, handler, buf, responseSender) -> {
             var pos = buf.readBlockPos();
+            int screenType = buf.readInt();
 
             client.execute(() -> {
                 if (client.world.getBlockEntity(pos) instanceof SatelliteStationBlockEntity sat) {
-                    client.setScreen(new SatelliteStationScreen(sat));
+                    client.setScreen(switch (screenType) {
+                        case SatelliteStationBlockEntity.SCREEN_LAUNCH -> new LaunchSatelliteStationScreen(sat);
+                        case SatelliteStationBlockEntity.SCREEN_CRASH -> new CrashSatelliteStationScreen(sat);
+                        default -> null;
+                    });
                 }
             });
         });
@@ -62,6 +68,12 @@ public final class ClientPayloadPackets {
             });
         });
 
+        ClientPlayNetworking.registerGlobalReceiver(Phonos.id("audio_upload_stop"), (client, handler, buf, responseSender) -> {
+            long id = buf.readLong();
+
+            client.execute(() -> ClientCustomAudioUploader.cancelUpload(id));
+        });
+
         ClientPlayNetworking.registerGlobalReceiver(Phonos.id("audio_stream_data"), (client, handler, buf, responseSender) -> {
             long id = buf.readLong();
             int sampleRate = buf.readInt();
@@ -75,12 +87,31 @@ public final class ClientPayloadPackets {
 
             client.execute(() -> ClientIncomingStreamHandler.endStream(id));
         });
+
+        ClientPlayNetworking.registerGlobalReceiver(Phonos.id("satellite_action"), (client, handler, buf, responseSender) -> {
+            var pos = buf.readBlockPos();
+            int action = buf.readInt();
+
+            client.execute(() -> {
+                if (client.world.getBlockEntity(pos) instanceof SatelliteStationBlockEntity be) {
+                    be.performAction(action);
+                }
+            });
+        });
     }
 
     public static void sendRequestSatelliteUploadSession(SatelliteStationBlockEntity entity) {
         var buf = new PacketByteBuf(Unpooled.buffer());
         buf.writeBlockPos(entity.getPos());
+
         ClientPlayNetworking.send(Phonos.id("request_satellite_upload_session"), buf);
+    }
+
+    public static void sendRequestSatelliteCrash(SatelliteStationBlockEntity entity) {
+        var buf = new PacketByteBuf(Unpooled.buffer());
+        buf.writeBlockPos(entity.getPos());
+
+        ClientPlayNetworking.send(Phonos.id("request_satellite_crash"), buf);
     }
 
     public static void sendAudioUploadPacket(long streamId, int sampleRate, ByteBuffer samples, boolean last) {

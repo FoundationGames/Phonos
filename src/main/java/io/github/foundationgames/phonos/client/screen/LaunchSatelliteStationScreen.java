@@ -17,7 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-public class SatelliteStationScreen extends Screen {
+public class LaunchSatelliteStationScreen extends Screen {
     public static final Text TITLE = Text.translatable("container.phonos.satellite_station");
     public static final Text UPLOAD = Text.translatable("button.phonos.satellite_station.upload");
     public static final Text DRAG_PROMPT = Text.translatable("hint.phonos.satellite_station.drag").formatted(Formatting.GRAY, Formatting.ITALIC);
@@ -29,10 +29,15 @@ public class SatelliteStationScreen extends Screen {
 
     private ButtonWidget uploadButton;
 
-    public SatelliteStationScreen(SatelliteStationBlockEntity entity) {
+    public LaunchSatelliteStationScreen(SatelliteStationBlockEntity entity) {
         super(TITLE);
 
         this.station = entity;
+
+        var err = entity.getError();
+        if (err != null) {
+            this.status = Text.translatable("error.phonos.satellite." + err).formatted(Formatting.RED);
+        }
     }
 
     @Override

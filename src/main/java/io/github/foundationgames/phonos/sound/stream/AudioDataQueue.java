@@ -16,8 +16,15 @@ public class AudioDataQueue {
     public final int sampleRate;
     public final Deque<ByteBuffer> data = new ArrayDeque<>();
 
+    public int originalSize;
+
     public AudioDataQueue(int sampleRate) {
         this.sampleRate = sampleRate;
+    }
+
+    public void push(ByteBuffer buf) {
+        this.data.addLast(buf);
+        originalSize += buf.capacity();
     }
 
     public AudioDataQueue copy(IntFunction<ByteBuffer> bufferProvider) {
@@ -25,7 +32,7 @@ public class AudioDataQueue {
 
         for (var buf : this.data) {
             int pos = buf.position();
-            copy.data.addLast(bufferProvider.apply(buf.capacity()).put(buf));
+            copy.push(bufferProvider.apply(buf.capacity()).put(buf));
             buf.position(pos);
         }
 
@@ -60,7 +67,7 @@ public class AudioDataQueue {
             }
             buf.position(cur);
 
-            aud.data.addLast(buf);
+            aud.push(buf);
         }
 
         return aud;

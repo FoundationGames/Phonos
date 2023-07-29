@@ -1,7 +1,7 @@
 package io.github.foundationgames.phonos.block;
 
 import io.github.foundationgames.phonos.block.entity.SatelliteStationBlockEntity;
-import io.github.foundationgames.phonos.network.PayloadPackets;
+import io.github.foundationgames.phonos.item.PhonosItems;
 import io.github.foundationgames.phonos.util.PhonosUtil;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
@@ -37,11 +37,28 @@ public class SatelliteStationBlock extends HorizontalFacingBlock implements Bloc
         var side = hit.getSide();
         var facing = state.get(FACING);
 
-        if (side == Direction.DOWN || side == Direction.UP) {
+        if (side == Direction.DOWN) {
             return ActionResult.PASS;
         }
 
         if (player.canModifyBlocks() && world.getBlockEntity(pos) instanceof SatelliteStationBlockEntity be) {
+            if (side == Direction.UP) {
+                var holding = player.getStackInHand(hand);
+                if (holding.getItem() == PhonosItems.SATELLITE) {
+                    if (world.isClient()) {
+                        return ActionResult.CONSUME;
+                    } else {
+                        if (be.addRocket() && !player.isCreative()) {
+                            holding.decrement(1);
+                        }
+
+                        return ActionResult.SUCCESS;
+                    }
+                }
+
+                return ActionResult.PASS;
+            }
+
             if (!world.isClient()) {
                 if (PhonosUtil.holdingAudioCable(player)) {
                     return ActionResult.PASS;
@@ -54,7 +71,7 @@ public class SatelliteStationBlock extends HorizontalFacingBlock implements Bloc
                     }
                 } else {
                     if (player instanceof ServerPlayerEntity sPlayer) {
-                        PayloadPackets.sendOpenSatelliteStationScreen(sPlayer, pos);
+                        be.tryOpenScreen(sPlayer);
                     }
 
                     return ActionResult.CONSUME;
@@ -107,6 +124,20 @@ public class SatelliteStationBlock extends HorizontalFacingBlock implements Bloc
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         return SHAPE;
+    }
+
+    @Override
+    public boolean hasComparatorOutput(BlockState state) {
+        return true;
+    }
+
+    @Override
+    public int getComparatorOutput(BlockState state, World world, BlockPos pos) {
+        if (world.getBlockEntity(pos) instanceof SatelliteStationBlockEntity be) {
+            return be.getComparatorOutput();
+        }
+
+        return super.getComparatorOutput(state, world, pos);
     }
 
     @Nullable
