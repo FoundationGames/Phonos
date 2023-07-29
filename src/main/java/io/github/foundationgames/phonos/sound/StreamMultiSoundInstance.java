@@ -1,6 +1,7 @@
 package io.github.foundationgames.phonos.sound;
 
 import io.github.foundationgames.phonos.Phonos;
+import io.github.foundationgames.phonos.config.PhonosClientConfig;
 import io.github.foundationgames.phonos.sound.emitter.SoundEmitterTree;
 import io.github.foundationgames.phonos.sound.stream.ClientIncomingStreamHandler;
 import net.fabricmc.fabric.api.client.sound.v1.FabricSoundInstance;
@@ -18,6 +19,11 @@ public class StreamMultiSoundInstance extends MultiSourceSoundInstance implement
         super(tree, Phonos.STREAMED_SOUND, random, volume, pitch);
 
         this.streamId = streamId;
+    }
+
+    @Override
+    public float getVolume() {
+        return (float) (super.getVolume() * PhonosClientConfig.get().streamVolume);
     }
 
     @Override

@@ -5,8 +5,8 @@ import io.github.foundationgames.phonos.sound.emitter.SoundSource;
 import io.github.foundationgames.phonos.util.PhonosUtil;
 import io.github.foundationgames.phonos.util.Pose3f;
 import io.github.foundationgames.phonos.util.UniqueId;
+import io.github.foundationgames.phonos.world.sound.CablePlugPoint;
 import io.github.foundationgames.phonos.world.sound.InputPlugPoint;
-import io.github.foundationgames.phonos.world.sound.WirePlugPoint;
 import io.github.foundationgames.phonos.world.sound.data.SoundData;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
@@ -194,7 +194,7 @@ public class BlockConnectionLayout {
         }
     }
 
-    public static class BlockOutput implements WirePlugPoint {
+    public static class BlockOutput implements CablePlugPoint {
         private final BlockPos blockPos;
         private final Pose3f pose;
         public final int connectionIndex;

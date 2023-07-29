@@ -8,7 +8,7 @@ import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
-public interface WirePlugPoint {
+public interface CablePlugPoint {
     default Vec3d calculatePos(World world, double extend) {
         var originPose = new Pose3f(new Vector3f(), new Quaternionf());
         var plugPose = new Pose3f(new Vector3f(), new Quaternionf());

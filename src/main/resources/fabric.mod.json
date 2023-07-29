@@ -23,6 +23,9 @@
     ],
 	"client": [
       "io.github.foundationgames.phonos.PhonosClient"
+    ],
+    "modmenu": [
+      "io.github.foundationgames.phonos.util.compat.PhonosModMenu"
     ]
   },
   "mixins": [

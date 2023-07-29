@@ -48,5 +48,14 @@
     "item.phonos.purple_audio_cable": "Purple Audio Cable",
     "item.phonos.red_audio_cable": "Red Audio Cable",
     "item.phonos.white_audio_cable": "White Audio Cable",
-    "item.phonos.yellow_audio_cable": "Yellow Audio Cable"
+    "item.phonos.yellow_audio_cable": "Yellow Audio Cable",
+
+    "text.config.phonos.title": "Phonos Client Config",
+
+    "text.config.phonos.option.phonosMasterVolume": "Loudspeaker Master Volume",
+    "text.config.phonos.option.streamVolume": "Satellite Audio Volume",
+
+    "text.config.phonos.option.cableLODs": "Use Detail Levels for Audio Cables",
+    "text.config.phonos.option.cableLODNearDetail": "Highest Audio Cable Detail Level",
+    "text.config.phonos.option.cableLODFarDetail": "Lowest Audio Cable Detail Level"
 }

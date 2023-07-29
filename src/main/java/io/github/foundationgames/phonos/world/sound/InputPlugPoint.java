@@ -13,7 +13,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class InputPlugPoint implements WirePlugPoint {
+public abstract class InputPlugPoint implements CablePlugPoint {
     public static final RegistryKey<Registry<Type>> REGISTRY_KEY = RegistryKey.ofRegistry(Phonos.id("wire_plug_point"));
     public static final Registry<Type> REGISTRY = new SimpleRegistry<>(REGISTRY_KEY, Lifecycle.stable());
 

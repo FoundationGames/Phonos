@@ -118,6 +118,7 @@ public class ElectronicJukeboxBlockEntity extends JukeboxBlockEntity implements 
 
             if (this.outputs.purge(conn -> this.outputs.dropConnectionItem(world, conn, true))) {
                 sync();
+                markDirty();
             }
         }
     }

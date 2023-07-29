@@ -115,8 +115,4 @@ public class Phonos implements ModInitializer {
     public static Identifier id(String path) {
         return new Identifier("phonos", path);
     }
-
-    public static float getPhonosVolume() {
-        return 1;
-    }
 }

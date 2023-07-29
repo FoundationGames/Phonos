@@ -1,7 +1,7 @@
 package io.github.foundationgames.phonos.world.sound.block;
 
+import io.github.foundationgames.phonos.world.sound.CableConnection;
 import io.github.foundationgames.phonos.world.sound.InputPlugPoint;
-import io.github.foundationgames.phonos.world.sound.WireConnection;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.ItemStack;
@@ -18,13 +18,13 @@ import java.util.function.Consumer;
 
 public class BlockEntityOutputs {
     private final boolean[] skip; // Will not be purged on first tick of existing
-    protected final WireConnection[] connections;
+    protected final CableConnection[] connections;
     protected final BlockConnectionLayout connectionLayout;
     protected final BlockEntity blockEntity;
 
     public BlockEntityOutputs(BlockConnectionLayout layout, BlockEntity blockEntity) {
         this.connectionLayout = layout;
-        this.connections = new WireConnection[layout.getConnectionCount()];
+        this.connections = new CableConnection[layout.getConnectionCount()];
         this.skip = new boolean[layout.getConnectionCount()];
         this.blockEntity = blockEntity;
     }
@@ -41,7 +41,7 @@ public class BlockEntityOutputs {
         }
 
         var srcOutput = connectionLayout.outputOfConnection(this.blockEntity.getPos(), outputIndex);
-        this.connections[outputIndex] = new WireConnection(srcOutput, destInput, color, cable);
+        this.connections[outputIndex] = new CableConnection(srcOutput, destInput, color, cable);
         this.skip[outputIndex] = true;
 
         return true;
@@ -63,12 +63,12 @@ public class BlockEntityOutputs {
         return false;
     }
 
-    public @Nullable WireConnection getOutputConnection(int outputIndex) {
+    public @Nullable CableConnection getOutputConnection(int outputIndex) {
         outputIndex = MathHelper.clamp(outputIndex, 0, connections.length - 1);
         return connections[outputIndex];
     }
 
-    public void dropConnectionItem(World world, WireConnection conn, boolean atInput) {
+    public void dropConnectionItem(World world, CableConnection conn, boolean atInput) {
         var point = atInput ? conn.end : conn.start;
         var pos = point.calculatePos(world, 0.25);
         var item = new ItemEntity(world, pos.x, pos.y, pos.z, conn.drop);
@@ -86,7 +86,7 @@ public class BlockEntityOutputs {
         return count;
     }
 
-    public void forEach(BiConsumer<Integer, WireConnection> action) {
+    public void forEach(BiConsumer<Integer, CableConnection> action) {
         for (int i = 0; i < connections.length; i++) {
             if (connections[i] != null) {
                 action.accept(i, connections[i]);
@@ -94,7 +94,7 @@ public class BlockEntityOutputs {
         }
     }
 
-    public boolean purge(Consumer<WireConnection> purgeAction) {
+    public boolean purge(Consumer<CableConnection> purgeAction) {
         boolean changed = false;
         for (int i = 0; i < connections.length; i++) {
             if (skip[i]) {
@@ -134,7 +134,7 @@ public class BlockEntityOutputs {
                 var connNbt = nbt.getCompound(key);
                 var outputPoint = this.connectionLayout.outputOfConnection(this.blockEntity.getPos(), i);
 
-                var conn = WireConnection.readNbt(this.blockEntity.getWorld(), outputPoint, connNbt);
+                var conn = CableConnection.readNbt(this.blockEntity.getWorld(), outputPoint, connNbt);
 
                 if (conn != null) {
                     nbt.remove(key);

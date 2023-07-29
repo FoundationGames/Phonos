@@ -98,7 +98,9 @@ public class ServerCustomAudio {
         try {
             deleteOnly(id, PhonosUtil.getCustomSoundFolder(srv));
 
-            Phonos.LOG.info("Saved audio with ID {} ({} bytes) was deleted.", Long.toHexString(id), aud.originalSize);
+            if (aud != null) {
+                Phonos.LOG.info("Saved audio with ID {} ({} bytes) was deleted.", Long.toHexString(id), aud.originalSize);
+            }
         } catch (IOException ex) {
             Phonos.LOG.error("Error saving uploaded sound", ex);
         }

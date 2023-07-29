@@ -1,5 +1,6 @@
 package io.github.foundationgames.phonos.sound;
 
+import io.github.foundationgames.phonos.config.PhonosClientConfig;
 import io.github.foundationgames.phonos.sound.emitter.SoundEmitterTree;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.sound.AbstractSoundInstance;
@@ -21,7 +22,7 @@ public class MultiSourceSoundInstance extends AbstractSoundInstance implements T
     private boolean done;
 
     protected MultiSourceSoundInstance(SoundEmitterTree tree, Identifier sound, Random random, float volume, float pitch) {
-        super(sound, SoundCategory.RECORDS, random);
+        super(sound, SoundCategory.MASTER, random);
 
         this.emitters = new AtomicReference<>(tree);
         this.volume = volume;
@@ -32,6 +33,11 @@ public class MultiSourceSoundInstance extends AbstractSoundInstance implements T
 
     public MultiSourceSoundInstance(SoundEmitterTree tree, SoundEvent sound, Random random, float volume, float pitch) {
         this(tree, sound.getId(), random, volume, pitch);
+    }
+
+    @Override
+    public float getVolume() {
+        return (float) (super.getVolume() * PhonosClientConfig.get().phonosMasterVolume);
     }
 
     @Override

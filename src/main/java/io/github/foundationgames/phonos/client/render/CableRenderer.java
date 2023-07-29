@@ -1,9 +1,11 @@
 package io.github.foundationgames.phonos.client.render;
 
+import io.github.foundationgames.phonos.config.PhonosClientConfig;
 import io.github.foundationgames.phonos.util.PhonosUtil;
 import io.github.foundationgames.phonos.util.Pose3f;
-import io.github.foundationgames.phonos.world.sound.WireConnection;
-import io.github.foundationgames.phonos.world.sound.WirePlugPoint;
+import io.github.foundationgames.phonos.world.sound.CableConnection;
+import io.github.foundationgames.phonos.world.sound.CablePlugPoint;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.WorldRenderer;
@@ -17,7 +19,7 @@ import org.joml.Vector4f;
 
 import java.util.function.Consumer;
 
-public class ConnectionRenderer {
+public class CableRenderer {
     private static final Quaternionf rotationCache = new Quaternionf();
     private static final BlockPos.Mutable lightPos = new BlockPos.Mutable();
 
@@ -62,7 +64,7 @@ public class ConnectionRenderer {
         }
     }
 
-    public static void renderConnection(World world, WireConnection conn, MatrixStack matrices, VertexConsumer buffer, Model cableEndModel, int overlay, float tickDelta) {
+    public static void renderConnection(PhonosClientConfig config, World world, CableConnection conn, MatrixStack matrices, VertexConsumer buffer, Model cableEndModel, int overlay, float tickDelta) {
         int startLight, endLight;
 
         matrices.push();
@@ -91,7 +93,20 @@ public class ConnectionRenderer {
         float g = conn.color != null ? conn.color.getColorComponents()[1] : 1;
         float b = conn.color != null ? conn.color.getColorComponents()[2] : 1;
         float length = cableStPt.distance(cableEnPt);
-        int segments = (int) Math.ceil(4 * length);
+        int segments = Math.max((int) Math.ceil(4 * length * config.cableLODNearDetail), 1);
+
+        if (config.cableLODs) {
+            float cx = (cableStPt.x + cableEnPt.x) * 0.5f;
+            float cy = (cableStPt.y + cableEnPt.y) * 0.5f;
+            float cz = (cableStPt.z + cableEnPt.z) * 0.5f;
+
+            double sqDist = MinecraftClient.getInstance().gameRenderer.getCamera().getPos()
+                    .squaredDistanceTo(cx, cy, cz);
+            double delta = MathHelper.clamp(sqDist / (length * length * 4), 0, 1);
+            double detail = MathHelper.lerp(delta, config.cableLODNearDetail, config.cableLODFarDetail);
+
+            segments = Math.max((int) Math.ceil(4 * length * detail), Math.min(3, segments));
+        }
 
         cableRotAxis.set(cableEnPt.z - cableStPt.z, 0, cableEnPt.x - cableStPt.x);
 
@@ -162,7 +177,7 @@ public class ConnectionRenderer {
     private static final Pose3f tcp_endPose = new Pose3f(new Vector3f(), new Quaternionf());
     private static final Quaternionf tcp_rot = new Quaternionf();
     private static final Vector4f tcp_vec4a = new Vector4f();
-    private static void transformConnPoint(World world, WirePlugPoint point, MatrixStack matrices, Vector3f connPos, float tickDelta) {
+    private static void transformConnPoint(World world, CablePlugPoint point, MatrixStack matrices, Vector3f connPos, float tickDelta) {
         connPos.set(0, 0, 0);
 
         point.writeOriginPose(world, tickDelta, tcp_originPose);

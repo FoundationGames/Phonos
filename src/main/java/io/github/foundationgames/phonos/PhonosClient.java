@@ -6,6 +6,7 @@ import io.github.foundationgames.phonos.client.render.block.CableOutputBlockEnti
 import io.github.foundationgames.phonos.client.render.block.RadioLoudspeakerBlockEntityRenderer;
 import io.github.foundationgames.phonos.client.render.block.RadioTransceiverBlockEntityRenderer;
 import io.github.foundationgames.phonos.client.render.block.SatelliteStationBlockEntityRenderer;
+import io.github.foundationgames.phonos.config.PhonosClientConfig;
 import io.github.foundationgames.phonos.item.AudioCableItem;
 import io.github.foundationgames.phonos.item.PhonosItems;
 import io.github.foundationgames.phonos.network.ClientPayloadPackets;
@@ -37,6 +38,8 @@ public class PhonosClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        PhonosClientConfig.get(); // Load if not already
+
         ClientPayloadPackets.initClient();
         ClientSoundStorage.initClient();
 

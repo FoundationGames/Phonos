@@ -6,13 +6,13 @@ import net.minecraft.util.DyeColor;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-public class WireConnection {
-    public final WirePlugPoint start;
+public class CableConnection {
+    public final CablePlugPoint start;
     public final InputPlugPoint end;
     public final @Nullable DyeColor color;
     public final ItemStack drop;
 
-    public WireConnection(WirePlugPoint start, InputPlugPoint end, @Nullable DyeColor color, ItemStack drop) {
+    public CableConnection(CablePlugPoint start, InputPlugPoint end, @Nullable DyeColor color, ItemStack drop) {
         this.start = start;
         this.end = end;
         this.color = color;
@@ -40,7 +40,7 @@ public class WireConnection {
         nbt.put("item", drop.writeNbt(new NbtCompound()));
     }
 
-    public static WireConnection readNbt(World world, WirePlugPoint start, NbtCompound nbt) {
+    public static CableConnection readNbt(World world, CablePlugPoint start, NbtCompound nbt) {
         DyeColor color = null;
         if (nbt.contains("color")) {
             color = DyeColor.byName(nbt.getString("color"), null);
@@ -58,6 +58,6 @@ public class WireConnection {
         var cable = ItemStack.fromNbt(cableData);
         if (cable == null) return null;
 
-        return new WireConnection(start, end, color, cable);
+        return new CableConnection(start, end, color, cable);
     }
 }

@@ -2,6 +2,7 @@ package io.github.foundationgames.phonos.block;
 
 import io.github.foundationgames.phonos.block.entity.RadioTransceiverBlockEntity;
 import io.github.foundationgames.phonos.util.PhonosUtil;
+import io.github.foundationgames.phonos.world.RadarPoints;
 import io.github.foundationgames.phonos.world.sound.block.BlockConnectionLayout;
 import io.github.foundationgames.phonos.world.sound.block.InputBlock;
 import net.minecraft.block.*;
@@ -11,6 +12,7 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemUsageContext;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -148,6 +150,23 @@ public class RadioTransceiverBlock extends HorizontalFacingBlock implements Bloc
         if (world.getBlockEntity(pos) instanceof RadioTransceiverBlockEntity be) {
             inputIndex = MathHelper.clamp(inputIndex, 0, be.inputs.length - 1);
             be.inputs[inputIndex] = pluggedIn;
+
+            if (world instanceof ServerWorld sWorld) {
+                if (pluggedIn) {
+                    RadarPoints.get(sWorld).add(be.getChannel(), pos);
+                } else {
+                    boolean remove = true;
+                    for (boolean in : be.inputs) if (in) {
+                        remove = false;
+                        break;
+                    }
+
+                    if (remove) {
+                        RadarPoints.get(sWorld).remove(be.getChannel(), pos);
+                    }
+                }
+            }
+
             be.sync();
         }
     }

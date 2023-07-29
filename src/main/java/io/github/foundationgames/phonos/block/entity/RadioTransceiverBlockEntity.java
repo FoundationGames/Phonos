@@ -4,6 +4,7 @@ import io.github.foundationgames.phonos.block.PhonosBlocks;
 import io.github.foundationgames.phonos.block.RadioTransceiverBlock;
 import io.github.foundationgames.phonos.radio.RadioDevice;
 import io.github.foundationgames.phonos.radio.RadioStorage;
+import io.github.foundationgames.phonos.world.RadarPoints;
 import io.github.foundationgames.phonos.world.sound.InputPlugPoint;
 import io.github.foundationgames.phonos.world.sound.block.BlockConnectionLayout;
 import net.minecraft.block.BlockState;
@@ -11,6 +12,7 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
@@ -111,6 +113,12 @@ public class RadioTransceiverBlockEntity extends AbstractConnectionHubBlockEntit
     @Override
     public void setAndUpdateChannel(int channel) {
         channel = Math.floorMod(channel, RadioStorage.CHANNEL_COUNT);
+
+        if (this.world instanceof ServerWorld sWorld) for (boolean in : this.inputs) if (in) {
+            RadarPoints.get(sWorld).remove(this.channel, this.pos);
+            RadarPoints.get(sWorld).add(channel, this.pos);
+            break;
+        }
 
         var radio = RadioStorage.getInstance(this.world);
 

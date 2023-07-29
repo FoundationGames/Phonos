@@ -39,6 +39,7 @@ public abstract class AbstractOutputBlockEntity extends BlockEntity implements S
         if (!world.isClient()) {
             if (this.outputs.purge(conn -> this.outputs.dropConnectionItem(world, conn, true))) {
                 sync();
+                markDirty();
             }
         }
     }
