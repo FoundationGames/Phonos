@@ -213,7 +213,7 @@ public class SatelliteStationBlockEntity extends AbstractOutputBlockEntity {
             return 0;
         }
 
-        return MathHelper.clamp(15 * timer / this.playDuration, 0, 15);
+        return MathHelper.clamp(Math.ceil(15 * timer / (float)this.playDuration), 0, 15);
     }
 
     public Vec3d launchpadPos() {
