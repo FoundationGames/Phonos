@@ -93,7 +93,9 @@ public class CableRenderer {
         float g = conn.color != null ? conn.color.getColorComponents()[1] : 1;
         float b = conn.color != null ? conn.color.getColorComponents()[2] : 1;
         float length = cableStPt.distance(cableEnPt);
-        int segments = Math.max((int) Math.ceil(4 * length * config.cableLODNearDetail), 1);
+
+        double detail = config.cableLODNearDetail;
+        int segments = Math.max((int) Math.ceil(4 * length * detail), 1);
 
         if (config.cableLODs) {
             float cx = (cableStPt.x + cableEnPt.x) * 0.5f;
@@ -103,10 +105,12 @@ public class CableRenderer {
             double sqDist = MinecraftClient.getInstance().gameRenderer.getCamera().getPos()
                     .squaredDistanceTo(cx, cy, cz);
             double delta = MathHelper.clamp(sqDist / (length * length * 4), 0, 1);
-            double detail = MathHelper.lerp(delta, config.cableLODNearDetail, config.cableLODFarDetail);
+            detail = MathHelper.lerp(delta, config.cableLODNearDetail, config.cableLODFarDetail);
 
             segments = Math.max((int) Math.ceil(4 * length * detail), Math.min(3, segments));
         }
+
+        final float texUWid = (float) (0.25 / detail);
 
         cableRotAxis.set(cableEnPt.z - cableStPt.z, 0, cableEnPt.x - cableStPt.x);
 
@@ -159,13 +163,13 @@ public class CableRenderer {
                 var nml = cableNormal[i];
 
                 buffer.vertex(currCableStart[i].x, currCableStart[i].y, currCableStart[i].z).color(r, g, b, 1)
-                        .texture(0.25f, 0.3125f + vOffset2).overlay(overlay).light(segStartLight).normal(nml.x, nml.y, nml.z).next();
+                        .texture(texUWid, 0.3125f + vOffset2).overlay(overlay).light(segStartLight).normal(nml.x, nml.y, nml.z).next();
                 buffer.vertex(currCableEnd[i].x, currCableEnd[i].y, currCableEnd[i].z).color(r, g, b, 1)
                         .texture(0, 0.3125f + vOffset2).overlay(overlay).light(segEndLight).normal(nml.x, nml.y, nml.z).next();
                 buffer.vertex(currCableEnd[next].x, currCableEnd[next].y, currCableEnd[next].z).color(r, g, b, 1)
                         .texture(0, 0.375f + vOffset2).overlay(overlay).light(segEndLight).normal(nml.x, nml.y, nml.z).next();
                 buffer.vertex(currCableStart[next].x, currCableStart[next].y, currCableStart[next].z).color(r, g, b, 1)
-                        .texture(0.25f, 0.375f + vOffset2).overlay(overlay).light(segStartLight).normal(nml.x, nml.y, nml.z).next();
+                        .texture(texUWid, 0.375f + vOffset2).overlay(overlay).light(segStartLight).normal(nml.x, nml.y, nml.z).next();
             }
         }
 
