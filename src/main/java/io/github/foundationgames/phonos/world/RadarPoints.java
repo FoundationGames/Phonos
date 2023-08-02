@@ -26,6 +26,10 @@ public class RadarPoints extends PersistentState {
         }
     }
 
+    public LongSet getPoints(int channel) {
+        return channelToSources.get(channel);
+    }
+
     public static RadarPoints get(ServerWorld world) {
         return world.getPersistentStateManager().getOrCreate(RadarPoints::readNbt, RadarPoints::new, "phonos_radar_points");
     }

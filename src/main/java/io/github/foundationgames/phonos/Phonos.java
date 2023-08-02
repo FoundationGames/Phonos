@@ -12,6 +12,7 @@ import io.github.foundationgames.phonos.sound.emitter.SoundEmitter;
 import io.github.foundationgames.phonos.sound.emitter.SoundEmitterStorage;
 import io.github.foundationgames.phonos.sound.stream.ServerOutgoingStreamHandler;
 import io.github.foundationgames.phonos.util.PhonosUtil;
+import io.github.foundationgames.phonos.world.command.PhonosCommands;
 import io.github.foundationgames.phonos.world.sound.InputPlugPoint;
 import io.github.foundationgames.phonos.world.sound.data.SoundDataTypes;
 import net.fabricmc.api.ModInitializer;
@@ -110,6 +111,7 @@ public class Phonos implements ModInitializer {
         });
 
         RadioStorage.init();
+        PhonosCommands.init();
     }
 
     public static Identifier id(String path) {

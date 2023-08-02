@@ -23,6 +23,17 @@
     "message.phonos.satellite_launching": "Launch in progress!",
     "message.phonos.no_satellite": "Place a satellite on the launch pad first!",
 
+    "command.phonos.radar.none_found": "Found no radio emitters on channel %s.",
+    "command.phonos.radar.success": "Nearest radio emitter located at %s.",
+    "command.phonos.satellite.inspect.no_upload": "This station has no orbiting satellite!",
+    "command.phonos.satellite.inspect.invalid": "This block is not a satellite station!",
+    "command.phonos.satellite.crash": "Crashed satellite with id %s.",
+    "command.phonos.satellite.entry": "ID: %s, Duration: %s, Size: %s KB",
+    "command.phonos.satellite.list.info": "Found %s orbiting, total size %s KB",
+    "command.phonos.satellite.list.none": "No satellites in orbit.",
+
+    "argument.phonos.idList.invalid": "Invalid ID!",
+
     "block.phonos.loudspeaker": "Loudspeaker",
     "block.phonos.electronic_jukebox": "Electronic Jukebox",
     "block.phonos.electronic_note_block": "Electronic Note Block",

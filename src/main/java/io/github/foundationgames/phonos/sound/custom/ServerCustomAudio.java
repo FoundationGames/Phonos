@@ -137,6 +137,8 @@ public class ServerCustomAudio {
             doNotDelete.add(id);
         }
 
+        Phonos.LOG.info("Saved all custom audio to <world>/phonos/");
+
         try (var paths = Files.walk(folder, 1)) {
             for (var path : paths.toList()) {
                 var filename = path.getFileName().toString();
@@ -147,6 +149,7 @@ public class ServerCustomAudio {
                         long id = Long.parseUnsignedLong(hexStr, 16);
                         if (!doNotDelete.contains(id)) {
                             Files.deleteIfExists(path);
+                            Phonos.LOG.info("Deleted unused custom audio with ID {}", Long.toHexString(id));
                         }
 
                     } catch (NumberFormatException ignored) {}

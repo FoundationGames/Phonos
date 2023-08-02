@@ -31,6 +31,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.file.Path;
+import java.text.NumberFormat;
+import java.util.Locale;
 import java.util.function.IntFunction;
 
 public enum PhonosUtil {;
@@ -139,6 +141,26 @@ public enum PhonosUtil {;
         r |= stream.read() << 24;
 
         return r;
+    }
+
+    public static String duration(int seconds) {
+        var fmt = NumberFormat.getInstance(Locale.ROOT);
+        fmt.setMinimumIntegerDigits(2);
+
+        if (seconds < 60) {
+            return "0:" + fmt.format(seconds);
+        }
+
+        int sec = seconds % 60;
+        int min = (seconds / 60) % 60;
+
+        if (seconds < 3600) {
+            return min + ":" + fmt.format(sec);
+        }
+
+        int hr = seconds / 3600;
+
+        return hr + ":" + fmt.format(min) + ":" + fmt.format(sec);
     }
 
     public static Path getCustomSoundFolder(MinecraftServer server) {
