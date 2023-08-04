@@ -5,9 +5,10 @@ import org.lwjgl.BufferUtils;
 
 import javax.sound.sampled.AudioFormat;
 import java.nio.ByteBuffer;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class QueueAudioStream implements AudioStream {
-    private AudioDataQueue stream = null;
+    private final AtomicReference<AudioDataQueue> stream = new AtomicReference<>(null);
 
     private AudioFormat format = new AudioFormat(20000, 8, 1, true, false);
 
@@ -19,7 +20,7 @@ public class QueueAudioStream implements AudioStream {
     }
 
     public void init(AudioDataQueue queue) {
-        this.stream = queue;
+        this.stream.set(queue);
         this.format = new AudioFormat(queue.sampleRate, 8, 1, true, false);
     }
 
@@ -31,6 +32,7 @@ public class QueueAudioStream implements AudioStream {
     @Override
     public synchronized ByteBuffer getBuffer(int size) {
         var out = BufferUtils.createByteBuffer(size);
+        var stream = this.stream.get();
 
         if (stream != null && !stream.data.isEmpty()) {
             if (stream.data.size() == 1) {

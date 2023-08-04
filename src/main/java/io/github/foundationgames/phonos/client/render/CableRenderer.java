@@ -1,6 +1,7 @@
 package io.github.foundationgames.phonos.client.render;
 
 import io.github.foundationgames.phonos.config.PhonosClientConfig;
+import io.github.foundationgames.phonos.mixin.WorldRendererAccess;
 import io.github.foundationgames.phonos.util.PhonosUtil;
 import io.github.foundationgames.phonos.util.Pose3f;
 import io.github.foundationgames.phonos.world.sound.CableConnection;
@@ -86,6 +87,17 @@ public class CableRenderer {
             cableEndModel.render(matrices, buffer, endLight, overlay, 1, 1, 1, 1);
         matrices.pop();
 
+        if (config.cableCulling) {
+            var frustum = ((WorldRendererAccess) MinecraftClient.getInstance().worldRenderer).phonos$getFrustum();
+
+            if (!frustum.isVisible(
+                    Math.min(cableStPt.x, cableEnPt.x), Math.min(cableStPt.y, cableEnPt.y), Math.min(cableStPt.z, cableEnPt.z),
+                    Math.max(cableStPt.x, cableEnPt.x), Math.max(cableStPt.y, cableEnPt.y), Math.max(cableStPt.z, cableEnPt.z)
+            )) {
+                return;
+            }
+        }
+
         matrices.push();
 
         float vOffset = conn.color != null ? 0.125f : 0;
@@ -110,7 +122,7 @@ public class CableRenderer {
             segments = Math.max((int) Math.ceil(4 * length * detail), Math.min(3, segments));
         }
 
-        final float texUWid = (float) (0.25 / detail);
+        final float texUWid = (float) Math.ceil(length / segments) * 0.25f;
 
         cableRotAxis.set(cableEnPt.z - cableStPt.z, 0, cableEnPt.x - cableStPt.x);
 

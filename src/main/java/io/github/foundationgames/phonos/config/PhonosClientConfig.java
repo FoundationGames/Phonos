@@ -14,6 +14,7 @@ public class PhonosClientConfig {
     public double phonosMasterVolume = 1;
     public double streamVolume = 1;
 
+    public boolean cableCulling = true;
     public boolean cableLODs = true;
     public double cableLODNearDetail = 1;
     public double cableLODFarDetail = 0.25;

@@ -60,6 +60,15 @@ public class RadioTransceiverBlockEntity extends AbstractConnectionHubBlockEntit
     }
 
     @Override
+    public void onDestroyed() {
+        super.onDestroyed();
+
+        if (world instanceof ServerWorld sWorld) {
+            RadarPoints.get(sWorld).remove(this.channel, this.pos);
+        }
+    }
+
+    @Override
     public void forEachChild(LongConsumer action) {
         RadioDevice.Transmitter.super.forEachChild(action);
 

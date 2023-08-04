@@ -35,6 +35,8 @@ public class ServerCustomAudio {
 
     private static final Object2LongMap<UUID> UPLOAD_SESSIONS = Object2LongMaps.synchronize(new Object2LongOpenHashMap<>());
 
+    private static volatile boolean LOADED = false;
+
     public static boolean hasSaved(long id) {
         return SAVED.containsKey(id);
     }
@@ -110,6 +112,7 @@ public class ServerCustomAudio {
         UPLOADING.clear();
         SAVED.clear();
         UPLOAD_SESSIONS.clear();
+        LOADED = false;
     }
 
     public static void saveOnly(long id, Path folder) throws IOException {
@@ -130,6 +133,12 @@ public class ServerCustomAudio {
     }
 
     public static void save(Path folder) throws IOException {
+        if (!LOADED) {
+            Phonos.LOG.error("Tried to save custom uploaded audio before it was loaded!");
+
+            return;
+        }
+
         var doNotDelete = new LongArraySet();
 
         for (long id : SAVED.keySet()) {
@@ -181,6 +190,7 @@ public class ServerCustomAudio {
             }
         }
 
+        LOADED = true;
         Phonos.LOG.info("Loaded " + TOTAL_SAVED_SIZE + " bytes of saved audio from <world>/phonos/");
     }
 }

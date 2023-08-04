@@ -65,7 +65,7 @@
 
     "text.config.phonos.option.phonosMasterVolume": "Loudspeaker Master Volume",
     "text.config.phonos.option.streamVolume": "Satellite Audio Volume",
-
+    "text.config.phonos.option.cableCulling": "Cull Audio Cables not on-screen",
     "text.config.phonos.option.cableLODs": "Use Detail Levels for Audio Cables",
     "text.config.phonos.option.cableLODNearDetail": "Highest Audio Cable Detail Level",
     "text.config.phonos.option.cableLODFarDetail": "Lowest Audio Cable Detail Level"

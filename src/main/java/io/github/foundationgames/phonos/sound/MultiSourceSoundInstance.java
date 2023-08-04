@@ -78,10 +78,10 @@ public class MultiSourceSoundInstance extends AbstractSoundInstance implements T
 
             double dist = emPos.distance(camPos.x, camPos.y, camPos.z);
 
-            if (dist <= 2.7014) {
-                weight = -0.03 * Math.pow(dist, 3) + 1;
+            if (dist <= 1.4135) {
+                weight = -0.05 * Math.pow(dist, 4) + 1;
             } else {
-                weight = Math.pow(5, -(dist - 2.14528));
+                weight = Math.pow(2, -(dist - 1.0923));
             }
 
             pos.add(emPos.mul(weight));

@@ -6,3 +6,5 @@ accessible field net/minecraft/block/entity/JukeboxBlockEntity isPlaying Z
 
 extendable method net/minecraft/block/entity/JukeboxBlockEntity stopPlaying ()V
 extendable method net/minecraft/block/entity/JukeboxBlockEntity tick (Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;)V
+
+accessible method net/minecraft/client/render/Frustum isVisible (DDDDDD)Z

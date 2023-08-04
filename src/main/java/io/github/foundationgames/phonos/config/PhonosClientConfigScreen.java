@@ -45,6 +45,7 @@ public class PhonosClientConfigScreen extends Screen {
 
         screen.addPercentage("phonosMasterVolume", val -> copy.phonosMasterVolume = val, copy.phonosMasterVolume);
         screen.addPercentage("streamVolume", val -> copy.streamVolume = val, copy.streamVolume);
+        screen.addBoolean("cableCulling", val -> copy.cableCulling = val, copy.cableCulling);
         screen.addBoolean("cableLODs", val -> copy.cableLODs = val, copy.cableLODs);
         screen.addPercentage("cableLODNearDetail", val -> copy.cableLODNearDetail = val, copy.cableLODNearDetail);
         screen.addPercentage("cableLODFarDetail", val -> copy.cableLODFarDetail = val, copy.cableLODFarDetail);

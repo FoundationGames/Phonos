@@ -6,6 +6,7 @@
   "mixins": [
   ],
   "client": [
+    "WorldRendererAccess"
   ],
   "injectors": {
     "defaultRequire": 1
