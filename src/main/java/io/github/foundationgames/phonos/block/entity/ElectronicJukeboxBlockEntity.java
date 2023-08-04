@@ -1,6 +1,7 @@
 package io.github.foundationgames.phonos.block.entity;
 
 import io.github.foundationgames.phonos.block.PhonosBlocks;
+import io.github.foundationgames.phonos.client.render.BlockEntityClientState;
 import io.github.foundationgames.phonos.network.PayloadPackets;
 import io.github.foundationgames.phonos.sound.SoundStorage;
 import io.github.foundationgames.phonos.sound.emitter.SoundEmitterTree;
@@ -46,6 +47,7 @@ public class ElectronicJukeboxBlockEntity extends JukeboxBlockEntity implements 
     private final BlockEntityType<?> type;
     private @Nullable NbtCompound pendingNbt = null;
     private final long emitterId;
+    private BlockEntityClientState clientState;
 
     private @Nullable SoundEmitterTree playingSound = null;
 
@@ -55,6 +57,7 @@ public class ElectronicJukeboxBlockEntity extends JukeboxBlockEntity implements 
         this.emitterId = UniqueId.ofBlock(pos);
 
         this.outputs = new BlockEntityOutputs(OUTPUT_LAYOUT, this);
+        this.clientState = null;
     }
 
     public ElectronicJukeboxBlockEntity(BlockPos pos, BlockState state) {
@@ -195,6 +198,25 @@ public class ElectronicJukeboxBlockEntity extends JukeboxBlockEntity implements 
     @Override
     public BlockEntityOutputs getOutputs() {
         return this.outputs;
+    }
+
+    @Override
+    public BlockEntityClientState getClientState() {
+        if (this.clientState == null) {
+            this.clientState = new BlockEntityClientState();
+        }
+
+        this.clientState.genState(this.outputs);
+        return this.clientState;
+    }
+
+    @Override
+    public void markRemoved() {
+        if (this.hasWorld() && this.world.isClient && this.clientState != null) {
+            this.clientState.dirty = true;
+            this.clientState.close();
+        }
+        super.markRemoved();
     }
 
     @Override

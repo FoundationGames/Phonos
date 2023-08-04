@@ -1,5 +1,6 @@
 package io.github.foundationgames.phonos.world.sound.block;
 
+import io.github.foundationgames.phonos.client.render.BlockEntityClientState;
 import io.github.foundationgames.phonos.sound.emitter.SoundEmitter;
 import io.github.foundationgames.phonos.world.sound.InputPlugPoint;
 import net.minecraft.item.ItemStack;
@@ -17,6 +18,8 @@ public interface OutputBlockEntity extends SoundEmitter {
     boolean forwards();
 
     BlockEntityOutputs getOutputs();
+
+    BlockEntityClientState getClientState();
 
     default Direction getRotation() {
         return Direction.NORTH;

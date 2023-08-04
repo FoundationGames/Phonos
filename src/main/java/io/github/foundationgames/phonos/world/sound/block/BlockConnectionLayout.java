@@ -21,6 +21,7 @@ import org.joml.Vector3f;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 public class BlockConnectionLayout {
     private final List<ConnectionPose> connectionPoints = new ArrayList<>();
@@ -192,6 +193,19 @@ public class BlockConnectionLayout {
         public double z() {
             return this.blockPos.getZ() + 0.5;
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            BlockInput that = (BlockInput) o;
+            return Objects.equals(blockPos, that.blockPos);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(blockPos);
+        }
     }
 
     public static class BlockOutput implements CablePlugPoint {
@@ -223,6 +237,19 @@ public class BlockConnectionLayout {
                 }
             }
             out.rotation().set(RotationAxis.POSITIVE_Y.rotation(0));
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            BlockOutput that = (BlockOutput) o;
+            return Objects.equals(blockPos, that.blockPos);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(blockPos);
         }
     }
 }

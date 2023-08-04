@@ -1,5 +1,6 @@
 package io.github.foundationgames.phonos.block.entity;
 
+import io.github.foundationgames.phonos.client.render.BlockEntityClientState;
 import io.github.foundationgames.phonos.sound.emitter.SoundSource;
 import io.github.foundationgames.phonos.util.UniqueId;
 import io.github.foundationgames.phonos.world.sound.block.BlockConnectionLayout;
@@ -22,12 +23,14 @@ public abstract class AbstractOutputBlockEntity extends BlockEntity implements S
     public final BlockEntityOutputs outputs;
     protected @Nullable NbtCompound pendingNbt = null;
     protected final long emitterId;
+    private BlockEntityClientState clientState;
 
     public AbstractOutputBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, BlockConnectionLayout outputLayout) {
         super(type, pos, state);
 
         this.emitterId = UniqueId.ofBlock(pos);
         this.outputs = new BlockEntityOutputs(outputLayout, this);
+        this.clientState = null;
     }
 
     @Override
@@ -114,5 +117,24 @@ public abstract class AbstractOutputBlockEntity extends BlockEntity implements S
     @Override
     public BlockEntityOutputs getOutputs() {
         return this.outputs;
+    }
+
+    @Override
+    public BlockEntityClientState getClientState() {
+        if (this.clientState == null) {
+            this.clientState = new BlockEntityClientState();
+        }
+
+        this.clientState.genState(this.outputs);
+        return this.clientState;
+    }
+
+    @Override
+    public void markRemoved() {
+        if (this.hasWorld() && this.world.isClient && this.clientState != null) {
+            this.clientState.dirty = true;
+            this.clientState.close();
+        }
+        super.markRemoved();
     }
 }

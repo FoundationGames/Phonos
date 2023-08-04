@@ -6,6 +6,8 @@ import net.minecraft.util.DyeColor;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
+
 public class CableConnection {
     public final CablePlugPoint start;
     public final InputPlugPoint end;
@@ -59,5 +61,18 @@ public class CableConnection {
         if (cable == null) return null;
 
         return new CableConnection(start, end, color, cable);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CableConnection that = (CableConnection) o;
+        return Objects.equals(start, that.start) && Objects.equals(end, that.end) && color == that.color && Objects.equals(drop, that.drop);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(start, end, color, drop);
     }
 }
