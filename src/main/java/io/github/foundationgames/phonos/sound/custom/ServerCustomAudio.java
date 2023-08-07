@@ -202,6 +202,12 @@ public class ServerCustomAudio {
         final int foundDataCount = files.size();
         var loadedDataCount = new AtomicInteger(0);
 
+        if (foundDataCount == 0) {
+            LOADED = true;
+
+            return;
+        }
+
         for (final var hexStr : files) {
             final var path = folder.resolve(hexStr + FILE_EXT);
             FILESYS_POOL.submit(() -> {
