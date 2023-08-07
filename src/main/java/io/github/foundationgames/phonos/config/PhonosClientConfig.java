@@ -3,6 +3,7 @@ package io.github.foundationgames.phonos.config;
 import com.google.gson.Gson;
 import io.github.foundationgames.phonos.Phonos;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.option.SimpleOption;
 
 import java.io.IOException;
 import java.nio.file.Files;

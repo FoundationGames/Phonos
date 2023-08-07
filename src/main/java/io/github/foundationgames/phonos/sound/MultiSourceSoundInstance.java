@@ -21,8 +21,8 @@ public class MultiSourceSoundInstance extends AbstractSoundInstance implements T
     
     private boolean done;
 
-    protected MultiSourceSoundInstance(SoundEmitterTree tree, Identifier sound, Random random, float volume, float pitch) {
-        super(sound, SoundCategory.MASTER, random);
+    protected MultiSourceSoundInstance(SoundEmitterTree tree, Identifier sound, SoundCategory category, Random random, float volume, float pitch) {
+        super(sound, category, random);
 
         this.emitters = new AtomicReference<>(tree);
         this.volume = volume;
@@ -31,8 +31,8 @@ public class MultiSourceSoundInstance extends AbstractSoundInstance implements T
         this.updatePosition();
     }
 
-    public MultiSourceSoundInstance(SoundEmitterTree tree, SoundEvent sound, Random random, float volume, float pitch) {
-        this(tree, sound.getId(), random, volume, pitch);
+    public MultiSourceSoundInstance(SoundEmitterTree tree, SoundEvent sound, SoundCategory category, Random random, float volume, float pitch) {
+        this(tree, sound.getId(), category, random, volume, pitch);
     }
 
     @Override
