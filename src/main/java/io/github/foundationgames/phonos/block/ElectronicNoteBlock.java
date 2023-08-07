@@ -18,6 +18,7 @@ import net.minecraft.block.entity.SkullBlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -88,7 +89,7 @@ public class ElectronicNoteBlock extends NoteBlock implements BlockEntityProvide
 
             if (instrument.isNotBaseBlock() || world.getBlockState(pos.up()).isAir()) {
                 SoundStorage.getInstance(world).play(world,
-                        NoteBlockSoundData.create(id, sound, 2, pitch, instrument, note),
+                        NoteBlockSoundData.create(id, sound, SoundCategory.RECORDS, 2, pitch, instrument, note),
                         new SoundEmitterTree(id));
             }
         }

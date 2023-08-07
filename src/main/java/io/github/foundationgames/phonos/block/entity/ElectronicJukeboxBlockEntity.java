@@ -23,6 +23,7 @@ import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.registry.Registries;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -78,7 +79,7 @@ public class ElectronicJukeboxBlockEntity extends JukeboxBlockEntity implements 
             this.playingSound = new SoundEmitterTree(this.emitterId);
 
             SoundStorage.getInstance(world).play(world, SoundEventSoundData.create(
-                    emitterId, Registries.SOUND_EVENT.getEntry(disc.getSound()), 2, 1),
+                    emitterId, Registries.SOUND_EVENT.getEntry(disc.getSound()), SoundCategory.RECORDS, 2, 1),
                     this.playingSound);
             sync();
         }

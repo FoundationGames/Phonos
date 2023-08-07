@@ -22,6 +22,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.state.property.Properties;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
@@ -74,7 +75,7 @@ public class SatelliteStationBlockEntity extends AbstractOutputBlockEntity {
 
             this.playingSound = new SoundEmitterTree(this.emitterId);
             SoundStorage.getInstance(this.world).play(this.world,
-                    new StreamSoundData(SoundDataTypes.STREAM, this.emitterId(), this.streamId, 2, 1),
+                    new StreamSoundData(SoundDataTypes.STREAM, this.emitterId(), this.streamId, SoundCategory.MASTER, 2, 1),
                     this.playingSound);
 
             this.playingTimer = this.playDuration = (int) ((aud.originalSize * 20f) / aud.sampleRate);

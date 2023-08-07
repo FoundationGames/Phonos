@@ -69,5 +69,8 @@
     "text.config.phonos.option.cableVBOs": "Render Audio Cables with VBOs",
     "text.config.phonos.option.cableLODs": "Render Audio Cables with Detail Levels",
     "text.config.phonos.option.cableLODNearDetail": "Highest Audio Cable Detail Level",
-    "text.config.phonos.option.cableLODFarDetail": "Lowest Audio Cable Detail Level"
+    "text.config.phonos.option.cableLODFarDetail": "Lowest Audio Cable Detail Level",
+
+    "text.config.phonos.option.vanilla.phonosMasterVolume": "Phonos (Master)",
+    "text.config.phonos.option.vanilla.streamVolume": "Phonos Satellites"
 }

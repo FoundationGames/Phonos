@@ -6,6 +6,7 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.SimpleRegistry;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,22 +16,25 @@ public abstract class SoundData {
 
     public final Type<?> type;
     public final long emitterId;
+    public final SoundCategory soundCategory;
     public final float volume, pitch;
 
-    public SoundData(Type<?> type, long emitterId, float volume, float pitch) {
+    public SoundData(Type<?> type, long emitterId, SoundCategory soundCategory, float volume, float pitch) {
         this.type = type;
         this.emitterId = emitterId;
+        this.soundCategory = soundCategory;
         this.volume = volume;
         this.pitch = pitch;
     }
 
     public SoundData(Type<?> type, PacketByteBuf buf) {
-        this(type, buf.readLong(), buf.readFloat(), buf.readFloat());
+        this(type, buf.readLong(), SoundCategory.values()[buf.readInt()], buf.readFloat(), buf.readFloat());
     }
 
     public void toPacket(PacketByteBuf buf) {
         buf.writeIdentifier(type.id());
         buf.writeLong(emitterId);
+        buf.writeInt(soundCategory.ordinal());
         buf.writeFloat(volume);
         buf.writeFloat(pitch);
     }
