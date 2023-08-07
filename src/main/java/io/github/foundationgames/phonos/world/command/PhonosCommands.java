@@ -73,6 +73,12 @@ public class PhonosCommands {
     public static int satelliteInspect(ServerCommandSource source, BlockPos pos) {
         var world = source.getWorld();
 
+        if (!ServerCustomAudio.loaded()) {
+            source.sendError(Text.translatable("command.phonos.satellite.not_loaded"));
+
+            return 1;
+        }
+
         if (world.getBlockEntity(pos) instanceof SatelliteStationBlockEntity be) {
             long id = be.streamId;
 
@@ -98,6 +104,12 @@ public class PhonosCommands {
     }
 
     public static int satelliteList(ServerCommandSource source) {
+        if (!ServerCustomAudio.loaded()) {
+            source.sendError(Text.translatable("command.phonos.satellite.not_loaded"));
+
+            return 1;
+        }
+
         var set = ServerCustomAudio.SAVED.long2ObjectEntrySet();
 
         if (set.isEmpty()) {
@@ -125,6 +137,12 @@ public class PhonosCommands {
     }
 
     public static int satelliteCrash(ServerCommandSource source, long id) throws CommandSyntaxException {
+        if (!ServerCustomAudio.loaded()) {
+            source.sendError(Text.translatable("command.phonos.satellite.not_loaded"));
+
+            return 1;
+        }
+
         var idStr = Long.toHexString(id);
         Phonos.LOG.info("Satellite {} was crashed via command by player {}.", idStr, source.getPlayerOrThrow());
 

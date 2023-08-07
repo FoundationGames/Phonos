@@ -25,6 +25,7 @@
 
     "command.phonos.radar.none_found": "Found no radio emitters on channel %s.",
     "command.phonos.radar.success": "Nearest radio emitter located at %s.",
+    "command.phonos.satellite.not_loaded": "Satellites are not yet ready.",
     "command.phonos.satellite.inspect.no_upload": "This station has no orbiting satellite!",
     "command.phonos.satellite.inspect.invalid": "This block is not a satellite station!",
     "command.phonos.satellite.crash": "Crashed satellite with id %s.",

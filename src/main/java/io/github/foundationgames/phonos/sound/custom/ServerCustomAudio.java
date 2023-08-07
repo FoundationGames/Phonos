@@ -16,17 +16,23 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ServerCustomAudio {
     public static final String FILE_EXT = ".phonosaud";
 
     public static final ExecutorService UPLOAD_POOL = Executors.newFixedThreadPool(1);
+    public static final ExecutorService FILESYS_POOL = Executors.newFixedThreadPool(4);
 
     public static final Long2ObjectMap<AudioDataQueue> UPLOADING = Long2ObjectMaps.synchronize(new Long2ObjectOpenHashMap<>());
-    public static final Long2ObjectMap<AudioDataQueue> SAVED = new Long2ObjectOpenHashMap<>();
+    public static final Long2ObjectMap<AudioDataQueue> SAVED = Long2ObjectMaps.synchronize(new Long2ObjectOpenHashMap<>());
 
     private static int TOTAL_SAVED_SIZE = 0;
 
@@ -94,6 +100,10 @@ public class ServerCustomAudio {
         }
     }
 
+    public static boolean loaded() {
+        return LOADED;
+    }
+
     public static void deleteSaved(MinecraftServer srv, long id) {
         var aud = SAVED.remove(id);
 
@@ -132,7 +142,7 @@ public class ServerCustomAudio {
         Files.deleteIfExists(path);
     }
 
-    public static void save(Path folder) throws IOException {
+    public static void saveAll(Path folder) throws IOException {
         if (!LOADED) {
             Phonos.LOG.error("Tried to save custom uploaded audio before it was loaded!");
 
@@ -168,7 +178,11 @@ public class ServerCustomAudio {
     }
 
     public static void load(Path folder) throws IOException {
+        final var startTime = Instant.now();
+
         SAVED.clear();
+
+        List<String> files = new ArrayList<>();
         try (var paths = Files.walk(folder, 1)) {
             for (var path : paths.toList()) {
                 var filename = path.getFileName().toString();
@@ -176,13 +190,8 @@ public class ServerCustomAudio {
                     var hexStr = filename.replace(FILE_EXT, "");
 
                     try {
-                        long id = Long.parseUnsignedLong(hexStr, 16);
-                        try (var in = Files.newInputStream(path)) {
-                            var aud = AudioDataQueue.read(in, ByteBuffer::allocate);
-                            SAVED.put(id, aud);
-                            TOTAL_SAVED_SIZE += aud.originalSize;
-                        }
-
+                        Long.parseUnsignedLong(hexStr, 16);
+                        files.add(hexStr);
                     } catch (NumberFormatException ex) {
                         Phonos.LOG.error("Audio data " + filename + " has invalid name");
                     }
@@ -190,7 +199,30 @@ public class ServerCustomAudio {
             }
         }
 
-        LOADED = true;
-        Phonos.LOG.info("Loaded " + TOTAL_SAVED_SIZE + " bytes of saved audio from <world>/phonos/");
+        final int foundDataCount = files.size();
+        var loadedDataCount = new AtomicInteger(0);
+
+        for (final var hexStr : files) {
+            final var path = folder.resolve(hexStr + FILE_EXT);
+            FILESYS_POOL.submit(() -> {
+                long id = Long.parseUnsignedLong(hexStr, 16);
+
+                try (var in = Files.newInputStream(path)) {
+                    var aud = AudioDataQueue.read(in, ByteBuffer::allocate);
+
+                    SAVED.put(id, aud);
+                    TOTAL_SAVED_SIZE += aud.originalSize;
+                } catch (IOException ex) {
+                    Phonos.LOG.error("Error loading custom audio file {}", path.getFileName());
+                }
+
+                if (loadedDataCount.incrementAndGet() >= foundDataCount) {
+                    LOADED = true;
+
+                    var dur = Duration.between(startTime, Instant.now());
+                    Phonos.LOG.info("Loaded {} bytes of saved audio from <world>/phonos/ in {} ms", TOTAL_SAVED_SIZE, dur.toMillis());
+                }
+            });
+        }
     }
 }

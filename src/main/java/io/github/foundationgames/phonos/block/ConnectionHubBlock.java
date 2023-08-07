@@ -163,6 +163,7 @@ public class ConnectionHubBlock extends FacingBlock implements BlockEntityProvid
             inputIndex = MathHelper.clamp(inputIndex, 0, be.inputs.length - 1);
             be.inputs[inputIndex] = pluggedIn;
             be.sync();
+            be.markDirty();
         }
     }
 

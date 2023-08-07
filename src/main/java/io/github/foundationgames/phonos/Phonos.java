@@ -77,16 +77,6 @@ public class Phonos implements ModInitializer {
                 Phonos.LOG.error("Error loading custom audio files", ex);
             }
         });
-        ServerLifecycleEvents.SERVER_STOPPED.register(e -> {
-            try {
-                var path = PhonosUtil.getCustomSoundFolder(e);
-                if (!Files.exists(path)) Files.createDirectory(path);
-
-                ServerCustomAudio.save(path);
-            } catch (IOException ex) {
-                Phonos.LOG.error("Error saving custom audio files", ex);
-            }
-        });
         ServerPlayConnectionEvents.DISCONNECT.register((handler, server) ->
                 ServerCustomAudio.onPlayerDisconnect(handler.getPlayer()));
 

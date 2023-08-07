@@ -69,7 +69,7 @@ public class SatelliteStationBlockEntity extends AbstractOutputBlockEntity {
     }
 
     public void play() {
-        if (world instanceof ServerWorld sWorld && ServerCustomAudio.hasSaved(this.streamId)) {
+        if (world instanceof ServerWorld sWorld && ServerCustomAudio.loaded() && ServerCustomAudio.hasSaved(this.streamId)) {
             var aud = ServerCustomAudio.loadSaved(this.streamId);
             ServerOutgoingStreamHandler.startStream(this.streamId, aud, sWorld.getServer());
 
@@ -143,11 +143,13 @@ public class SatelliteStationBlockEntity extends AbstractOutputBlockEntity {
                 sync();
             }
 
-            if (status == Status.NONE && (ServerCustomAudio.UPLOADING.containsKey(this.streamId) || ServerCustomAudio.SAVED.containsKey(this.streamId))) {
-                this.performAction(ACTION_LAUNCH);
-            } else if (status == Status.IN_ORBIT) {
-                if (!ServerCustomAudio.SAVED.containsKey(this.streamId)) {
-                    this.performAction(ACTION_CRASH);
+            if (ServerCustomAudio.loaded()) {
+                if (status == Status.NONE && (ServerCustomAudio.UPLOADING.containsKey(this.streamId) || ServerCustomAudio.SAVED.containsKey(this.streamId))) {
+                    this.performAction(ACTION_LAUNCH);
+                } else if (status == Status.IN_ORBIT) {
+                    if (!ServerCustomAudio.SAVED.containsKey(this.streamId)) {
+                        this.performAction(ACTION_CRASH);
+                    }
                 }
             }
         } else {

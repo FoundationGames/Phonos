@@ -168,6 +168,7 @@ public class RadioTransceiverBlock extends HorizontalFacingBlock implements Bloc
             }
 
             be.sync();
+            be.markDirty();
         }
     }
 
