@@ -1,7 +1,7 @@
 package io.github.foundationgames.phonos.block.entity;
 
 import io.github.foundationgames.phonos.block.PhonosBlocks;
-import io.github.foundationgames.phonos.client.render.BlockEntityClientState;
+import io.github.foundationgames.phonos.client.render.CableVBOContainer;
 import io.github.foundationgames.phonos.network.PayloadPackets;
 import io.github.foundationgames.phonos.sound.SoundStorage;
 import io.github.foundationgames.phonos.sound.emitter.SoundEmitterTree;
@@ -46,9 +46,9 @@ public class ElectronicJukeboxBlockEntity extends JukeboxBlockEntity implements 
     private final BlockEntityType<?> type;
     private @Nullable NbtCompound pendingNbt = null;
     private final long emitterId;
-    private BlockEntityClientState clientState;
-
     private @Nullable SoundEmitterTree playingSound = null;
+
+    private CableVBOContainer vboContainer;
 
     public ElectronicJukeboxBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(pos, state);
@@ -56,7 +56,7 @@ public class ElectronicJukeboxBlockEntity extends JukeboxBlockEntity implements 
         this.emitterId = UniqueId.ofBlock(pos);
 
         this.outputs = new BlockEntityOutputs(OUTPUT_LAYOUT, this);
-        this.clientState = null;
+        this.vboContainer = null;
     }
 
     public ElectronicJukeboxBlockEntity(BlockPos pos, BlockState state) {
@@ -200,20 +200,29 @@ public class ElectronicJukeboxBlockEntity extends JukeboxBlockEntity implements 
     }
 
     @Override
-    public BlockEntityClientState getClientState() {
-        if (this.clientState == null) {
-            this.clientState = new BlockEntityClientState();
+    public void enforceVBOState(boolean enabled) {
+        if (this.vboContainer != null && !enabled) {
+            this.vboContainer.close();
+
+            this.vboContainer = null;
+        }
+    }
+
+    @Override
+    public CableVBOContainer getOrCreateVBOContainer() {
+        if (this.vboContainer == null) {
+            this.vboContainer = new CableVBOContainer();
         }
 
-        this.clientState.genState(this.outputs);
-        return this.clientState;
+        this.vboContainer.refresh(this.outputs);
+        return this.vboContainer;
     }
 
     @Override
     public void markRemoved() {
-        if (this.hasWorld() && this.world.isClient && this.clientState != null) {
-            this.clientState.dirty = true;
-            this.clientState.close();
+        if (this.hasWorld() && this.world.isClient() && this.vboContainer != null) {
+            this.vboContainer.rebuild = true;
+            this.vboContainer.close();
         }
         super.markRemoved();
     }

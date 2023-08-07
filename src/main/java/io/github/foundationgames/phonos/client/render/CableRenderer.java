@@ -1,20 +1,21 @@
 package io.github.foundationgames.phonos.client.render;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.foundationgames.phonos.config.PhonosClientConfig;
 import io.github.foundationgames.phonos.util.PhonosUtil;
 import io.github.foundationgames.phonos.util.Pose3f;
 import io.github.foundationgames.phonos.world.sound.CableConnection;
 import io.github.foundationgames.phonos.world.sound.CablePlugPoint;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.VertexBuffer;
 import net.minecraft.client.model.Model;
-import net.minecraft.client.render.*;
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -66,20 +67,19 @@ public class CableRenderer {
         }
     }
 
-    public static void renderConnection(BlockEntityClientState clientState, BlockEntity e, PhonosClientConfig config, World world, CableConnection conn, MatrixStack matrices, VertexConsumer buffer, Model cableEndModel, int overlay, float tickDelta) {
+    public static void renderConnection(@Nullable CableVBOContainer vboContainer, PhonosClientConfig config, World world, CableConnection conn,
+                                        MatrixStack matrices, VertexConsumer immediate, Model cableEndModel, int overlay, float tickDelta) {
         int startLight, endLight;
 
-        // Connection points are always rendered immediate
-
+        // Connection plug points are always rendered immediate
         matrices.push();
             transformConnPoint(world, conn.start, matrices, cableStPt, tickDelta);
 
             lightPos.set(cableStPt.x, cableStPt.y, cableStPt.z);
             startLight = WorldRenderer.getLightmapCoordinates(world, lightPos);
 
-            cableEndModel.render(matrices, buffer, startLight, overlay, 1, 1, 1, 1);
+            cableEndModel.render(matrices, immediate, startLight, overlay, 1, 1, 1, 1);
         matrices.pop();
-
 
         matrices.push();
             transformConnPoint(world, conn.end, matrices, cableEnPt, tickDelta);
@@ -87,104 +87,112 @@ public class CableRenderer {
             lightPos.set(cableEnPt.x, cableEnPt.y, cableEnPt.z);
             endLight = WorldRenderer.getLightmapCoordinates(world, lightPos);
 
-            cableEndModel.render(matrices, buffer, endLight, overlay, 1, 1, 1, 1);
+            cableEndModel.render(matrices, immediate, endLight, overlay, 1, 1, 1, 1);
         matrices.pop();
+        // ---
 
-        // Rendering for the first time? Generate VBOs now.
-        if (clientState.dirty) {
-            BufferBuilder builder = Tessellator.getInstance().getBuffer();
+        float length = cableStPt.distance(cableEnPt);
+        double detail = config.cableLODNearDetail;
+        int segments = Math.max((int) Math.ceil(4 * length * detail), 1);
 
-            matrices = new MatrixStack();
-            matrices.push();
+        if (conn.isStatic() && vboContainer != null) { // Vbo can be used for this connection
+            if (vboContainer.rebuild) {
+                BufferBuilder buffer = Tessellator.getInstance().getBuffer();
+                matrices = new MatrixStack();
 
-            float vOffset = conn.color != null ? 0.125f : 0;
-            float r = conn.color != null ? conn.color.getColorComponents()[0] : 1;
-            float g = conn.color != null ? conn.color.getColorComponents()[1] : 1;
-            float b = conn.color != null ? conn.color.getColorComponents()[2] : 1;
-            float length = cableStPt.distance(cableEnPt);
+                buildCableGeometry(conn, matrices, buffer, segments, length, detail, startLight, endLight, overlay);
+            }
+        } else { // Connection must be rendered immediate
+            if (config.cableLODs) {
+                float cx = (cableStPt.x + cableEnPt.x) * 0.5f;
+                float cy = (cableStPt.y + cableEnPt.y) * 0.5f;
+                float cz = (cableStPt.z + cableEnPt.z) * 0.5f;
 
-            double detail = config.cableLODNearDetail;
-            int segments = Math.max((int) Math.ceil(4 * length * detail), 1);
+                double sqDist = MinecraftClient.getInstance().gameRenderer.getCamera().getPos()
+                        .squaredDistanceTo(cx, cy, cz);
+                double delta = MathHelper.clamp(sqDist / (length * length * 4), 0, 1);
+                detail = MathHelper.lerp(delta, config.cableLODNearDetail, config.cableLODFarDetail);
 
-            // TODO: baking does not support LODs
-//        if (config.cableLODs) {
-//            float cx = (cableStPt.x + cableEnPt.x) * 0.5f;
-//            float cy = (cableStPt.y + cableEnPt.y) * 0.5f;
-//            float cz = (cableStPt.z + cableEnPt.z) * 0.5f;
-//
-//            double sqDist = MinecraftClient.getInstance().gameRenderer.getCamera().getPos()
-//                    .squaredDistanceTo(cx, cy, cz);
-//            double delta = MathHelper.clamp(sqDist / (length * length * 4), 0, 1);
-//            detail = MathHelper.lerp(delta, config.cableLODNearDetail, config.cableLODFarDetail);
-//
-//            segments = Math.max((int) Math.ceil(4 * length * detail), Math.min(3, segments));
-//        }
-
-            final float texUWid = (float) (0.25 / detail);
-
-            cableRotAxis.set(cableEnPt.z - cableStPt.z, 0, cableEnPt.x - cableStPt.x);
-
-            float cablePitch = (float) Math.atan2(cableEnPt.y - cableStPt.y, cableRotAxis.length());
-            float cableYaw = (float) Math.atan2(cableRotAxis.z, cableRotAxis.x);
-            cableRotAxis.normalize();
-
-            loadCableEnd(cableStart);
-            loadCableEnd(cableEnd);
-            cableNormal[0].set(-PhonosUtil.SQRT2DIV2, -PhonosUtil.SQRT2DIV2, 0);
-            cableNormal[1].set(PhonosUtil.SQRT2DIV2, -PhonosUtil.SQRT2DIV2, 0);
-            cableNormal[2].set(PhonosUtil.SQRT2DIV2, PhonosUtil.SQRT2DIV2, 0);
-            cableNormal[3].set(-PhonosUtil.SQRT2DIV2, PhonosUtil.SQRT2DIV2, 0);
-
-            rotationCache.setAngleAxis(cablePitch, 1, 0, 0);
-            transformCableEnd(cableStart, vec -> vec.rotate(rotationCache));
-            transformCableEnd(cableEnd, vec -> vec.rotate(rotationCache));
-            transformCableNormal(cableNormal, vec -> vec.rotate(rotationCache));
-
-            rotationCache.setAngleAxis(Math.PI + cableYaw, 0, 1, 0);
-            transformCableEnd(cableStart, vec -> vec.rotate(rotationCache));
-            transformCableEnd(cableEnd, vec -> vec.rotate(rotationCache));
-            transformCableNormal(cableNormal, vec -> vec.rotate(rotationCache));
-
-            transformCableEnd(cableStart, vec -> vec.set(vec.x + cableStPt.x, vec.y + cableStPt.y, vec.z + cableStPt.z, 1));
-            transformCableEnd(cableEnd, vec -> vec.set(vec.x + cableEnPt.x, vec.y + cableEnPt.y, vec.z + cableEnPt.z, 1));
-
-            transformCableNormal(cableNormal, matrices.peek().getNormalMatrix()::transform);
-
-            for (int s = 0; s < segments; s++) {
-                float startDelta = (float) s / segments;
-                float endDelta = (float) (s + 1) / segments;
-                float startYOffset = length * 0.15f * (0.25f - (float) Math.pow(startDelta - 0.5, 2));
-                float endYOffset = length * 0.15f * (0.25f - (float) Math.pow(endDelta - 0.5, 2));
-                int segStartLight = PhonosUtil.lerpLight(startDelta, startLight, endLight);
-                int segEndLight = PhonosUtil.lerpLight(endDelta, startLight, endLight);
-
-                lerpCableEnd(currCableStart, cableStart, cableEnd, startDelta);
-                lerpCableEnd(currCableEnd, cableStart, cableEnd, endDelta);
-
-                transformCableEnd(currCableStart, vec -> vec.add(0, -startYOffset, 0, 0));
-                transformCableEnd(currCableEnd, vec -> vec.add(0, -endYOffset, 0, 0));
-
-                transformCableEnd(currCableStart, matrices.peek().getPositionMatrix()::transform);
-                transformCableEnd(currCableEnd, matrices.peek().getPositionMatrix()::transform);
-
-                for (int i = 0; i < 4; i++) {
-                    float vOffset2 = i % 2 == 0 ? vOffset + 0.0625f : vOffset;
-                    int next = (i + 1) % 4;
-                    var nml = cableNormal[i];
-
-                    builder.vertex(currCableStart[i].x, currCableStart[i].y, currCableStart[i].z).color(r, g, b, 1)
-                            .texture(texUWid, 0.3125f + vOffset2).overlay(overlay).light(segStartLight).normal(nml.x, nml.y, nml.z).next();
-                    builder.vertex(currCableEnd[i].x, currCableEnd[i].y, currCableEnd[i].z).color(r, g, b, 1)
-                            .texture(0, 0.3125f + vOffset2).overlay(overlay).light(segEndLight).normal(nml.x, nml.y, nml.z).next();
-                    builder.vertex(currCableEnd[next].x, currCableEnd[next].y, currCableEnd[next].z).color(r, g, b, 1)
-                            .texture(0, 0.375f + vOffset2).overlay(overlay).light(segEndLight).normal(nml.x, nml.y, nml.z).next();
-                    builder.vertex(currCableStart[next].x, currCableStart[next].y, currCableStart[next].z).color(r, g, b, 1)
-                            .texture(texUWid, 0.375f + vOffset2).overlay(overlay).light(segStartLight).normal(nml.x, nml.y, nml.z).next();
-                }
+                segments = Math.max((int) Math.ceil(4 * length * detail), Math.min(3, segments));
             }
 
-            matrices.pop();
+            buildCableGeometry(conn, matrices, immediate, segments, length, detail, startLight, endLight, overlay);
         }
+    }
+
+    private static void buildCableGeometry(CableConnection conn, MatrixStack matrices, VertexConsumer buffer, int segments,
+                                           float length, double detail, int startLight, int endLight, int overlay) {
+        matrices.push();
+
+        float vOffset = conn.color != null ? 0.125f : 0;
+        float r = conn.color != null ? conn.color.getColorComponents()[0] : 1;
+        float g = conn.color != null ? conn.color.getColorComponents()[1] : 1;
+        float b = conn.color != null ? conn.color.getColorComponents()[2] : 1;
+
+        final float texUWid = (float) (0.25 / detail);
+
+        cableRotAxis.set(cableEnPt.z - cableStPt.z, 0, cableEnPt.x - cableStPt.x);
+
+        float cablePitch = (float) Math.atan2(cableEnPt.y - cableStPt.y, cableRotAxis.length());
+        float cableYaw = (float) Math.atan2(cableRotAxis.z, cableRotAxis.x);
+        cableRotAxis.normalize();
+
+        loadCableEnd(cableStart);
+        loadCableEnd(cableEnd);
+        cableNormal[0].set(-PhonosUtil.SQRT2DIV2, -PhonosUtil.SQRT2DIV2, 0);
+        cableNormal[1].set(PhonosUtil.SQRT2DIV2, -PhonosUtil.SQRT2DIV2, 0);
+        cableNormal[2].set(PhonosUtil.SQRT2DIV2, PhonosUtil.SQRT2DIV2, 0);
+        cableNormal[3].set(-PhonosUtil.SQRT2DIV2, PhonosUtil.SQRT2DIV2, 0);
+
+        rotationCache.setAngleAxis(cablePitch, 1, 0, 0);
+        transformCableEnd(cableStart, vec -> vec.rotate(rotationCache));
+        transformCableEnd(cableEnd, vec -> vec.rotate(rotationCache));
+        transformCableNormal(cableNormal, vec -> vec.rotate(rotationCache));
+
+        rotationCache.setAngleAxis(Math.PI + cableYaw, 0, 1, 0);
+        transformCableEnd(cableStart, vec -> vec.rotate(rotationCache));
+        transformCableEnd(cableEnd, vec -> vec.rotate(rotationCache));
+        transformCableNormal(cableNormal, vec -> vec.rotate(rotationCache));
+
+        transformCableEnd(cableStart, vec -> vec.set(vec.x + cableStPt.x, vec.y + cableStPt.y, vec.z + cableStPt.z, 1));
+        transformCableEnd(cableEnd, vec -> vec.set(vec.x + cableEnPt.x, vec.y + cableEnPt.y, vec.z + cableEnPt.z, 1));
+
+        transformCableNormal(cableNormal, matrices.peek().getNormalMatrix()::transform);
+
+        for (int s = 0; s < segments; s++) {
+            float startDelta = (float) s / segments;
+            float endDelta = (float) (s + 1) / segments;
+            float startYOffset = length * 0.15f * (0.25f - (float) Math.pow(startDelta - 0.5, 2));
+            float endYOffset = length * 0.15f * (0.25f - (float) Math.pow(endDelta - 0.5, 2));
+            int segStartLight = PhonosUtil.lerpLight(startDelta, startLight, endLight);
+            int segEndLight = PhonosUtil.lerpLight(endDelta, startLight, endLight);
+
+            lerpCableEnd(currCableStart, cableStart, cableEnd, startDelta);
+            lerpCableEnd(currCableEnd, cableStart, cableEnd, endDelta);
+
+            transformCableEnd(currCableStart, vec -> vec.add(0, -startYOffset, 0, 0));
+            transformCableEnd(currCableEnd, vec -> vec.add(0, -endYOffset, 0, 0));
+
+            transformCableEnd(currCableStart, matrices.peek().getPositionMatrix()::transform);
+            transformCableEnd(currCableEnd, matrices.peek().getPositionMatrix()::transform);
+
+            for (int i = 0; i < 4; i++) {
+                float vOffset2 = i % 2 == 0 ? vOffset + 0.0625f : vOffset;
+                int next = (i + 1) % 4;
+                var nml = cableNormal[i];
+
+                buffer.vertex(currCableStart[i].x, currCableStart[i].y, currCableStart[i].z).color(r, g, b, 1)
+                        .texture(texUWid, 0.3125f + vOffset2).overlay(overlay).light(segStartLight).normal(nml.x, nml.y, nml.z).next();
+                buffer.vertex(currCableEnd[i].x, currCableEnd[i].y, currCableEnd[i].z).color(r, g, b, 1)
+                        .texture(0, 0.3125f + vOffset2).overlay(overlay).light(segEndLight).normal(nml.x, nml.y, nml.z).next();
+                buffer.vertex(currCableEnd[next].x, currCableEnd[next].y, currCableEnd[next].z).color(r, g, b, 1)
+                        .texture(0, 0.375f + vOffset2).overlay(overlay).light(segEndLight).normal(nml.x, nml.y, nml.z).next();
+                buffer.vertex(currCableStart[next].x, currCableStart[next].y, currCableStart[next].z).color(r, g, b, 1)
+                        .texture(texUWid, 0.375f + vOffset2).overlay(overlay).light(segStartLight).normal(nml.x, nml.y, nml.z).next();
+            }
+        }
+
+        matrices.pop();
     }
 
 

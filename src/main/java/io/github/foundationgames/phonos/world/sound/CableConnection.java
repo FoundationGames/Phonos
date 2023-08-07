@@ -29,6 +29,10 @@ public class CableConnection {
         return false; //start.getPos(world).squaredDistanceTo(end.getPos(world)) > PhonosUtil.maxSquaredConnectionDistance(world);
     }
 
+    public boolean isStatic() {
+        return start.isStatic() && end.isStatic();
+    }
+
     public void writeNbt(NbtCompound nbt) {
         if (color != null) {
             nbt.putString("color", color.getName());
