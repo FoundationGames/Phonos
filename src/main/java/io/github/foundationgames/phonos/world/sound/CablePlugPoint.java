@@ -29,4 +29,10 @@ public interface CablePlugPoint {
     void writePlugPose(World world, float delta, Pose3f out);
 
     void writeOriginPose(World world, float delta, Pose3f out);
+
+    boolean isStatic();
+
+    boolean equals(Object other);
+
+    int hashCode();
 }

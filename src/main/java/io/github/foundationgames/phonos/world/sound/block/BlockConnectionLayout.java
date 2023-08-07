@@ -121,6 +121,11 @@ public class BlockConnectionLayout {
         }
 
         @Override
+        public boolean isStatic() {
+            return true;
+        }
+
+        @Override
         public boolean canPlugExist(World world) {
             if (world.isPosLoaded(this.blockPos.getX(), this.blockPos.getZ())) {
                 var state = world.getBlockState(this.blockPos);
@@ -237,6 +242,11 @@ public class BlockConnectionLayout {
                 }
             }
             out.rotation().set(RotationAxis.POSITIVE_Y.rotation(0));
+        }
+
+        @Override
+        public boolean isStatic() {
+            return true;
         }
 
         @Override

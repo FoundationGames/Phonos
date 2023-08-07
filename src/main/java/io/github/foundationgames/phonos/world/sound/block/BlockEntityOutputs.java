@@ -1,6 +1,7 @@
 package io.github.foundationgames.phonos.world.sound.block;
 
 import io.github.foundationgames.phonos.world.sound.CableConnection;
+import io.github.foundationgames.phonos.world.sound.ConnectionCollection;
 import io.github.foundationgames.phonos.world.sound.InputPlugPoint;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.ItemEntity;
@@ -16,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-public class BlockEntityOutputs {
+public class BlockEntityOutputs implements ConnectionCollection {
     private final boolean[] skip; // Will not be purged on first tick of existing
     protected final CableConnection[] connections;
     protected final BlockConnectionLayout connectionLayout;
@@ -86,6 +87,7 @@ public class BlockEntityOutputs {
         return count;
     }
 
+    @Override
     public void forEach(BiConsumer<Integer, CableConnection> action) {
         for (int i = 0; i < connections.length; i++) {
             if (connections[i] != null) {
