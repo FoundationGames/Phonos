@@ -105,8 +105,6 @@ public class BlockEntityOutputs implements ConnectionCollection {
             }
 
             if (connections[i] != null && connections[i].shouldRemove(this.blockEntity.getWorld())) {
-                System.out.println("CAN EXIST: " + connections[i].end.canPlugExist(this.blockEntity.getWorld()));
-
                 purgeAction.accept(connections[i]);
                 connections[i] = null;
                 changed = true;

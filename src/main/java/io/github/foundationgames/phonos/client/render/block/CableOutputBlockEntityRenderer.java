@@ -3,11 +3,14 @@ package io.github.foundationgames.phonos.client.render.block;
 import io.github.foundationgames.phonos.Phonos;
 import io.github.foundationgames.phonos.PhonosClient;
 import io.github.foundationgames.phonos.client.model.BasicModel;
+import io.github.foundationgames.phonos.client.render.CableBounds;
 import io.github.foundationgames.phonos.client.render.CableRenderer;
 import io.github.foundationgames.phonos.client.render.CableVBOContainer;
 import io.github.foundationgames.phonos.config.PhonosClientConfig;
+import io.github.foundationgames.phonos.mixin.WorldRendererAccess;
 import io.github.foundationgames.phonos.world.sound.block.OutputBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
@@ -18,6 +21,8 @@ public class CableOutputBlockEntityRenderer<E extends BlockEntity & OutputBlockE
     public static final Identifier TEXTURE = Phonos.id("textures/entity/audio_cable.png");
     private final BasicModel cableEndModel;
 
+    private final CableBounds boundCache = new CableBounds();
+
     public CableOutputBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) {
         cableEndModel = new BasicModel(ctx.getLayerModelPart(PhonosClient.AUDIO_CABLE_END_LAYER));
     }
@@ -27,6 +32,7 @@ public class CableOutputBlockEntityRenderer<E extends BlockEntity & OutputBlockE
         var renderLayer = cableEndModel.getLayer(TEXTURE);
         var immediate = vertexConsumers.getBuffer(renderLayer);
         var config = PhonosClientConfig.get();
+        var frustum = ((WorldRendererAccess) MinecraftClient.getInstance().worldRenderer).phonos$getFrustum();
 
         matrices.push();
 
@@ -37,10 +43,11 @@ public class CableOutputBlockEntityRenderer<E extends BlockEntity & OutputBlockE
 
         if (vbos) {
             CableVBOContainer vboContainer = entity.getOrCreateVBOContainer();
-            vboContainer.render(matrices, immediate, renderLayer, cableEndModel, entity.getOutputs(), config, entity.getWorld(), overlay, tickDelta);
+            vboContainer.render(matrices, immediate, renderLayer, cableEndModel, frustum, entity.getOutputs(), config, entity.getWorld(), overlay, tickDelta);
         } else {
             entity.getOutputs().forEach((i, conn) ->
-                    CableRenderer.renderConnection(null, config, entity.getWorld(), conn, matrices, immediate, cableEndModel, overlay, tickDelta));
+                    CableRenderer.renderConnection(null, config, entity.getWorld(), conn, boundCache, frustum,
+                            matrices, immediate, cableEndModel, overlay, tickDelta));
         }
 
         matrices.pop();

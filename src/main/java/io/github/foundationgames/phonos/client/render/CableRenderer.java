@@ -7,10 +7,7 @@ import io.github.foundationgames.phonos.world.sound.CableConnection;
 import io.github.foundationgames.phonos.world.sound.CablePlugPoint;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.model.Model;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.WorldRenderer;
+import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -67,8 +64,9 @@ public class CableRenderer {
         }
     }
 
-    public static void renderConnection(@Nullable CableVBOContainer vboContainer, PhonosClientConfig config, World world, CableConnection conn,
-                                        MatrixStack matrices, VertexConsumer immediate, Model cableEndModel, int overlay, float tickDelta) {
+    public static void renderConnection(@Nullable CableVBOContainer vboContainer, PhonosClientConfig config, World world,
+                                        CableConnection conn, @Nullable CableBounds bounds, Frustum frustum, MatrixStack matrices,
+                                        VertexConsumer immediate, Model cableEndModel, int overlay, float tickDelta) {
         int startLight, endLight;
 
         // Connection plug points are always rendered immediate
@@ -97,12 +95,25 @@ public class CableRenderer {
 
         if (conn.isStatic() && vboContainer != null) { // Vbo can be used for this connection
             if (vboContainer.rebuild) {
+                if (bounds != null) {
+                    bounds.fit(cableStPt.x, cableStPt.y, cableStPt.z);
+                    bounds.fit(cableEnPt.x, cableEnPt.y, cableEnPt.z);
+                }
+
                 BufferBuilder buffer = Tessellator.getInstance().getBuffer();
                 matrices = new MatrixStack();
 
                 buildCableGeometry(conn, matrices, buffer, segments, length, detail, startLight, endLight, overlay);
             }
         } else { // Connection must be rendered immediate
+            if (bounds != null && config.cableCulling) {
+                bounds.fitTwo(cableStPt.x, cableStPt.y, cableStPt.z, cableEnPt.x, cableEnPt.y, cableEnPt.z);
+
+                if (!bounds.visible(frustum)) {
+                    return;
+                }
+            }
+
             if (config.cableLODs) {
                 float cx = (cableStPt.x + cableEnPt.x) * 0.5f;
                 float cy = (cableStPt.y + cableEnPt.y) * 0.5f;

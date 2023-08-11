@@ -19,6 +19,8 @@ public class CableVBOContainer {
     public @Nullable VertexBuffer buffer = null;
     private List<CableConnection> cachedCons = new ArrayList<>();
 
+    private CableBounds bounds = new CableBounds();
+
     public void refresh(ConnectionCollection conns) {
         List<CableConnection> connections = new ArrayList<>();
         conns.forEach((i, conn) -> {
@@ -41,7 +43,7 @@ public class CableVBOContainer {
         }
     }
 
-    public void render(MatrixStack matrices, VertexConsumer immediate, RenderLayer layer, BasicModel cableEndModel,
+    public void render(MatrixStack matrices, VertexConsumer immediate, RenderLayer layer, BasicModel cableEndModel, Frustum frustum,
                        ConnectionCollection conns, PhonosClientConfig config, World world, int overlay, float tickDelta) {
         boolean rebuild = this.buffer == null || this.rebuild;
 
@@ -53,11 +55,14 @@ public class CableVBOContainer {
             builder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL);
 
             this.buffer = vbo;
+
+            this.bounds.clear();
         }
 
         // Render each connection point in immediate mode, and render cables into the given vertex buffer
         conns.forEach((i, conn) ->
-                CableRenderer.renderConnection(this, config, world, conn, matrices, immediate, cableEndModel, overlay, tickDelta));
+                CableRenderer.renderConnection(this, config, world, conn, rebuild ? bounds : null, frustum,
+                        matrices, immediate, cableEndModel, overlay, tickDelta));
 
         var vbo = this.buffer;
 
@@ -69,7 +74,9 @@ public class CableVBOContainer {
             this.rebuild = false;
         }
 
-
+        if (config.cableCulling && !bounds.visible(frustum)) {
+            return;
+        }
 
         // Set up the render state for this render phase (and texture)
         layer.startDrawing();
