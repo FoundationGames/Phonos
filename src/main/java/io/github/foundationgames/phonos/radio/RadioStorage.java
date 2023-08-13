@@ -4,6 +4,7 @@ import io.github.foundationgames.phonos.sound.emitter.SoundEmitter;
 import io.github.foundationgames.phonos.sound.emitter.SoundEmitterStorage;
 import io.github.foundationgames.phonos.sound.emitter.SoundSource;
 import io.github.foundationgames.phonos.util.UniqueId;
+import io.github.foundationgames.phonos.world.sound.entity.HeadsetSoundSource;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongList;
 import net.fabricmc.api.EnvType;
@@ -121,6 +122,14 @@ public class RadioStorage {
 
             for (var source : radio.getReceivingSources(this.channel)) {
                 action.accept(source);
+            }
+
+            // TODO: make this less bad
+            if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+                var headset = HeadsetSoundSource.INSTANCE;
+                if (headset.parentEmitters.contains(this.emitterId)) {
+                    action.accept(headset);
+                }
             }
         }
 

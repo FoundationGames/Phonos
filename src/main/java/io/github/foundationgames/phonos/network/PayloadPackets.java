@@ -8,16 +8,27 @@ import io.github.foundationgames.phonos.util.PhonosUtil;
 import io.github.foundationgames.phonos.world.sound.data.SoundData;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.inventory.StackReference;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.ClickType;
 import net.minecraft.util.math.BlockPos;
 
 import java.nio.ByteBuffer;
 
 public final class PayloadPackets {
     public static void initCommon() {
+        ServerPlayNetworking.registerGlobalReceiver(Phonos.id("fake_creative_slot_click"), (server, player, handler, buf, responseSender) -> {
+            var onto = buf.readItemStack();
+            var with = buf.readItemStack();
+            var click = ClickType.values()[buf.readInt()];
+
+            server.execute(() ->
+                    onto.getItem().onClicked(onto, with, null, click, player, StackReference.EMPTY));
+        });
+
         ServerPlayNetworking.registerGlobalReceiver(Phonos.id("request_satellite_upload_session"), (server, player, handler, buf, responseSender) -> {
            var pos = buf.readBlockPos();
 

@@ -150,6 +150,7 @@ public class CableRenderer {
 
         loadCableEnd(cableStart);
         loadCableEnd(cableEnd);
+
         cableNormal[0].set(-PhonosUtil.SQRT2DIV2, -PhonosUtil.SQRT2DIV2, 0);
         cableNormal[1].set(PhonosUtil.SQRT2DIV2, -PhonosUtil.SQRT2DIV2, 0);
         cableNormal[2].set(PhonosUtil.SQRT2DIV2, PhonosUtil.SQRT2DIV2, 0);

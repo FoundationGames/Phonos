@@ -1,0 +1,14 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "phonos:item/portable_record_player"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "phonos:has_record": 1
+      },
+      "model": "phonos:item/portable_record_player_playing"
+    }
+  ]
+}

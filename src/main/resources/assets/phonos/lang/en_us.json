@@ -61,6 +61,17 @@
     "item.phonos.red_audio_cable": "Red Audio Cable",
     "item.phonos.white_audio_cable": "White Audio Cable",
     "item.phonos.yellow_audio_cable": "Yellow Audio Cable",
+    "item.phonos.headset": "Headset",
+    "item.phonos.portable_radio": "Portable Radio",
+    "item.phonos.portable_record_player": "Portable Record Player",
+
+    "tooltip.phonos.item.glowing": "Glowing",
+    "tooltip.phonos.item.noise_cancelling": "Noise Cancelling ON",
+    "tooltip.phonos.item.channel": "Channel: %s",
+    "tooltip.phonos.item.how_to_listen": "Wear a headset to listen",
+    "tooltip.phonos.item.no_disc": "Empty",
+    "tooltip.phonos.item.record_player_hint": "Right click with Music Disc to play",
+    "tooltip.phonos.item.playing": "Playing:",
 
     "text.config.phonos.title": "Phonos Client Config",
 

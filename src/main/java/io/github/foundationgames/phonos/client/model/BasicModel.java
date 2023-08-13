@@ -7,7 +7,7 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 
 public class BasicModel extends Model {
-    private final ModelPart root;
+    protected final ModelPart root;
 
     public BasicModel(ModelPart root) {
         super(RenderLayer::getEntitySolid);

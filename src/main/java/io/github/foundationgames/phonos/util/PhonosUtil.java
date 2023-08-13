@@ -126,6 +126,18 @@ public enum PhonosUtil {;
         return expectedType == givenType ? (BlockEntityTicker<G>) (BlockEntityTicker<E>) Ticking::ticker : null;
     }
 
+    public static int brighten(int color, float factor) {
+        int r = (color >> 16) & 0xFF;
+        int g = (color >> 8) & 0xFF;
+        int b = color & 0xFF;
+
+        r += (255 - r) * factor;
+        g += (255 - g) * factor;
+        b += (255 - b) * factor;
+
+        return b | (g << 8) | (r << 16);
+    }
+
     public static void writeInt(OutputStream stream, int i) throws IOException {
         stream.write(i);
         stream.write(i >> 8);

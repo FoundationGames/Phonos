@@ -1,0 +1,109 @@
+{
+    "texture": {
+        "width": 32,
+        "height": 32
+    },
+    "bones": {
+        "inner_tube": {
+            "cuboids": [
+                {
+                    "offset": [
+                        -5,
+                        -9,
+                        -1
+                    ],
+                    "dimensions": [
+                        10,
+                        4,
+                        2
+                    ],
+                    "uv": [
+                        0,
+                        0
+                    ]
+                }
+            ],
+            "children": {}
+        },
+        "microphone": {
+            "cuboids": [
+                {
+                    "offset": [
+                        1.25,
+                        -2,
+                        -6.5
+                    ],
+                    "dimensions": [
+                        4,
+                        1,
+                        5
+                    ],
+                    "uv": [
+                        0,
+                        20
+                    ]
+                }
+            ],
+            "children": {}
+        },
+        "main": {
+            "cuboids": [
+                {
+                    "offset": [
+                        4,
+                        -5,
+                        -2
+                    ],
+                    "dimensions": [
+                        2,
+                        4,
+                        4
+                    ],
+                    "uv": [
+                        12,
+                        12
+                    ]
+                },
+                {
+                    "offset": [
+                        -6,
+                        -5,
+                        -2
+                    ],
+                    "dimensions": [
+                        2,
+                        4,
+                        4
+                    ],
+                    "uv": [
+                        0,
+                        12
+                    ]
+                },
+                {
+                    "name": "outer_tube",
+                    "offset": [
+                        -5,
+                        -9,
+                        -1
+                    ],
+                    "dimensions": [
+                        10,
+                        4,
+                        2
+                    ],
+                    "dilation": [
+                        0.1,
+                        0.1,
+                        0.1
+                    ],
+                    "uv": [
+                        0,
+                        6
+                    ]
+                }
+            ],
+            "children": {}
+        }
+    }
+}

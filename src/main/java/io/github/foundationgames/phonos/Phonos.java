@@ -6,6 +6,7 @@ import io.github.foundationgames.phonos.item.PhonosItems;
 import io.github.foundationgames.phonos.network.PayloadPackets;
 import io.github.foundationgames.phonos.radio.RadioDevice;
 import io.github.foundationgames.phonos.radio.RadioStorage;
+import io.github.foundationgames.phonos.recipe.ItemGlowRecipe;
 import io.github.foundationgames.phonos.sound.SoundStorage;
 import io.github.foundationgames.phonos.sound.custom.ServerCustomAudio;
 import io.github.foundationgames.phonos.sound.emitter.SoundEmitter;
@@ -23,9 +24,16 @@ import net.fabricmc.fabric.api.gamerule.v1.GameRuleFactory;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.minecraft.block.DispenserBlock;
+import net.minecraft.block.dispenser.FallibleItemDispenserBehavior;
+import net.minecraft.item.ArmorItem;
+import net.minecraft.item.ItemStack;
+import net.minecraft.recipe.RecipeSerializer;
+import net.minecraft.recipe.SpecialRecipeSerializer;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPointer;
 import net.minecraft.world.GameRules;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -42,6 +50,9 @@ public class Phonos implements ModInitializer {
             "phonosUploadLimitKB", GameRules.Category.MISC, GameRuleFactory.createIntRule(-1, -1));
 
     public static final Identifier STREAMED_SOUND = Phonos.id("streamed");
+
+    public static final RecipeSerializer<ItemGlowRecipe> ITEM_GLOW_RECIPE_SERIALIZER = Registry.register(
+            Registries.RECIPE_SERIALIZER, Phonos.id("crafting_special_itemglow"), new SpecialRecipeSerializer<>(ItemGlowRecipe::new));
 
     @Override
     public void onInitialize() {
@@ -97,6 +108,14 @@ public class Phonos implements ModInitializer {
             }
             if (be instanceof RadioDevice.Receiver rec) {
                 rec.removeReceiver();
+            }
+        });
+
+        DispenserBlock.registerBehavior(PhonosItems.HEADSET, new FallibleItemDispenserBehavior() {
+            @Override
+            protected ItemStack dispenseSilently(BlockPointer pointer, ItemStack stack) {
+                this.setSuccess(ArmorItem.dispenseArmor(pointer, stack));
+                return stack;
             }
         });
 

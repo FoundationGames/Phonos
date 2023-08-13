@@ -15,4 +15,21 @@ public interface SoundEmitter {
     }
 
     void forEachChild(LongConsumer action);
+
+    static SoundEmitter noOp(long emitterId) {
+        return new SoundEmitter() {
+            @Override
+            public long emitterId() {
+                return emitterId;
+            }
+
+            @Override
+            public void forEachSource(Consumer<SoundSource> action) {
+            }
+
+            @Override
+            public void forEachChild(LongConsumer action) {
+            }
+        };
+    }
 }

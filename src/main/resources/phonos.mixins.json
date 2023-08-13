@@ -6,6 +6,8 @@
   "mixins": [
   ],
   "client": [
+    "BipedEntityRendererMixin",
+    "PlayerEntityRendererMixin",
     "SoundOptionsScreenMixin",
     "WorldRendererAccess"
   ],

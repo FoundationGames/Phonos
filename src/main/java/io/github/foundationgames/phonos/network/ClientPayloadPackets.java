@@ -14,7 +14,9 @@ import io.netty.buffer.Unpooled;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.util.ClickType;
 
 import java.nio.ByteBuffer;
 
@@ -98,6 +100,15 @@ public final class ClientPayloadPackets {
                 }
             });
         });
+    }
+
+    public static void sendFakeCreativeSlotClick(ItemStack onto, ItemStack with, ClickType click) {
+        var buf = new PacketByteBuf(Unpooled.buffer());
+        buf.writeItemStack(onto);
+        buf.writeItemStack(with);
+        buf.writeInt(click.ordinal());
+
+        ClientPlayNetworking.send(Phonos.id("fake_creative_slot_click"), buf);
     }
 
     public static void sendRequestSatelliteUploadSession(SatelliteStationBlockEntity entity) {

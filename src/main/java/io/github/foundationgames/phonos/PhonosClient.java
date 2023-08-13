@@ -7,8 +7,7 @@ import io.github.foundationgames.phonos.client.render.block.RadioLoudspeakerBloc
 import io.github.foundationgames.phonos.client.render.block.RadioTransceiverBlockEntityRenderer;
 import io.github.foundationgames.phonos.client.render.block.SatelliteStationBlockEntityRenderer;
 import io.github.foundationgames.phonos.config.PhonosClientConfig;
-import io.github.foundationgames.phonos.item.AudioCableItem;
-import io.github.foundationgames.phonos.item.PhonosItems;
+import io.github.foundationgames.phonos.item.*;
 import io.github.foundationgames.phonos.network.ClientPayloadPackets;
 import io.github.foundationgames.phonos.radio.RadioDevice;
 import io.github.foundationgames.phonos.radio.RadioStorage;
@@ -19,6 +18,7 @@ import io.github.foundationgames.phonos.sound.emitter.SoundEmitter;
 import io.github.foundationgames.phonos.sound.emitter.SoundEmitterStorage;
 import io.github.foundationgames.phonos.sound.stream.ClientIncomingStreamHandler;
 import io.github.foundationgames.phonos.util.PhonosUtil;
+import io.github.foundationgames.phonos.world.sound.entity.HeadsetSoundSource;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientBlockEntityEvents;
@@ -27,6 +27,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.item.ModelPredicateProviderRegistry;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
 import net.minecraft.client.render.entity.model.EntityModelLayer;
@@ -35,6 +36,7 @@ import net.minecraft.state.property.Properties;
 public class PhonosClient implements ClientModInitializer {
     public static final EntityModelLayer AUDIO_CABLE_END_LAYER = new EntityModelLayer(Phonos.id("audio_cable_end"), "main");
     public static final EntityModelLayer SATELLITE_LAYER = new EntityModelLayer(Phonos.id("satellite"), "main");
+    public static final EntityModelLayer HEADSET_LAYER = new EntityModelLayer(Phonos.id("headset"), "main");
 
     @Override
     public void onInitializeClient() {
@@ -45,6 +47,7 @@ public class PhonosClient implements ClientModInitializer {
 
         JsonEM.registerModelLayer(AUDIO_CABLE_END_LAYER);
         JsonEM.registerModelLayer(SATELLITE_LAYER);
+        JsonEM.registerModelLayer(HEADSET_LAYER);
 
         BlockRenderLayerMap.INSTANCE.putBlock(PhonosBlocks.ELECTRONIC_NOTE_BLOCK, RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(PhonosBlocks.RADIO_TRANSCEIVER, RenderLayer.getCutout());
@@ -70,6 +73,38 @@ public class PhonosClient implements ClientModInitializer {
             return 0xFFFFFF;
         }, PhonosItems.ALL_AUDIO_CABLES);
 
+        ColorProviderRegistry.ITEM.register((stack, tintIndex) -> {
+            if (tintIndex == 0 && stack.getItem() instanceof HeadsetItem item) {
+                if (item.hasColor(stack)) {
+                    return item.isGlowing(stack) ? PhonosUtil.brighten(item.getColor(stack), 0.2f) : item.getColor(stack);
+                }
+
+                return item.isGlowing(stack) ? PhonosUtil.brighten(0x4F2E20, 0.2f) : 0x4F2E20;
+            }
+
+            return 0xFFFFFF;
+        }, PhonosItems.HEADSET);
+
+        ModelPredicateProviderRegistry.register(Phonos.id("glowing"), (stack, world, entity, seed) -> {
+            var item = stack.getItem();
+
+            if (item instanceof GlowableItem glow) {
+                return glow.isGlowing(stack) ? 1 : 0;
+            }
+
+            return 0;
+        });
+
+        ModelPredicateProviderRegistry.register(Phonos.id("has_record"), (stack, world, entity, seed) -> {
+            var item = stack.getItem();
+
+            if (item instanceof PortableRecordPlayerItem player) {
+                return player.hasRecord(stack) ? 1 : 0;
+            }
+
+            return 0;
+        });
+
         ClientEntityEvents.ENTITY_LOAD.register((entity, world) -> {
             if (entity == MinecraftClient.getInstance().player) {
                 RadioStorage.clientReset();
@@ -84,6 +119,7 @@ public class PhonosClient implements ClientModInitializer {
         });
 
         ClientTickEvents.END_WORLD_TICK.register(world -> SoundStorage.getInstance(world).tick(world));
+        ClientTickEvents.START_CLIENT_TICK.register(HeadsetSoundSource.INSTANCE::tick);
 
         ClientBlockEntityEvents.BLOCK_ENTITY_LOAD.register((be, world) -> {
             if (be instanceof SoundEmitter p) {
